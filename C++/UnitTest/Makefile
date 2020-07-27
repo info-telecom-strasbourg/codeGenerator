@@ -1,21 +1,26 @@
 CC		:= g++
-C_FLAGS := -std=c++11 -g -pthread
+C_FLAGS := -std=c++11 -g -pthread -pedantic -fstrict-overflow
 
 LIBRARIES	:=
 
-ifeq ($(OS),Windows_NT)
-EXECUTABLE	:= main.exe
-else
+
 EXECUTABLE	:= tests
-endif
 
 all: 	$(EXECUTABLE)
+
+$(EXECUTABLE): *.cpp
+	$(CC) $(C_FLAGS) -I -L $^ -o $@ $(LIBRARIES)
+
+
+.PHONY: clean mrproper
+
 
 clean:
 	$(RM) $(EXECUTABLE)
 
+mrproper: clean
+	rm -rf $(EXECUTABLE)
+
 run: all
 	$(EXECUTABLE)
 
-$(EXECUTABLE): *.cpp
-	$(CC) $(C_FLAGS) -I -L $^ -o $@ $(LIBRARIES)

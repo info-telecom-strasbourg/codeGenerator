@@ -5,25 +5,27 @@
 
 void test_1 (void)
 {
-    assert(1 == 1);
+    sleep(2);
+    assert(2 == 2);
 }
 
 void test_2 (void)
 {
-    assert(1 == 2);
+    sleep(2);
+    assert(2 == 2);
 }
 
 void test_3 (void)
 {
-    assert(2 == 2);
+    for (int i = 0; i < 530000000; i++)
+        assert(2 == 2);
 }
 
 int main (void)
 {
     TEST(test_1);
     TEST(test_2);
-    TEST(test_3);
-
-    
+    TTEST(test_3, 500);
+        
     return EXIT_SUCCESS;
 }
