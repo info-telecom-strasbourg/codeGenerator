@@ -2,13 +2,8 @@
 #define ITS_UNIT_TEST_H
 
 #include <iostream>
-#include <string>
 #include <thread>
-#include <mutex>
-#include <unistd.h>
-#include <time.h>
 #include <chrono>
-#include <future>
 
 /* Macros for colors */
 #define COLOR_GREEN "\033[0;32m"
