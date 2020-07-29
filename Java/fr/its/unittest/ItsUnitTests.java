@@ -94,8 +94,6 @@ public class ItsUnitTests
 		testClass = obj.getClass();
 		try { devNull = new PrintStream(new File("/dev/null")); }
 		catch (FileNotFoundException e) { exitError("The redirection of the output failed."); }
-		System.setOut(devNull);
-		System.setErr(devNull);
 	}
 
 	/**
@@ -162,11 +160,15 @@ public class ItsUnitTests
 	 */
 	private static void initTest(String method)
 	{
+		console.flush();
+		consoleErr.flush();
 		console.print("Test of the function " + method + " : ");
 		try { testMethod = testClass.getDeclaredMethod(method); }
 		catch (NoSuchMethodException e) { exitError("The method you are calling do not exist"); }
 		loadingEffect = new Thread() {public void run() { loadingEffect(); }};
 		loading = true;
+		System.setOut(devNull);
+		System.setErr(devNull);
 	}
 
 	/**
@@ -405,6 +407,8 @@ public class ItsUnitTests
 	private static void success(long elapsedTime)
 	{
 		console.println(GREEN + "Success" + RESET + " (" + elapsedTime + "ms)");
+		System.setOut(console);
+		System.setErr(consoleErr);
 	}
 
 	/**
