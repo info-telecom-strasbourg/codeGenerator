@@ -47,3 +47,4 @@ If you use *valgrind* on the tests and a test <span style="color: red">fail</spa
 
 ## Contributors
 - [Hugo LAULLIER](https://github.com/HugoLaullier)
+- [Thomas RIVES](https://github.com/ThomasRives)
