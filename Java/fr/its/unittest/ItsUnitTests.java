@@ -257,6 +257,8 @@ public class ItsUnitTests
 		try { outputFile = new PrintStream(actualFile); }
 		catch (FileNotFoundException e) { exitError("The redirection of the output failed."); }
 
+		System.out.flush();
+		System.err.flush();
 		System.setOut(outputFile);
 		System.setErr(outputFile);
 
@@ -297,6 +299,8 @@ public class ItsUnitTests
 		{
 			actualFile.createNewFile();
 			outputFile = new PrintStream(actualFile);
+			System.out.flush();
+			System.err.flush();
 			System.setOut(outputFile);
 			System.setErr(outputFile);
 		}
