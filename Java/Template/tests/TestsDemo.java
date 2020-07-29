@@ -1,7 +1,7 @@
 import static fr.its.unittest.ItsUnitTests.*;
 import java.util.ArrayList;
 
-public class Template
+public class TestsDemo
 {
 	public static void test1()
 	{
@@ -27,7 +27,7 @@ public class Template
 
 	public static void main(String[] args)
 	{
-		initItsTests(new Template());
+		initItsTests(new TestsDemo());
 		TEST("test1");
 		TEST("test1", 200);
 		TEST("test2");

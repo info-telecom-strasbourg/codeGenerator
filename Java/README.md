@@ -51,6 +51,11 @@ public class MyTest
 	}
 }
 ```
+An example is provided in this repository:
+- go in the directory *Template*
+- `make run` to compile and run the classic programm
+- `make tests` to run the tests
+- in the directory *tests*: `make run` to compile and run the test
 
 
 ## Advices

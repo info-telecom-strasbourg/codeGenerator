@@ -9,12 +9,10 @@ SRCDIR=../src
 TESTDIR=tests
 
 SOURCES:=$(wildcard $(SRCDIR)/*.java)
-TEST:=Template.java
-
-MAIN=Template
+MAIN:=TestsDemo
 
 default:
-	$(JC) -d $(CLASSDIR)/ $(TEST) $(SOURCES) $(JFLAGS)
+	$(JC) -d $(CLASSDIR)/ $(MAIN).java $(SOURCES) $(JFLAGS)
 
 run:
 	@make >/dev/null

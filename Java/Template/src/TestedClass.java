@@ -34,6 +34,6 @@ public class TestedClass
 
     public static void sayHello()
     {
-        System.out.print("Hello!");
+        System.out.println("Hello World!");
     }
 }
