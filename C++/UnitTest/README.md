@@ -3,12 +3,25 @@
 ## Content
 This library allows you to run unit tests on your project. You will be able to check the good behaviour of your functions, by testing them one by one. 
 
-This library gives you three macros :
-- `TEST(test_function)` : It runs a test function. If the test is passed, it displays <span style="color: rgb(0,255,0)">Success</span> and the time taken by the function, otherwise, it displays <span style="color: rgb(255,0 ,0)">Failed</span> and exits the programm. 
-- `TTEST(test_function, timeout)` : It has the same behaviour of the funtion `TEST()`, but,if the test function lasts longer than the timeout, it displays <span style="color: rgb(255,0 ,0)">Timeout</span>, the time out, and it exit the programm.
-- `assert(expression)` : It has to be used in a test function. If the expression is true, it continues, but if the expression is false, the test is failed and the programm stops.
+This library gives you variable way to check your test functions:
+- `TEST(function)` to run a classic test.
+- `TEST(function, timeout_millis)` to run a test with a timeout (in milliseconds).
+- `OTEST(function, expected_output_file)` to compare standard output with the given file.
+- `OTEST(function, expected_output_file, timeout_millis)` to compare standard output with the given file with a timeout (in milliseconds).
+  
+In a test function, you can use these two functions :
+- `assert(expression)` to check that an expression is true
+- `assert_file(first_file, second_file) ` to check if first_file and second_file are identical. It can be text or binary files.
 
+**Warning** : assert and assert_file must be used in a test function checked by TEST or OTEST, otherwise it won't work!
 
+## Display in the terminal
+Here is what the tests will display in the terminal :
+- If a test passes, it displays <span style="color: rgb(0,255,0)">Success</span> and the time taken by the function
+- If in a test, an assertion is false, it displays <span style="color: rgb(255,0 ,0)">Failed</span> and exits the programm. 
+- If a test lasts longer than the timeout, it displays <span style="color: rgb(255,0 ,0)">Timeout</span>, the time out, and it exit the programm.
+- If compared files aren't equal, it displays that the files are <span style="color: rgb(255,0 ,0)">different</span>. 
+- If you test the output, it displays that your expected_output_file <span style="color: rgb(255,0 ,0)">different</span> is different from the real output. A .log file is created in order to see the real output, and understand the differences.
 
 
 ## Exemple of utilisation
@@ -17,14 +30,24 @@ This library gives you three macros :
 void myTestFunction()
 {
     ...
-    assert(expr); // To test an expression (which is a boolean)
+    assert(expr); // Test an expression
+    assert_file(file_1, file_2); // Check if two files are identical
     ...
 }
 
 void main(void)
 {
-    TEST(myTestFunction); // To test the function
-    TTEST(myTestFunction, 1000); // To test the function with a timeout (here, the function must finish in 1 second maximum)
+    // Test myTestFunction
+    TEST(myTestFunction);
+
+    // Test myTestFunction with a timeout (here, the function must finish in 1 second maximum)
+    TEST(myTestFunction, 1000); 
+
+    // Test myTestFunction, and check if the output is identical of the output_expected file
+    OTEST(myTestFunction, output_exected);
+
+    // Test myTestFunction with a timeout (here, the function must finish in 1 second maximum), and check if the output is identical of the output_expected file
+    OTEST(myTestFunction, output_exected, 1000); 
 }
 ```
 
@@ -35,16 +58,16 @@ We advice you to create a **separate directory** for tests. In this directory, y
 
 ## Warnings
 
-`TEST`, `TTEST` and `assert` are macros ! Therefore, **Don't name your functions, class or variables like that!** If you do, it will lead to errors because the macro will replace your function, class or variable !
+`TEST`, `OTEST`, `assert`, `assert_file` are macros ! Therefore, **Don't name your functions, class, variables or macros like that!** If you do, it will lead to errors because the macro will replace your function, class or variable !
 
-Also, try to avoid:
-- `test_error(expr)`, it's also a macro used inside the library.
-- `bool __its_unit_test_cpp_running` and `std::thread __its_unit_test_cpp_load`, they are global variables used inside the library.
-- `void __its_unit_test_cpp_loadingEffect()` and `void __its_unit_test_cpp_timeout(float time, std::thread &launch_func, std::thread &load)`, they are functions used inside the library.
+Also, don't use:
+- `__ITS_TEST_1`, `__ITS_TEST_2`, `__ITS_TEST_3` and `__ITS_TEST_4` : they are macros used inside the library.
+- `bool __its_unit_test_cpp_running`, `std::thread __its_unit_test_cpp_load` and `std::streambuf *__its_unit_stream_buffer_cout` : they are global variables used inside the library.
+- `void __its_unit_test_cpp_loadingEffect()` and `void __its_unit_test_cpp_timeout(float time, std::thread &launch_func)`, they are functions used inside the library.
 
 **If you decide to use , it can lead to unexpected behavior.**
 
-If you use *valgrind* on the tests and a test <span style="color: red">fail</span> with a <span style="color: red">timeout</span> error, this library will generate a memory leak. If a test end differently (<span style="color: green">succeed</span> or <span style="color: red">failed</span> (not timed out)), no memory leaks will be generated by this library.
+If you use *valgrind* on the tests and a test <span style="color: red">don't success</span>, this library will generate a memory leak. If a test <span style="color: green">succeed</span>, no memory leaks will be generated by this library. Moreover, *valgrind* significantly reduces the speed of execution of your functions, then all the timout test will be wrong. **Therefore, we recommand you to use *valgrind* only if you don't use timeout tests, and if all your tests are successfull**.
 
 ## Contributors
 - [Hugo LAULLIER](https://github.com/HugoLaullier)
