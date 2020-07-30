@@ -1,4 +1,4 @@
-# UnitTest library for C++
+# UnitTest library for C
 
 ## Content
 This library allows you to run unit tests on your project. You will be able to check the good behaviour of your functions, by testing them one by one. 
@@ -35,7 +35,7 @@ void myTestFunction()
     ...
 }
 
-void main(void)
+int main(void)
 {
     ...
     // Test myTestFunction
@@ -60,14 +60,16 @@ We advice you to create a **separate directory** for tests. In this directory, y
 
 ## Warnings
 
+It is possible that your IDE detect with the auto-compilation that a `;` is missing. Don't worry, it's due to the override of macros, it will still work! 
+
 In the *Makefile*, use -pthread, otherwise the libray won't work... (you can understand how to use -pthread in the *Makefile* of the *Example* folder)
 
 `TEST`, `OTEST`, `assert`, `assert_file` are macros ! Therefore, **Don't name your functions, class, variables or macros like that!** If you do, it will lead to errors because the macro will replace your function, class or variable !
 
 Also, don't use:
 - `__ITS_TEST_1`, `__ITS_TEST_2`, `__ITS_TEST_3` and `__ITS_TEST_4` : they are macros used inside the library.
-- `bool __its_unit_test_cpp_running`, `std::thread __its_unit_test_cpp_load` and `std::streambuf *__its_unit_stream_buffer_cout` : they are global variables used inside the library.
-- `void __its_unit_test_cpp_loadingEffect()` and `void __its_unit_test_cpp_timeout(float time, std::thread &launch_func)`, they are functions used inside the library.
+- `bool __its_unit_test_c_running`, `pthread_t __its_unit_test_c_load` and `int __its_unit_test_save_out` : they are global variables used inside the library.
+- `void *__its_unit_test_c_loadingEffect(void *arg)` and `void __its_unit_test_c_timeout(long int time, pthread_t *launch_func)`, they are functions used inside the library.
 
 **If you decide to use them, it can lead to unexpected behavior.**
 
