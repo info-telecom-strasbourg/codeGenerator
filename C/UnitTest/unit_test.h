@@ -16,11 +16,6 @@
 #include <errno.h>
 #include <string.h>
 
-/* Macros for colors */
-#define COLOR_GREEN "\033[0;32m"
-#define COLOR_RED "\x1b[1;31m"
-#define COLOR_RESET "\x1b[0m"
-
 /**
  * Macro to allows to redefine macros with a different parameters number
  */
@@ -141,7 +136,7 @@
             perror("Close of __its_unit_test_save_out failed");                                                                                                        \
             exit(EXIT_FAILURE);                                                                                                                                        \
         }                                                                                                                                                              \
-        fprintf(stdout, "%sSuccess%s (%ld ms)\n", COLOR_GREEN, COLOR_RESET, ((end.tv_sec * 1000000 + end.tv_usec) - (start.tv_sec * 1000000 + start.tv_usec)) / 1000); \
+        fprintf(stdout, "%sSuccess%s (%ld ms)\n", "\033[0;32m", "\x1b[0m", ((end.tv_sec * 1000000 + end.tv_usec) - (start.tv_sec * 1000000 + start.tv_usec)) / 1000); \
         fflush(stdout);                                                                                                                                                \
     } while (0)
 
@@ -243,7 +238,7 @@
             perror("Close of __its_unit_test_save_out failed");                                                                                                        \
             exit(EXIT_FAILURE);                                                                                                                                        \
         }                                                                                                                                                              \
-        fprintf(stdout, "%sSuccess%s (%ld ms)\n", COLOR_GREEN, COLOR_RESET, ((end.tv_sec * 1000000 + end.tv_usec) - (start.tv_sec * 1000000 + start.tv_usec)) / 1000); \
+        fprintf(stdout, "%sSuccess%s (%ld ms)\n", "\033[0;32m", "\x1b[0m", ((end.tv_sec * 1000000 + end.tv_usec) - (start.tv_sec * 1000000 + start.tv_usec)) / 1000); \
         fflush(stdout);                                                                                                                                                \
     } while (0)
 
@@ -340,7 +335,7 @@
             perror("Close of __its_unit_test_save_out failed");                                                                                                        \
             exit(EXIT_FAILURE);                                                                                                                                        \
         }                                                                                                                                                              \
-        fprintf(stdout, "%sSuccess%s (%ld ms)\n", COLOR_GREEN, COLOR_RESET, ((end.tv_sec * 1000000 + end.tv_usec) - (start.tv_sec * 1000000 + start.tv_usec)) / 1000); \
+        fprintf(stdout, "%sSuccess%s (%ld ms)\n", "\033[0;32m", "\x1b[0m", ((end.tv_sec * 1000000 + end.tv_usec) - (start.tv_sec * 1000000 + start.tv_usec)) / 1000); \
         fflush(stdout);                                                                                                                                                \
         if (remove("_its_out_test.log") != 0)                                                                                                                          \
         {                                                                                                                                                              \
@@ -451,7 +446,7 @@
             perror("Close of __its_unit_test_save_out failed");                                                                                                        \
             exit(EXIT_FAILURE);                                                                                                                                        \
         }                                                                                                                                                              \
-        fprintf(stdout, "%sSuccess%s (%ld ms)\n", COLOR_GREEN, COLOR_RESET, ((end.tv_sec * 1000000 + end.tv_usec) - (start.tv_sec * 1000000 + start.tv_usec)) / 1000); \
+        fprintf(stdout, "%sSuccess%s (%ld ms)\n", "\033[0;32m", "\x1b[0m", ((end.tv_sec * 1000000 + end.tv_usec) - (start.tv_sec * 1000000 + start.tv_usec)) / 1000); \
         fflush(stdout);                                                                                                                                                \
         if (remove("_its_out_test.log") != 0)                                                                                                                          \
         {                                                                                                                                                              \
@@ -476,7 +471,7 @@
                 perror("Loading effect thread join failed");                                                               \
                 exit(EXIT_FAILURE);                                                                                        \
             }                                                                                                              \
-            dprintf(__its_unit_test_save_out, "%sFailed%s\nassertion failed : %s\n", COLOR_RED, COLOR_RESET, #expression); \
+            dprintf(__its_unit_test_save_out, "%sFailed%s\nassertion failed : %s\n", "\x1b[1;31m", "\x1b[0m", #expression); \
             exit(EXIT_FAILURE);                                                                                            \
         }                                                                                                                  \
     } while (0)
@@ -503,7 +498,7 @@
                (read_saved = read(file_saved, buf_saved, 1024)) > 0)                                                    \
             if (read_origi != read_saved || memcmp(buf_origi, buf_saved, read_saved))                                   \
             {                                                                                                           \
-                dprintf(__its_unit_test_save_out, "%sFailed%s\nThe two files are different\n", COLOR_RED, COLOR_RESET); \
+                dprintf(__its_unit_test_save_out, "%sFailed%s\nThe two files are different\n", "\x1b[1;31m", "\x1b[0m"); \
                 exit(EXIT_FAILURE);                                                                                     \
             }                                                                                                           \
         if (read_origi == -1 || read_saved == -1)                                                                       \
@@ -601,7 +596,7 @@ static void __its_unit_test_c_timeout(long int time, pthread_t *launch_func)
         if (((cur_time.tv_sec * 1000000 + cur_time.tv_usec) - (start_time.tv_sec * 1000000 + start_time.tv_usec)) / 1000 > time)
         {
             __its_unit_test_c_running = false;
-            dprintf(__its_unit_test_save_out, "%sTimeout (%ld ms)%s\n", COLOR_RED, time, COLOR_RESET);
+            dprintf(__its_unit_test_save_out, "%sTimeout (%ld ms)%s\n", "\x1b[1;31m", time, "\x1b[0m");
             if ((errno = pthread_detach(*launch_func)) != 0)
             {
                 dup2(__its_unit_test_save_out, fileno(stderr));

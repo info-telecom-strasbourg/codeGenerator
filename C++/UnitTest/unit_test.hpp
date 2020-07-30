@@ -11,10 +11,6 @@
 #include <chrono>
 #include <fstream>
 
-/* Macros for colors */
-#define COLOR_GREEN "\033[0;32m"
-#define COLOR_RED "\x1b[1;31m"
-#define COLOR_RESET "\x1b[0m"
 
 /**
  * Macro to allows to redefine macros with a different parameters number
@@ -72,7 +68,7 @@
             unsigned long elapsed_time = std::chrono::duration_cast<std::chrono::microseconds>(end - start).count(); \
             __its_unit_test_cpp_running = false;                                                                     \
             __its_unit_test_cpp_load.join();                                                                         \
-            std::cout << COLOR_GREEN << "Success" << COLOR_RESET << " ("                                             \
+            std::cout << "\033[0;32m" << "Success" << "\x1b[0m" << " ("                                             \
                       << (unsigned int)elapsed_time / 1000 << "ms)" << std::endl;                                    \
             fflush(stdout);                                                                                          \
             file.close();                                                                                            \
@@ -113,7 +109,7 @@
             std::cout.rdbuf(__its_unit_test_stream_buffer_cout);                                                                      \
             std::cerr.rdbuf(__its_unit_stream_buffer_cerr);                                                                           \
             unsigned long elapsed_time = std::chrono::duration_cast<std::chrono::microseconds>(end - start).count();                  \
-            std::cout << COLOR_GREEN << "Success " << COLOR_RESET << " (" << (unsigned int)elapsed_time / 1000 << "ms)" << std::endl; \
+            std::cout << "\033[0;32m" << "Success " << "\x1b[0m" << " (" << (unsigned int)elapsed_time / 1000 << "ms)" << std::endl; \
             fflush(stdout);                                                                                                           \
             file.close();                                                                                                             \
         }                                                                                                                             \
@@ -154,7 +150,7 @@
             unsigned long elapsed_time = std::chrono::duration_cast<std::chrono::microseconds>(end - start).count(); \
             __its_unit_test_cpp_running = false;                                                                     \
             __its_unit_test_cpp_load.join();                                                                         \
-            std::cout << COLOR_GREEN << "Success" << COLOR_RESET << " ("                                             \
+            std::cout << "\033[0;32m" << "Success" << "\x1b[0m" << " ("                                             \
                       << (unsigned int)elapsed_time / 1000 << "ms)" << std::endl;                                    \
             fflush(stdout);                                                                                          \
             file.close();                                                                                            \
@@ -197,7 +193,7 @@
             std::cout.rdbuf(__its_unit_test_stream_buffer_cout);                                                                      \
             std::cerr.rdbuf(__its_unit_stream_buffer_cerr);                                                                           \
             unsigned long elapsed_time = std::chrono::duration_cast<std::chrono::microseconds>(end - start).count();                  \
-            std::cout << COLOR_GREEN << "Success " << COLOR_RESET << " (" << (unsigned int)elapsed_time / 1000 << "ms)" << std::endl; \
+            std::cout << "\033[0;32m" << "Success " << "\x1b[0m" << " (" << (unsigned int)elapsed_time / 1000 << "ms)" << std::endl; \
             fflush(stdout);                                                                                                           \
             file.close();                                                                                                             \
             assert_file(expected_output_file, #function + std::string("_its_test.log"));                                              \
@@ -225,7 +221,7 @@
                 std::ostream stream_out(__its_unit_test_stream_buffer_cout);     \
                 __its_unit_test_cpp_running = false;                             \
                 __its_unit_test_cpp_load.join();                                 \
-                stream_out << COLOR_RED << "Failed " << COLOR_RESET << std::endl \
+                stream_out << "\x1b[1;31m" << "Failed " << "\x1b[0m" << std::endl \
                            << "assertion failed : " << #expression << std::endl; \
                 stream_out.flush();                                              \
                 exit(EXIT_FAILURE);                                              \
@@ -256,7 +252,7 @@
             {                                                                                                              \
                 __its_unit_test_cpp_running = false;                                                                       \
                 __its_unit_test_cpp_load.join();                                                                           \
-                stream_out << COLOR_RED << "Failed " << COLOR_RESET << std::endl                                           \
+                stream_out << "\x1b[1;31m" << "Failed " << "\x1b[0m" << std::endl                                           \
                            << "Failure when opening the file " << first_file << "!" << std::endl;                          \
                 stream_out.flush();                                                                                        \
                 exit(EXIT_FAILURE);                                                                                        \
@@ -266,7 +262,7 @@
             {                                                                                                              \
                 __its_unit_test_cpp_running = false;                                                                       \
                 __its_unit_test_cpp_load.join();                                                                           \
-                stream_out << COLOR_RED << "Failed " << COLOR_RESET << std::endl                                           \
+                stream_out << "\x1b[1;31m" << "Failed " << "\x1b[0m" << std::endl                                           \
                            << "Failure when opening the file " << second_file << "!" << std::endl;                         \
                 stream_out.flush();                                                                                        \
                 exit(EXIT_FAILURE);                                                                                        \
@@ -285,7 +281,7 @@
             {                                                                                                              \
                 __its_unit_test_cpp_running = false;                                                                       \
                 __its_unit_test_cpp_load.join();                                                                           \
-                stream_out << COLOR_RED << "Failed " << COLOR_RESET << std::endl                                           \
+                stream_out << "\x1b[1;31m" << "Failed " << "\x1b[0m" << std::endl                                           \
                            << "The files \"" << first_file "\" and \"" << second_file << "\" are different!" << std::endl; \
                 stream_out.flush();                                                                                        \
                 exit(EXIT_FAILURE);                                                                                        \
@@ -370,7 +366,7 @@ static void __its_unit_test_cpp_timeout(float time, std::thread &launch_func)
             if (std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::steady_clock::now() - start_time).count() > time)
             {
                 __its_unit_test_cpp_running = false;
-                stream_out << COLOR_RED << "Timeout (" << time << " ms)" << COLOR_RESET << std::endl;
+                stream_out << "\x1b[1;31m" << "Timeout (" << time << " ms)" << "\x1b[0m" << std::endl;
                 stream_out.flush();
                 launch_func.detach();
                 __its_unit_test_cpp_load.join();
