@@ -69,16 +69,13 @@ public class ItsUnitTests
 		@Override
 		public void run()
 		{
-			try
-			{
-				loadingEffect.start();
-				testMethod.invoke(object);
-				stopLoadingEffect();
-			}
+			loadingEffect.start();
+			try { testMethod.invoke(object); }
 			catch (IllegalAccessException | InvocationTargetException e)
 			{
-				exitError("The method you are calling do not exist");
+				exitError("The method you are trying to test could not be called on the object\n" + e.toString());
 			}
+			stopLoadingEffect();
 		}
 	}
 
@@ -93,9 +90,7 @@ public class ItsUnitTests
 		object = obj;
 		testClass = obj.getClass();
 		try { devNull = new PrintStream(new File("/dev/null")); }
-		catch (FileNotFoundException e) { exitError("The redirection of the output failed."); }
-		System.setOut(devNull);
-		System.setErr(devNull);
+		catch (FileNotFoundException e) { exitError("The redirection of the output failed\n" + e.toString()); }
 	}
 
 	/**
@@ -103,10 +98,57 @@ public class ItsUnitTests
 	 *
 	 * @param message The message displayed before exiting
 	 */
-	private static void exitError(String message)
-	{
+	private static void exitError(String message) {
 		consoleErr.println(message);
 		System.exit(1);
+	}
+
+	/**
+	 * Print a success message with the elapsed time between the beginning and the
+	 * end of the execution of the function tested
+	 *
+	 * @param elapsedTime The elapsed time between the beginning and the end of the
+	 *                    execution of the function tested in milliseconds
+	 */
+	private static void success(long elapsedTime) {
+		console.println(GREEN + "Success" + RESET + " (" + elapsedTime + "ms)");
+		console.flush();
+		consoleErr.flush();
+		System.setOut(console);
+		System.setErr(consoleErr);
+	}
+
+	/**
+	 * Print a failure message and exit the program with an error code
+	 */
+	private static void failure() {
+		stopLoadingEffect();
+		exitError(RED + "Failed" + RESET);
+	}
+
+	/**
+	 * Print a failure message with the number of the first line where files are
+	 * different and exit the program with an error code
+	 */
+	private static void failureFile(int lineNum) {
+		stopLoadingEffect();
+		exitError(RED + "Failed" + RESET + "\nFiles are different at line " + lineNum);
+	}
+
+	/**
+	 * Print a personalized failure message and exit the program with an error code
+	 */
+	private static void failure(String message) {
+		stopLoadingEffect();
+		exitError(RED + "Failed" + RESET + "\n" + message);
+	}
+
+	/**
+	 * Print a timeout message and exit the program with an error code
+	 */
+	private static void timedout(long maxTime) {
+		stopLoadingEffect();
+		exitError(RED + "Timeout" + RESET + " (" + maxTime + "ms)");
 	}
 
 	/**
@@ -152,7 +194,10 @@ public class ItsUnitTests
 	{
 		loading = false;
 		try { loadingEffect.join(); }
-		catch (InterruptedException e) { /* No problem if thread is interrupted*/ }
+		catch (InterruptedException e)
+		{
+			consoleErr.println("Failed to stop loading effect\n" + e.toString());
+		}
 	}
 
 	/**
@@ -162,11 +207,15 @@ public class ItsUnitTests
 	 */
 	private static void initTest(String method)
 	{
+		console.flush();
+		consoleErr.flush();
 		console.print("Test of the function " + method + " : ");
 		try { testMethod = testClass.getDeclaredMethod(method); }
-		catch (NoSuchMethodException e) { exitError("The method you are calling do not exist"); }
+		catch (NoSuchMethodException e) { exitError("The method you are calling do not exist\n" + e.toString()); }
 		loadingEffect = new Thread() {public void run() { loadingEffect(); }};
 		loading = true;
+		System.setOut(devNull);
+		System.setErr(devNull);
 	}
 
 	/**
@@ -180,7 +229,7 @@ public class ItsUnitTests
 		try { testMethod.invoke(object); }
 		catch (IllegalAccessException | InvocationTargetException e)
 		{
-			exitError("An error occured when the method was invoked. It does not mean the test failed");
+			exitError("The method you are trying to test could not be called on the object\n" + e.toString());
 		}
 		return System.currentTimeMillis() - start;
 	}
@@ -196,11 +245,11 @@ public class ItsUnitTests
 
 		loadingEffect.start();
 
-		long ellapsedTime = launchTest();
+		long elapsedTime = launchTest();
 
 		stopLoadingEffect();
 
-		success(ellapsedTime);
+		success(elapsedTime);
 	}
 
 	/**
@@ -232,7 +281,10 @@ public class ItsUnitTests
 				timedout(timeout);
 			}
 		}
-		catch (InterruptedException e) { /* No problem if interrupted */ }
+		catch (InterruptedException e)
+		{
+			consoleErr.println("Failed to stop the thread executing the function\n" + e.toString());
+		}
 
 		success(end - start);
 	}
@@ -249,12 +301,14 @@ public class ItsUnitTests
 
 		File actualFile = new File(method + "__its_test.log");
 		try { actualFile.createNewFile(); }
-		catch (IOException e) { exitError("An error occured when the file was created"); }
+		catch (IOException e) { exitError("An error occurred when the output file was created\n" + e.toString()); }
 
 		PrintStream outputFile = null;
 		try { outputFile = new PrintStream(actualFile); }
-		catch (FileNotFoundException e) { exitError("The redirection of the output failed."); }
+		catch (FileNotFoundException e) { exitError("The redirection of the output failed\n" + e.toString()); }
 
+		System.out.flush();
+		System.err.flush();
 		System.setOut(outputFile);
 		System.setErr(outputFile);
 
@@ -284,21 +338,20 @@ public class ItsUnitTests
 	public static void OTEST(String method, String expectedFileName, long timeout)
 	{
 		initTest(method);
-
 		long end = 0;
 		Thread threadFunc = new FuncThread();
-
 		File actualFile = new File(method + "__its_test.log");
 		PrintStream outputFile = null;
 
-		try
-		{
-			actualFile.createNewFile();
-			outputFile = new PrintStream(actualFile);
-			System.setOut(outputFile);
-			System.setErr(outputFile);
-		}
-		catch (IOException e) { exitError("An error occured when the file was created and the output redirected"); }
+		try { actualFile.createNewFile(); }
+		catch (IOException e) { exitError("An error occurred when the output file was created\n" + e.toString()); }
+		try { outputFile = new PrintStream(actualFile); }
+		catch (FileNotFoundException e) { exitError("The redirection of the output failed\n" + e.toString()); }
+
+		System.out.flush();
+		System.err.flush();
+		System.setOut(outputFile);
+		System.setErr(outputFile);
 
 		File expectedFile = new File(expectedFileName);
 		long start = System.currentTimeMillis();
@@ -316,7 +369,10 @@ public class ItsUnitTests
 				timedout(timeout);
 			}
 		}
-		catch (InterruptedException e) { /* No problem if interrupted */ }
+		catch (InterruptedException e)
+		{
+			consoleErr.println("Failed to stop the thread executing the function\n" + e.toString());
+		}
 		System.setOut(devNull);
 		System.setErr(devNull);
 		boolean sameFiles = assertFile(actualFile.getAbsolutePath(), expectedFile.getAbsolutePath());
@@ -347,19 +403,18 @@ public class ItsUnitTests
 		BufferedReader reader1 = null, reader2 = null;
 		String line1 = null, line2 = null;
 
-		try
-		{
-			reader1 = new BufferedReader(new FileReader(expectedFileName));
-			reader2 = new BufferedReader(new FileReader(actualFileName));
-		}
-		catch (FileNotFoundException e) { exitError("The file given does not exist"); }
+		try { reader1 = new BufferedReader(new FileReader(expectedFileName)); }
+		catch (FileNotFoundException e) { exitError("The first file given does not exist\n" + e.toString()); }
+		try { reader2 = new BufferedReader(new FileReader(actualFileName)); }
+		catch (FileNotFoundException e) { exitError("The second file given does not exist\n" + e.toString()); }
 
-		try
-		{
-			line1 = reader1.readLine();
-			line2 = reader2.readLine();
-		}
-		catch (IOException e) { exitError("An error occured while reading a file"); }
+		if(reader1 == null) exitError("Could not read the first file");
+		if(reader2 == null) exitError("Could not read the second file");
+
+		try { line1 = reader1.readLine(); }
+		catch (IOException e) { exitError("An error occurred while reading the first file\n" + e.toString()); }
+		try { line2 = reader2.readLine(); }
+		catch (IOException e) { exitError("An error occurred while reading the second file\n" + e.toString()); }
 
 		boolean areEqual = true;
 		int lineNum = 1;
@@ -372,76 +427,22 @@ public class ItsUnitTests
 				break;
 			}
 
-			try
-			{
-				line1 = reader1.readLine();
-				line2 = reader2.readLine();
-			}
-			catch (IOException e) { exitError("An error occured while reading a file"); }
+			try { line1 = reader1.readLine(); }
+			catch (IOException e) { exitError("An error occurred while reading the first file\n" + e.toString()); }
+			try { line2 = reader2.readLine(); }
+			catch (IOException e) { exitError("An error occurred while reading the second file\n" + e.toString()); }
 			lineNum++;
 		}
 
-		try
-		{
-			reader1.close();
-			reader2.close();
-		}
-		catch (IOException e) { exitError("An error occured while closing files"); }
+		try { reader1.close(); }
+		catch (IOException e) { exitError("An error occurred when the first file were closed\n" + e.toString()); }
+		try { reader2.close(); }
+		catch (IOException e) { exitError("An error occurred when the second file were closed\n" + e.toString()); }
 
 		if(!areEqual)
 			failureFile(lineNum);
 
 		return true;
-	}
-
-
-	/**
-	 * Print a success message with the elapsed time between the beginning and the end of the execution of the function
-	 * tested
-	 *
-	 * @param elapsedTime The elapsed time between the beginning and the end of the execution of the function tested
-	 *                    in milliseconds
-	 */
-	private static void success(long elapsedTime)
-	{
-		console.println(GREEN + "Success" + RESET + " (" + elapsedTime + "ms)");
-	}
-
-	/**
-	 * Print a failure message and exit the program with an error code
-	 */
-	private static void failure()
-	{
-		stopLoadingEffect();
-		exitError(RED + "Failed" + RESET);
-	}
-
-	/**
-	 * Print a failure message with the number of the first line where files are different and exit the program with
-	 * an error code
-	 */
-	private static void failureFile(int lineNum)
-	{
-		stopLoadingEffect();
-		exitError(RED + "Failed" + RESET + "\nFiles are different at line " + lineNum);
-	}
-
-	/**
-	 * Print a personalized failure message and exit the program with an error code
-	 */
-	private static void failure(String message)
-	{
-		stopLoadingEffect();
-		exitError(RED + "Failed" + RESET + "\n" + message);
-	}
-
-	/**
-	 * Print a timeout message and exit the program with an error code
-	 */
-	private static void timedout(long maxTime)
-	{
-		stopLoadingEffect();
-		exitError(RED + "Timeout" + RESET + " (" + maxTime + "ms)");
 	}
 
 	/**
@@ -502,8 +503,11 @@ public class ItsUnitTests
 	 */
 	public static void assertArrayEquals(java.lang.Object[] expected, java.lang.Object[]actual)
 	{
-		if(!Arrays.equals(expected, actual))
+		if(expected.length != actual.length)
 			failure();
+
+		for(int i = 0; i < expected.length; i++)
+			assertEquals(expected[i], actual[i]);
 	}
 
 	/**
@@ -581,8 +585,11 @@ public class ItsUnitTests
 	 */
 	public static void assertArrayEquals(java.lang.String message, java.lang.Object[] expected, java.lang.Object[]actual)
 	{
-		if(!Arrays.equals(expected, actual))
+		if(expected.length != actual.length)
 			failure(message);
+
+		for(int i = 0; i < expected.length; i++)
+			assertEquals(message, expected[i], actual[i]);
 	}
 
 	/**
@@ -645,7 +652,30 @@ public class ItsUnitTests
 	 */
 	public static void assertEquals(java.lang.Object expected, java.lang.Object actual)
 	{
-		if(!expected.equals(actual))
+		java.lang.Class<?> expectedClass = expected.getClass();
+		java.lang.Class<?> actualClass = expected.getClass();
+		Method equalsMethod = null;
+		boolean equalsObjects = false;
+		try
+		{
+			equalsMethod = expectedClass.getDeclaredMethod("equals", expectedClass, actualClass);
+		}
+		catch (NoSuchMethodException e)
+		{
+			if(!expected.equals(actual))
+				failure();
+			else
+				return;
+		}
+		try
+		{
+			equalsObjects = (boolean)equalsMethod.invoke(expected, expected, actual);
+		}
+		catch (IllegalAccessException | InvocationTargetException e)
+		{
+			exitError("The method you are trying to test could not be called on the object\n" + e.toString());
+		}
+		if(!equalsObjects)
 			failure();
 	}
 
@@ -700,7 +730,30 @@ public class ItsUnitTests
 	 */
 	public static void assertEquals(java.lang.String message, java.lang.Object expected, java.lang.Object actual)
 	{
-		if(!expected.equals(actual))
+		java.lang.Class<?> expectedClass = expected.getClass();
+		java.lang.Class<?> actualClass = expected.getClass();
+		Method equalsMethod = null;
+		boolean equalsObjects = false;
+		try
+		{
+			equalsMethod = expectedClass.getDeclaredMethod("equals", expectedClass, actualClass);
+		}
+		catch (NoSuchMethodException e)
+		{
+			if(!expected.equals(actual))
+				failure();
+			else
+				return;
+		}
+		try
+		{
+			equalsObjects = (boolean)equalsMethod.invoke(expected, expected, actual);
+		}
+		catch (IllegalAccessException | InvocationTargetException e)
+		{
+			exitError("The method you are trying to test could not be called on the object\n" + e.toString());
+		}
+		if(!equalsObjects)
 			failure(message);
 	}
 

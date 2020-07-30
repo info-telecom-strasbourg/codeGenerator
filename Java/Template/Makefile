@@ -28,7 +28,6 @@ tests:
 	@cd ./tests $(MAKE) && make run
 
 clean:
-	$(RM) class/*.class
+	rm -rf class/*
 
 .PHONY: clean run classes tests
-

@@ -1,7 +1,7 @@
 # UnitTest library
 
 ## Content
-This library allows you to run unit tests on your project. You will be able to check the good behaviour of your functions, by testing them one by one. 
+This library allows you to run unit tests on your project. You will be able to check the good behaviour of your functions, by testing them one by one.
 
 This library gives you variable way to test your functions:
 - `TEST(String method_name)` to run a classic test.
@@ -14,7 +14,7 @@ And variable `assert` functions:
 - `assertEquals(var1, var2)`: to verify if two variables are equals.
 
 They are compatible with every type. **But** if you compare objects you created, you
-**should** have a `public boolean equals(Object myObject)`. If you do not implement it,
+**should** have a `public static boolean equals(Object1 myObject1, Object2 myObject2)`. If you do not implement it,
 a default one will be given by Java. **But it probably not work as you want !**
 
 

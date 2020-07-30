@@ -1,3 +1,5 @@
+import java.io.File;
+import java.io.FileWriter;
 import java.util.ArrayList;
 
 public class TestedClass
@@ -32,8 +34,26 @@ public class TestedClass
         return list;
     }
 
+    public static boolean equals(TestedClass expected, TestedClass actual)
+    {
+        return (expected.x == actual.x && expected.y == actual.y);
+    }
+
     public static void sayHello()
     {
         System.out.println("Hello World!");
+    }
+
+    public static void sayHelloFile()
+    {
+        try 
+		{
+			File myFilew = new File("monFichierATest.txt");
+			myFilew.createNewFile();
+			FileWriter myFileww = new FileWriter(myFilew);
+			myFileww.write("Hello World!\n");
+            myFileww.close();
+		} 
+		catch (Exception e) { System.err.println("An error occured"); }
     }
 }
