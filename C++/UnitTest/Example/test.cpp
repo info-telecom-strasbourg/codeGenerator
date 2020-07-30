@@ -62,6 +62,16 @@ void test_output(void)
 }
 
 /**
+ * A function that display messages on the terminal and lasts 2 seconds
+ */
+void test_output_and_timeout(void)
+{
+    std::cout << "This is a message" << std::endl;
+    std::cout << "This is an error message" << std::endl;
+    sleep(2);
+}
+
+/**
  * Check that two files are identical
  */
 void test_file_comparison(void)
@@ -84,6 +94,7 @@ int main(void)
     TEST(test_compare_vectors);
     TEST(test_timeout, 2100);
     OTEST(test_output, "output_1.txt");
+    OTEST(test_output, "output_1.txt", 1200);
     TEST(test_file_comparison);
     TEST(test_fail);
   

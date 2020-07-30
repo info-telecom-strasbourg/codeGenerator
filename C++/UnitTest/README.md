@@ -37,6 +37,7 @@ void myTestFunction()
 
 void main(void)
 {
+    ...
     // Test myTestFunction
     TEST(myTestFunction);
 
@@ -48,6 +49,7 @@ void main(void)
 
     // Test myTestFunction with a timeout (here, the function must finish in 1 second maximum), and check if the output is identical of the output_expected file
     OTEST(myTestFunction, output_exected, 1000); 
+    ...
 }
 ```
 If you want to have an overview of how to use this library, you can take a look at the *Example* folder.
