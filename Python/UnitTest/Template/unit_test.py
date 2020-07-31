@@ -3,15 +3,19 @@ import multiprocessing
 from threading import Thread
 from time import time, sleep
 
-# A boolean that indicate if the test is running
+"""A boolean that indicate if the test is running"""
 __its_unit_test_python_running = False
 
+"""Save stdout for futur redirection"""
 __its_stdout_redirection = sys.stdout
 
+"""Save stderr for futur redirection"""
 __its_stderr_redirection = sys.stderr
 
+"""Processus to run the tested function"""
 __its_process_func = multiprocessing.Process()
 
+"""Thread that create the loading effect"""
 __its_thread_load = Thread()
 
 def TEST(func, timeout=-1):
