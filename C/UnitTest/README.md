@@ -68,7 +68,7 @@ In the *Makefile*, use -pthread, otherwise the libray won't work... (you can und
 
 Also, don't use:
 - `__ITS_TEST_1`, `__ITS_TEST_2`, `__ITS_TEST_3`, `__ITS_TEST_4`, `__ITS_GET_MACRO_TEST` and `__ITS_GET_MACRO_OTEST` : they are macros used inside the library.
-- `bool __its_unit_test_c_running`, `pthread_t __its_unit_test_c_load` and `int __its_unit_test_save_out` : they are global variables used inside the library.
+- `bool __its_unit_test_c_running`, `pthread_t __its_unit_test_c_load`, `int __its_unit_test_save_out` and `int __its_unit_test_save_err` : they are global variables used inside the library.
 - `void *__its_unit_test_c_loadingEffect(void *arg)` and `void __its_unit_test_c_timeout(long int time, pthread_t *launch_func)`, they are functions used inside the library.
 
 **If you decide to use them, it can lead to unexpected behavior.**

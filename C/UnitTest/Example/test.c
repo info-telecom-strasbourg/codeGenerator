@@ -72,6 +72,8 @@ void test_fail(void)
 
 int main(void)
 {
+    fprintf(stdout, "--- Launch tests ---\n\ns");
+
     TEST(test_equality);
     TEST(test_compare_string);
     TEST(test_timeout, 2100);

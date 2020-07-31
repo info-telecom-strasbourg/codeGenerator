@@ -89,6 +89,8 @@ void test_fail(void)
 
 int main(void)
 {
+    std::cout << "--- Launch tests ---" << std::endl << std::endl;
+
     TEST(test_equality);
     TEST(test_compare_string);
     TEST(test_compare_vectors);

@@ -66,7 +66,7 @@ In the *Makefile*, use -pthread, otherwise the libray won't work... (you can und
 
 Also, don't use:
 - `__ITS_TEST_1`, `__ITS_TEST_2`, `__ITS_TEST_3`, `__ITS_TEST_4`, `__ITS_GET_MACRO_TEST` and `__ITS_GET_MACRO_OTEST` : they are macros used inside the library.
-- `bool __its_unit_test_cpp_running`, `std::thread __its_unit_test_cpp_load` and `std::streambuf *__its_unit_stream_buffer_cout` : they are global variables used inside the library.
+- `bool __its_unit_test_cpp_running`, `std::thread __its_unit_test_cpp_load`, `std::streambuf *__its_unit_stream_buffer_cout` and `std::streambuf *__its_unit_stream_buffer_cerr`: they are global variables used inside the library.
 - `void __its_unit_test_cpp_loadingEffect()` and `void __its_unit_test_cpp_timeout(float time, std::thread &launch_func)`, they are functions used inside the library.
 
 **If you decide to use them, it can lead to unexpected behavior.**
