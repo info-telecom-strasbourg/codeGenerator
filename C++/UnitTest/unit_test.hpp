@@ -19,7 +19,7 @@
 
 /**
  * Macro to execute a test without a check of the output
- * @param function: the tested function 
+ * @param function: the tested function
  * @param timeout_millis: the maximum time of execution in milli-seconds (optionnal)
  */
 #define TEST(...)                                                 \
@@ -33,7 +33,7 @@
 
 /**
  * Macro to execute a test with a check of the output
- * @param function: the tested function 
+ * @param function: the tested function
  * @param expected_output_file : the expected output file
  * @param timeout_millis: the maximum time of execution in milli-seconds (optionnal)
  */
@@ -43,7 +43,7 @@
 
 /**
  * Macro to execute a test without a check of the output
- * @param function: the tested function 
+ * @param function: the tested function
  */
 #define __ITS_TEST_1(function)                                                                                       \
     do                                                                                                               \
@@ -54,6 +54,7 @@
             std::string __current_test_name = #function;                                                             \
             std::cout << "Check " << __current_test_name << " : ";                                                   \
             fflush(stdout);                                                                                          \
+            fflush(stderr);                                                                                          \
             __its_unit_test_cpp_running = true;                                                                      \
             __its_unit_test_cpp_load = std::thread(__its_unit_test_cpp_loadingEffect);                               \
             std::ofstream file("/dev/null");                                                                         \
@@ -83,8 +84,8 @@
 
 /**
  * Macro to execute a test without a check of the output
- * @param function: the tested function 
- * @param timeout_millis: the maximum time of execution in milli-seconds 
+ * @param function: the tested function
+ * @param timeout_millis: the maximum time of execution in milli-seconds
  */
 #define __ITS_TEST_2(function, timeout_millis)                                                                                        \
     do                                                                                                                                \
@@ -95,6 +96,7 @@
             std::string __current_test_name = #function;                                                                              \
             std::cout << "Check " << __current_test_name << " : ";                                                                    \
             fflush(stdout);                                                                                                           \
+            fflush(stderr);                                                                                                           \
             __its_unit_test_cpp_running = true;                                                                                       \
             __its_unit_test_cpp_load = std::thread(__its_unit_test_cpp_loadingEffect);                                                \
             std::ofstream file("/dev/null");                                                                                          \
@@ -123,7 +125,7 @@
 
 /**
  * Macro to execute a test with a check of the output
- * @param function: the tested function 
+ * @param function: the tested function
  * @param expected_output_file : the expected output file
  */
 #define __ITS_TEST_3(function, expected_output_file)                                                                 \
@@ -135,6 +137,7 @@
             std::string __current_test_name = #function;                                                             \
             std::cout << "Check " << __current_test_name << " : ";                                                   \
             fflush(stdout);                                                                                          \
+            fflush(stderr);                                                                                          \
             __its_unit_test_cpp_running = true;                                                                      \
             __its_unit_test_cpp_load = std::thread(__its_unit_test_cpp_loadingEffect);                               \
             std::ofstream file(#function + std::string("_its_test.log"));                                            \
@@ -166,9 +169,9 @@
 
 /**
  * Macro to execute a test with a check of the output
- * @param function: the tested function 
+ * @param function: the tested function
  * @param expected_output_file : the expected output file
- * @param timeout_millis: the maximum time of execution in milli-seconds 
+ * @param timeout_millis: the maximum time of execution in milli-seconds
  */
 #define __ITS_TEST_4(function, expected_output_file, timeout_millis)                                                                  \
     do                                                                                                                                \
@@ -179,6 +182,7 @@
             std::string __current_test_name = #function;                                                                              \
             std::cout << "Check " << __current_test_name << " : ";                                                                    \
             fflush(stdout);                                                                                                           \
+            fflush(stderr);                                                                                                           \
             __its_unit_test_cpp_running = true;                                                                                       \
             __its_unit_test_cpp_load = std::thread(__its_unit_test_cpp_loadingEffect);                                                \
             std::ofstream file(#function + std::string("_its_test.log"));                                                             \
@@ -207,7 +211,7 @@
         }                                                                                                                             \
     } while (0)
 
-/** 
+/**
  * Macro that test if the expression passed is true
  * @param expr: the expression tested
  */
@@ -235,7 +239,7 @@
         }                                                                        \
     } while (0)
 
-/** 
+/**
  * Macro that test if two files identical
  * @param first_file: the expected file
  * @param second_file : the tested file
@@ -302,7 +306,7 @@ static bool __its_unit_test_cpp_running;
 static std::thread __its_unit_test_cpp_load;
 
 /* A stream buffer to store the cout stream */
-std::streambuf *__its_unit_test_stream_buffer_cout;
+static std::streambuf *__its_unit_test_stream_buffer_cout;
 
 /**
  * While the test is running, create a waiting animation
