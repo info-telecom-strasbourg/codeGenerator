@@ -49,7 +49,7 @@ void test_compare_vectors(void)
  */
 void test_timeout(void)
 {
-    sleep(2); 
+    sleep(2);
 }
 
 /**
@@ -76,7 +76,7 @@ void test_output_and_timeout(void)
  */
 void test_file_comparison(void)
 {
-    assert_file("output_1.txt", "output_2.txt");   
+    assert_file("output_1.txt", "output_2.txt");
 }
 
 /**
@@ -97,6 +97,6 @@ int main(void)
     OTEST(test_output, "output_1.txt", 1200);
     TEST(test_file_comparison);
     TEST(test_fail);
-  
+
     return EXIT_SUCCESS;
 }

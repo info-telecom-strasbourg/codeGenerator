@@ -531,46 +531,25 @@ static int __its_unit_test_save_out;
 static void *__its_unit_test_c_loadingEffect(void *arg)
 {
     int ind = 0;
-    struct timeval print_time, cur_time;
-    if (gettimeofday(&print_time, NULL) == -1)
-    {
-        dup2(__its_unit_test_save_out, fileno(stderr));
-        perror("gettimeofday failed");
-        exit(EXIT_FAILURE);
-    }
     while (__its_unit_test_c_running)
     {
-        if (gettimeofday(&cur_time, NULL) == -1)
+        switch (ind)
         {
-            dup2(__its_unit_test_save_out, fileno(stderr));
-            perror("gettimeofday failed");
-            exit(EXIT_FAILURE);
+        case 0:
+            dprintf(__its_unit_test_save_out, "   \b\b\b");
+            break;
+        case 1:
+            dprintf(__its_unit_test_save_out, ".  \b\b\b");
+            break;
+        case 2:
+            dprintf(__its_unit_test_save_out, ".. \b\b\b");
+            break;
+        case 3:
+            dprintf(__its_unit_test_save_out, "...\b\b\b");
+            break;
         }
-        if (((cur_time.tv_sec * 1000000 + cur_time.tv_usec) - (print_time.tv_sec * 1000000 + print_time.tv_usec)) / 1000 > 300)
-        {
-            switch (ind)
-            {
-            case 0:
-                dprintf(__its_unit_test_save_out, "   \b\b\b");
-                break;
-            case 1:
-                dprintf(__its_unit_test_save_out, ".  \b\b\b");
-                break;
-            case 2:
-                dprintf(__its_unit_test_save_out, ".. \b\b\b");
-                break;
-            case 3:
-                dprintf(__its_unit_test_save_out, "...\b\b\b");
-                break;
-            }
-            ind = (ind + 1) % 4;
-            if (gettimeofday(&print_time, NULL) == -1)
-            {
-                dup2(__its_unit_test_save_out, fileno(stderr));
-                perror("gettimeofday failed");
-                exit(EXIT_FAILURE);
-            }
-        }
+        ind = (ind + 1) % 4;
+        usleep(300000);
     }
     dprintf(__its_unit_test_save_out, "   \b\b\b");
 }

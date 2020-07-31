@@ -10,7 +10,7 @@
 #include <thread>
 #include <chrono>
 #include <fstream>
-
+#include <unistd.h>
 
 /**
  * Macro to allows to redefine macros with a different parameters number
@@ -69,7 +69,10 @@
             unsigned long elapsed_time = std::chrono::duration_cast<std::chrono::microseconds>(end - start).count(); \
             __its_unit_test_cpp_running = false;                                                                     \
             __its_unit_test_cpp_load.join();                                                                         \
-            std::cout << "\033[0;32m" << "Success" << "\x1b[0m" << " ("                                             \
+            std::cout << "\033[0;32m"                                                                                \
+                      << "Success"                                                                                   \
+                      << "\x1b[0m"                                                                                   \
+                      << " ("                                                                                        \
                       << (unsigned int)elapsed_time / 1000 << "ms)" << std::endl;                                    \
             fflush(stdout);                                                                                          \
             file.close();                                                                                            \
@@ -87,40 +90,43 @@
  * @param function: the tested function
  * @param timeout_millis: the maximum time of execution in milli-seconds
  */
-#define __ITS_TEST_2(function, timeout_millis)                                                                                        \
-    do                                                                                                                                \
-    {                                                                                                                                 \
-        try                                                                                                                           \
-        {                                                                                                                             \
-            __its_unit_test_stream_buffer_cout = std::cout.rdbuf();                                                                   \
-            std::string __current_test_name = #function;                                                                              \
-            std::cout << "Check " << __current_test_name << " : ";                                                                    \
-            fflush(stdout);                                                                                                           \
-            fflush(stderr);                                                                                                           \
-            __its_unit_test_cpp_running = true;                                                                                       \
-            __its_unit_test_cpp_load = std::thread(__its_unit_test_cpp_loadingEffect);                                                \
-            std::ofstream file("/dev/null");                                                                                          \
-            std::streambuf *__its_unit_stream_buffer_cerr = std::cerr.rdbuf();                                                        \
-            std::cout.rdbuf(file.rdbuf());                                                                                            \
-            std::cerr.rdbuf(file.rdbuf());                                                                                            \
-            auto start = std::chrono::steady_clock::now();                                                                            \
-            std::thread launch_func = std::thread([]() {function(); __its_unit_test_cpp_running= false; });                                                                          \
-            __its_unit_test_cpp_timeout((timeout_millis), launch_func);                                                               \
-            auto end = std::chrono::steady_clock::now();                                                                              \
-            __its_unit_test_cpp_load.join();                                                                                          \
-            std::cout.rdbuf(__its_unit_test_stream_buffer_cout);                                                                      \
-            std::cerr.rdbuf(__its_unit_stream_buffer_cerr);                                                                           \
-            unsigned long elapsed_time = std::chrono::duration_cast<std::chrono::microseconds>(end - start).count();                  \
-            std::cout << "\033[0;32m" << "Success " << "\x1b[0m" << " (" << (unsigned int)elapsed_time / 1000 << "ms)" << std::endl; \
-            fflush(stdout);                                                                                                           \
-            file.close();                                                                                                             \
-        }                                                                                                                             \
-        catch (std::exception const &e)                                                                                               \
-        {                                                                                                                             \
-            std::cout.rdbuf(__its_unit_test_stream_buffer_cout);                                                                      \
-            std::cout << "Error : " << e.what() << std::endl;                                                                         \
-            exit(EXIT_FAILURE);                                                                                                       \
-        }                                                                                                                             \
+#define __ITS_TEST_2(function, timeout_millis)                                                                       \
+    do                                                                                                               \
+    {                                                                                                                \
+        try                                                                                                          \
+        {                                                                                                            \
+            __its_unit_test_stream_buffer_cout = std::cout.rdbuf();                                                  \
+            std::string __current_test_name = #function;                                                             \
+            std::cout << "Check " << __current_test_name << " : ";                                                   \
+            fflush(stdout);                                                                                          \
+            fflush(stderr);                                                                                          \
+            __its_unit_test_cpp_running = true;                                                                      \
+            __its_unit_test_cpp_load = std::thread(__its_unit_test_cpp_loadingEffect);                               \
+            std::ofstream file("/dev/null");                                                                         \
+            std::streambuf *__its_unit_stream_buffer_cerr = std::cerr.rdbuf();                                       \
+            std::cout.rdbuf(file.rdbuf());                                                                           \
+            std::cerr.rdbuf(file.rdbuf());                                                                           \
+            auto start = std::chrono::steady_clock::now();                                                           \
+            std::thread launch_func = std::thread([]() {function(); __its_unit_test_cpp_running= false; });                                                         \
+            __its_unit_test_cpp_timeout((timeout_millis), launch_func);                                              \
+            auto end = std::chrono::steady_clock::now();                                                             \
+            __its_unit_test_cpp_load.join();                                                                         \
+            unsigned long elapsed_time = std::chrono::duration_cast<std::chrono::microseconds>(end - start).count(); \
+            std::cout.rdbuf(__its_unit_test_stream_buffer_cout);                                                     \
+            std::cerr.rdbuf(__its_unit_stream_buffer_cerr);                                                          \
+            std::cout << "\033[0;32m"                                                                                \
+                      << "Success "                                                                                  \
+                      << "\x1b[0m"                                                                                   \
+                      << " (" << (unsigned int)elapsed_time / 1000 << "ms)" << std::endl;                            \
+            fflush(stdout);                                                                                          \
+            file.close();                                                                                            \
+        }                                                                                                            \
+        catch (std::exception const &e)                                                                              \
+        {                                                                                                            \
+            std::cout.rdbuf(__its_unit_test_stream_buffer_cout);                                                     \
+            std::cout << "Error : " << e.what() << std::endl;                                                        \
+            exit(EXIT_FAILURE);                                                                                      \
+        }                                                                                                            \
     } while (0)
 
 /**
@@ -153,7 +159,10 @@
             unsigned long elapsed_time = std::chrono::duration_cast<std::chrono::microseconds>(end - start).count(); \
             __its_unit_test_cpp_running = false;                                                                     \
             __its_unit_test_cpp_load.join();                                                                         \
-            std::cout << "\033[0;32m" << "Success" << "\x1b[0m" << " ("                                             \
+            std::cout << "\033[0;32m"                                                                                \
+                      << "Success"                                                                                   \
+                      << "\x1b[0m"                                                                                   \
+                      << " ("                                                                                        \
                       << (unsigned int)elapsed_time / 1000 << "ms)" << std::endl;                                    \
             fflush(stdout);                                                                                          \
             file.close();                                                                                            \
@@ -173,42 +182,45 @@
  * @param expected_output_file : the expected output file
  * @param timeout_millis: the maximum time of execution in milli-seconds
  */
-#define __ITS_TEST_4(function, expected_output_file, timeout_millis)                                                                  \
-    do                                                                                                                                \
-    {                                                                                                                                 \
-        try                                                                                                                           \
-        {                                                                                                                             \
-            __its_unit_test_stream_buffer_cout = std::cout.rdbuf();                                                                   \
-            std::string __current_test_name = #function;                                                                              \
-            std::cout << "Check " << __current_test_name << " : ";                                                                    \
-            fflush(stdout);                                                                                                           \
-            fflush(stderr);                                                                                                           \
-            __its_unit_test_cpp_running = true;                                                                                       \
-            __its_unit_test_cpp_load = std::thread(__its_unit_test_cpp_loadingEffect);                                                \
-            std::ofstream file(#function + std::string("_its_test.log"));                                                             \
-            std::streambuf *__its_unit_stream_buffer_cerr = std::cerr.rdbuf();                                                        \
-            std::cout.rdbuf(file.rdbuf());                                                                                            \
-            std::cerr.rdbuf(file.rdbuf());                                                                                            \
-            auto start = std::chrono::steady_clock::now();                                                                            \
-            std::thread launch_func = std::thread([]() {function(); __its_unit_test_cpp_running = false; });                                                                          \
-            __its_unit_test_cpp_timeout((timeout_millis), launch_func);                                                               \
-            auto end = std::chrono::steady_clock::now();                                                                              \
-            __its_unit_test_cpp_load.join();                                                                                          \
-            std::cout.rdbuf(__its_unit_test_stream_buffer_cout);                                                                      \
-            std::cerr.rdbuf(__its_unit_stream_buffer_cerr);                                                                           \
-            unsigned long elapsed_time = std::chrono::duration_cast<std::chrono::microseconds>(end - start).count();                  \
-            std::cout << "\033[0;32m" << "Success " << "\x1b[0m" << " (" << (unsigned int)elapsed_time / 1000 << "ms)" << std::endl; \
-            fflush(stdout);                                                                                                           \
-            file.close();                                                                                                             \
-            assert_file(expected_output_file, #function + std::string("_its_test.log"));                                              \
-            remove((#function + std::string("_its_test.log")).c_str());                                                               \
-        }                                                                                                                             \
-        catch (std::exception const &e)                                                                                               \
-        {                                                                                                                             \
-            std::cout.rdbuf(__its_unit_test_stream_buffer_cout);                                                                      \
-            std::cout << "Error : " << e.what() << std::endl;                                                                         \
-            exit(EXIT_FAILURE);                                                                                                       \
-        }                                                                                                                             \
+#define __ITS_TEST_4(function, expected_output_file, timeout_millis)                                                 \
+    do                                                                                                               \
+    {                                                                                                                \
+        try                                                                                                          \
+        {                                                                                                            \
+            __its_unit_test_stream_buffer_cout = std::cout.rdbuf();                                                  \
+            std::string __current_test_name = #function;                                                             \
+            std::cout << "Check " << __current_test_name << " : ";                                                   \
+            fflush(stdout);                                                                                          \
+            fflush(stderr);                                                                                          \
+            __its_unit_test_cpp_running = true;                                                                      \
+            __its_unit_test_cpp_load = std::thread(__its_unit_test_cpp_loadingEffect);                               \
+            std::ofstream file(#function + std::string("_its_test.log"));                                            \
+            std::streambuf *__its_unit_stream_buffer_cerr = std::cerr.rdbuf();                                       \
+            std::cout.rdbuf(file.rdbuf());                                                                           \
+            std::cerr.rdbuf(file.rdbuf());                                                                           \
+            auto start = std::chrono::steady_clock::now();                                                           \
+            std::thread launch_func = std::thread([]() {function(); __its_unit_test_cpp_running = false; });                                                         \
+            __its_unit_test_cpp_timeout((timeout_millis), launch_func);                                              \
+            auto end = std::chrono::steady_clock::now();                                                             \
+            __its_unit_test_cpp_load.join();                                                                         \
+            unsigned long elapsed_time = std::chrono::duration_cast<std::chrono::microseconds>(end - start).count(); \
+            std::cout.rdbuf(__its_unit_test_stream_buffer_cout);                                                     \
+            std::cerr.rdbuf(__its_unit_stream_buffer_cerr);                                                          \
+            std::cout << "\033[0;32m"                                                                                \
+                      << "Success "                                                                                  \
+                      << "\x1b[0m"                                                                                   \
+                      << " (" << (unsigned int)elapsed_time / 1000 << "ms)" << std::endl;                            \
+            fflush(stdout);                                                                                          \
+            file.close();                                                                                            \
+            assert_file(expected_output_file, #function + std::string("_its_test.log"));                             \
+            remove((#function + std::string("_its_test.log")).c_str());                                              \
+        }                                                                                                            \
+        catch (std::exception const &e)                                                                              \
+        {                                                                                                            \
+            std::cout.rdbuf(__its_unit_test_stream_buffer_cout);                                                     \
+            std::cout << "Error : " << e.what() << std::endl;                                                        \
+            exit(EXIT_FAILURE);                                                                                      \
+        }                                                                                                            \
     } while (0)
 
 /**
@@ -225,7 +237,9 @@
                 std::ostream stream_out(__its_unit_test_stream_buffer_cout);     \
                 __its_unit_test_cpp_running = false;                             \
                 __its_unit_test_cpp_load.join();                                 \
-                stream_out << "\x1b[1;31m" << "Failed " << "\x1b[0m" << std::endl \
+                stream_out << "\x1b[1;31m"                                       \
+                           << "Failed "                                          \
+                           << "\x1b[0m" << std::endl                             \
                            << "assertion failed : " << #expression << std::endl; \
                 stream_out.flush();                                              \
                 exit(EXIT_FAILURE);                                              \
@@ -256,7 +270,9 @@
             {                                                                                                              \
                 __its_unit_test_cpp_running = false;                                                                       \
                 __its_unit_test_cpp_load.join();                                                                           \
-                stream_out << "\x1b[1;31m" << "Failed " << "\x1b[0m" << std::endl                                           \
+                stream_out << "\x1b[1;31m"                                                                                 \
+                           << "Failed "                                                                                    \
+                           << "\x1b[0m" << std::endl                                                                       \
                            << "Failure when opening the file " << first_file << "!" << std::endl;                          \
                 stream_out.flush();                                                                                        \
                 exit(EXIT_FAILURE);                                                                                        \
@@ -266,7 +282,9 @@
             {                                                                                                              \
                 __its_unit_test_cpp_running = false;                                                                       \
                 __its_unit_test_cpp_load.join();                                                                           \
-                stream_out << "\x1b[1;31m" << "Failed " << "\x1b[0m" << std::endl                                           \
+                stream_out << "\x1b[1;31m"                                                                                 \
+                           << "Failed "                                                                                    \
+                           << "\x1b[0m" << std::endl                                                                       \
                            << "Failure when opening the file " << second_file << "!" << std::endl;                         \
                 stream_out.flush();                                                                                        \
                 exit(EXIT_FAILURE);                                                                                        \
@@ -285,7 +303,9 @@
             {                                                                                                              \
                 __its_unit_test_cpp_running = false;                                                                       \
                 __its_unit_test_cpp_load.join();                                                                           \
-                stream_out << "\x1b[1;31m" << "Failed " << "\x1b[0m" << std::endl                                           \
+                stream_out << "\x1b[1;31m"                                                                                 \
+                           << "Failed "                                                                                    \
+                           << "\x1b[0m" << std::endl                                                                       \
                            << "The files \"" << first_file "\" and \"" << second_file << "\" are different!" << std::endl; \
                 stream_out.flush();                                                                                        \
                 exit(EXIT_FAILURE);                                                                                        \
@@ -317,31 +337,26 @@ static void __its_unit_test_cpp_loadingEffect()
     {
         std::ostream stream_out(__its_unit_test_stream_buffer_cout);
         int ind = 0;
-        auto print_time = std::chrono::steady_clock::now();
-
         while (__its_unit_test_cpp_running)
         {
-            if (std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::steady_clock::now() - print_time).count() > 300)
+            switch (ind)
             {
-                switch (ind)
-                {
-                case 0:
-                    stream_out << "   \b\b\b";
-                    break;
-                case 1:
-                    stream_out << ".  \b\b\b";
-                    break;
-                case 2:
-                    stream_out << ".. \b\b\b";
-                    break;
-                case 3:
-                    stream_out << "...\b\b\b";
-                    break;
-                }
-                stream_out.flush();
-                ind = (ind + 1) % 4;
-                print_time = std::chrono::steady_clock::now();
+            case 0:
+                stream_out << "   \b\b\b";
+                break;
+            case 1:
+                stream_out << ".  \b\b\b";
+                break;
+            case 2:
+                stream_out << ".. \b\b\b";
+                break;
+            case 3:
+                stream_out << "...\b\b\b";
+                break;
             }
+            stream_out.flush();
+            ind = (ind + 1) % 4;
+            usleep(300000);
         }
         stream_out << "   \b\b\b";
         stream_out.flush();
@@ -370,7 +385,9 @@ static void __its_unit_test_cpp_timeout(float time, std::thread &launch_func)
             if (std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::steady_clock::now() - start_time).count() > time)
             {
                 __its_unit_test_cpp_running = false;
-                stream_out << "\x1b[1;31m" << "Timeout (" << time << " ms)" << "\x1b[0m" << std::endl;
+                stream_out << "\x1b[1;31m"
+                           << "Timeout (" << time << " ms)"
+                           << "\x1b[0m" << std::endl;
                 stream_out.flush();
                 launch_func.detach();
                 __its_unit_test_cpp_load.join();
