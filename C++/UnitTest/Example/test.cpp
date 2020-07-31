@@ -94,7 +94,7 @@ int main(void)
     TEST(test_compare_vectors);
     TEST(test_timeout, 2100);
     OTEST(test_output, "output_1.txt");
-    OTEST(test_output, "output_1.txt", 1200);
+    OTEST(test_output, "output_1.txt", 2100);
     TEST(test_file_comparison);
     TEST(test_fail);
 
