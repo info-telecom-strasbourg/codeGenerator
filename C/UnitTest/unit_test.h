@@ -23,7 +23,7 @@
 
 /**
  * Macro to execute a test without a check of the output
- * @param function: the tested function 
+ * @param function: the tested function
  * @param timeout_millis: the maximum time of execution in milli-seconds (optionnal)
  */
 #define TEST(...)                                                 \
@@ -37,7 +37,7 @@
 
 /**
  * Macro to execute a test with a check of the output
- * @param function: the tested function 
+ * @param function: the tested function
  * @param expected_output_file : the expected output file
  * @param timeout_millis: the maximum time of execution in milli-seconds (optionnal)
  */
@@ -47,7 +47,7 @@
 
 /**
  * Macro to execute a test without a check of the output
- * @param function: the tested function 
+ * @param function: the tested function
  */
 #define __ITS_TEST_1(function)                                                                                                                                         \
     do                                                                                                                                                                 \
@@ -60,6 +60,7 @@
         char *__current_test_name = #function;                                                                                                                         \
         fprintf(stdout, "Check %s : ", __current_test_name);                                                                                                           \
         fflush(stdout);                                                                                                                                                \
+        fflush(stderr);                                                                                                                                                \
         __its_unit_test_c_running = true;                                                                                                                              \
         if ((errno = pthread_create(&__its_unit_test_c_load, NULL, __its_unit_test_c_loadingEffect, NULL)) != 0)                                                       \
         {                                                                                                                                                              \
@@ -156,6 +157,7 @@
         char *__current_test_name = #function;                                                                                                                         \
         fprintf(stdout, "Check %s : ", __current_test_name);                                                                                                           \
         fflush(stdout);                                                                                                                                                \
+        fflush(stderr);                                                                                                                                                \
         __its_unit_test_c_running = true;                                                                                                                              \
         if ((errno = pthread_create(&__its_unit_test_c_load, NULL, __its_unit_test_c_loadingEffect, NULL)) != 0)                                                       \
         {                                                                                                                                                              \
@@ -244,7 +246,7 @@
 
 /**
  * Macro to execute a test with a check of the output
- * @param function: the tested function 
+ * @param function: the tested function
  * @param expected_output_file : the expected output file
  */
 #define __ITS_TEST_3(function, expected_output_file)                                                                                                                   \
@@ -258,6 +260,7 @@
         char *__current_test_name = #function;                                                                                                                         \
         fprintf(stdout, "Check %s : ", __current_test_name);                                                                                                           \
         fflush(stdout);                                                                                                                                                \
+        fflush(stderr);                                                                                                                                                \
         __its_unit_test_c_running = true;                                                                                                                              \
         if ((errno = pthread_create(&__its_unit_test_c_load, NULL, __its_unit_test_c_loadingEffect, NULL)) != 0)                                                       \
         {                                                                                                                                                              \
@@ -346,9 +349,9 @@
 
 /**
  * Macro to execute a test with a check of the output
- * @param function: the tested function 
+ * @param function: the tested function
  * @param expected_output_file : the expected output file
- * @param timeout_millis: the maximum time of execution in milli-seconds 
+ * @param timeout_millis: the maximum time of execution in milli-seconds
  */
 #define __ITS_TEST_4(function, expected_output_file, timeout_millis)                                                                                                   \
     do                                                                                                                                                                 \
@@ -361,6 +364,7 @@
         char *__current_test_name = #function;                                                                                                                         \
         fprintf(stdout, "Check %s : ", __current_test_name);                                                                                                           \
         fflush(stdout);                                                                                                                                                \
+        fflush(stderr);                                                                                                                                                \
         __its_unit_test_c_running = true;                                                                                                                              \
         if ((errno = pthread_create(&__its_unit_test_c_load, NULL, __its_unit_test_c_loadingEffect, NULL)) != 0)                                                       \
         {                                                                                                                                                              \
@@ -476,7 +480,7 @@
         }                                                                                                                  \
     } while (0)
 
-/** 
+/**
  * Macro that test if two files identical
  * @param first_file: the expected file
  * @param second_file : the tested file
