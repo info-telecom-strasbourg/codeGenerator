@@ -157,31 +157,28 @@ public class ItsUnitTests
 	private static void loadingEffect()
 	{
 		int ind = 0;
-		long printTime = System.currentTimeMillis();
 		console.print("   ");
 		console.flush();
 		while(loading)
 		{
-			if(System.currentTimeMillis() - printTime > 500)
+			switch(ind)
 			{
-				switch(ind)
-				{
-					case 0:
-						console.print("\b\b\b   ");
-						break;
-					case 1:
-						console.print("\b\b\b.  ");
-						break;
-					case 2:
-						console.print("\b\b\b.. ");
-						break;
-					case 3:
-						console.print("\b\b\b...");
-				}
-				console.flush();
-				ind = (ind+1)%4;
-				printTime = System.currentTimeMillis();
+				case 0:
+					console.print("\b\b\b   ");
+					break;
+				case 1:
+					console.print("\b\b\b.  ");
+					break;
+				case 2:
+					console.print("\b\b\b.. ");
+					break;
+				case 3:
+					console.print("\b\b\b...");
 			}
+			console.flush();
+			ind = (ind+1)%4;
+			try { Thread.sleep(500); }
+			catch (InterruptedException e) { Thread.currentThread().interrupt(); }
 		}
 		console.print("\b\b\b   \b\b\b");
 		console.flush();
