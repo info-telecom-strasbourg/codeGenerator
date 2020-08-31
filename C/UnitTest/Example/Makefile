@@ -1,21 +1,9 @@
-CC		:= gcc
-C_FLAGS := -g -pthread
-
-LIBRARIES	:=
-
-ifeq ($(OS),Windows_NT)
-EXECUTABLE	:= test.exe
-else
-EXECUTABLE	:= test
-endif
-
-all: 	$(EXECUTABLE)
-
-clean:
-	$(RM) $(EXECUTABLE)
-
-run: all
-	$(EXECUTABLE)
-
-$(EXECUTABLE): *.c
-	$(CC) $(C_FLAGS) -I -L $^ -o $@ $(LIBRARIES)
+all:
+	gcc -c -o its_unit_test.o its_unit_test.c -Wall -Wextra -Werror
+	gcc -c -o test.o test.c -Wall -Wextra -Werror
+	gcc -o test test.o its_unit_test.o -pthread -Wall -Wextra -Werror
+run:
+	@gcc -c -o its_unit_test.o its_unit_test.c -Wall -Wextra -Werror
+	@gcc -c -o test.o test.c -Wall -Wextra -Werror
+	@gcc -o test test.o its_unit_test.o -pthread -Wall -Wextra -Werror
+	@./test || true
