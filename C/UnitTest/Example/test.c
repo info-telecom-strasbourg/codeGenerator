@@ -11,7 +11,8 @@
 /**
  * Test an equality
  */
-void test_equality(void)
+void
+test_equality(void)
 {
     assert(1 == 1);
 }
@@ -19,7 +20,8 @@ void test_equality(void)
 /**
  * Check that two strings are identical
  */
-void test_compare_string(void)
+void
+test_compare_string(void)
 {
     char string_1[6] = "hello";
     char string_2[6] = "hello";
@@ -30,7 +32,8 @@ void test_compare_string(void)
 /**
  * A function that lasts 2 seconds
  */
-void test_timeout(void)
+void
+test_timeout(void)
 {
     sleep(2);
 }
@@ -38,7 +41,8 @@ void test_timeout(void)
 /**
  * A function that display messages on the terminal
  */
-void test_output(void)
+void
+test_output(void)
 {
     sleep(3);
     fprintf(stdout, "This is a message\n");
@@ -48,7 +52,8 @@ void test_output(void)
 /**
  * A function that display messages on the terminal and lasts 2 seconds
  */
-void test_output_and_timeout(void)
+void
+test_output_and_timeout(void)
 {
     fprintf(stdout, "This is a message\n");
     fprintf(stderr, "This is an error message\n");
@@ -58,7 +63,8 @@ void test_output_and_timeout(void)
 /**
  * Check that two files are identical
  */
-void test_file_comparison(void)
+void
+test_file_comparison(void)
 {
     sleep(3);
     assert_file("output_1.txt", "output_2.txt");
@@ -67,13 +73,15 @@ void test_file_comparison(void)
 /**
  * Test a wrong equality (this test have to fail)
  */
-void test_fail(void)
+void
+test_fail(void)
 {
     sleep(3);
     assert(1 != 1);
 }
 
-int main(void)
+int
+smain(void)
 {
     fprintf(stdout, "--- Launch tests ---\n\ns");
 

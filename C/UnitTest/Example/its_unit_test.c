@@ -1,5 +1,25 @@
 #include "its_unit_test.h"
 
+/** A global variable indicating if a test is running */
+static int __its_unit_test_c_running;
+
+/** A global variable where stdout is saved */
+static int __its_unit_test_save_out;
+
+/** A global variable where stderr is saved */
+static int __its_unit_test_save_err;
+
+/** A global variable to store the thread used to display a loading effect */
+static pthread_t __its_unit_test_c_load;
+
+/** A global variable that store the thread used to launch the test function */
+static pthread_t __its_unit_test_c_func;
+
+/**
+ * A global variable that indicates if a timeout is set
+ * It's used to stop properly the thread of function.
+ */
+static int __with_timeout;
 
 /**
  * @brief Display a loading effect (in the terminal)
