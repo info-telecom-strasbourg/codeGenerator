@@ -139,6 +139,15 @@ __its_unit_test_c_timeout(long int time)
             "Function launcher thread join failed");
 }
 
+static void *
+thread_function(void *arg)
+{
+	void (*function)(void) = (void(*)()) arg;
+	(*function)();
+	__its_unit_test_c_running= 0;
+	return NULL;
+}
+
 /**
  * @brief This function setup the environment for tests.
  *
@@ -218,15 +227,6 @@ test1(char *test_name, void (*function)(void))
 	(*function)();
 	__check(gettimeofday(&end, NULL), "gettimeofday failed", 1);
 	end_test(start, end, out);
-}
-
-static void *
-thread_function(void *arg)
-{
-	void (*function)(void) = (void(*)()) arg;
-	(*function)();
-	__its_unit_test_c_running= 0;
-	return NULL;
 }
 
 void
