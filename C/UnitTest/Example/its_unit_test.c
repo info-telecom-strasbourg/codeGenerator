@@ -15,11 +15,6 @@ static pthread_t __its_unit_test_c_load;
 /** A global variable that store the thread used to launch the test function */
 static pthread_t __its_unit_test_c_func;
 
-/**
- * A global variable that indicates if a timeout is set
- * It's used to stop properly the thread of function.
- */
-static int __with_timeout;
 
 /**
  * @brief Display a loading effect (in the terminal)
@@ -210,7 +205,6 @@ void
 test1(char *test_name, void (*function)(void))
 {
     setup_test(test_name);
-    __with_timeout = 0;
 	int out;
 	__check(out = open("/dev/null", O_RDWR | O_APPEND),
 	        "Open of \"/dev/null\" failed", 1);
@@ -226,27 +220,26 @@ test1(char *test_name, void (*function)(void))
 	end_test(start, end, out);
 }
 
+static void *
+thread_function(void *arg)
+{
+	void (*function)(void) = (void(*)()) arg;
+	(*function)();
+	__its_unit_test_c_running= 0;
+	return NULL;
+}
+
 void
 test2(char *test_name, void (*function)(void), unsigned long timeout)
 {
     setup_test(test_name);
-    __with_timeout = 1;
 	int out = open("/dev/null", O_RDWR | O_APPEND);
 	__check(out, "Open of \"/dev/null\" failed", 1);
 	__check(dup2(out, STDOUT_FILENO), "stdout redirection failed", 1);
 	__check(dup2(out, STDERR_FILENO), "stderr redirection failed", 1);
 	struct timeval start, end;
 	__check(gettimeofday(&start, NULL), "gettimeofday failed", 0);
-	__check_t(errno = pthread_create(&__its_unit_test_c_func, NULL,
-	        ({
-	            void *callback()
-	            {
-	                (*function)();
-	                __its_unit_test_c_running= 0;
-	                return NULL;
-	            }
-	            callback;
-	        }), NULL), "Function launcher creation failed");
+	__check_t(errno = pthread_create(&__its_unit_test_c_func, NULL,thread_function, (void *)function), "Function launcher creation failed");
     __its_unit_test_c_timeout(timeout);
     __check(gettimeofday(&end, NULL), "gettimeofday failed", 1);
     end_test(start, end, out);
@@ -256,7 +249,6 @@ void
 test3(char *test_name, void (*function)(void), char *expected_output_file)
 {
     setup_test(test_name);
-    __with_timeout = 0;
     int out = open("_its_out_test.log", O_RDWR | O_TRUNC | O_CREAT | O_APPEND, 0666);
     __check(out, "Open of \"_its_out_test.log\" failed", 1);
     __check(dup2(out, STDOUT_FILENO), "stdout redirection failed", 1);
@@ -277,7 +269,6 @@ test4(char *test_name, void (*function)(void), char *expected_output_file,
         unsigned long timeout_millis)
 {
     setup_test(test_name);
-    __with_timeout = 1;
     int out = open("_its_out_test.log", O_RDWR | O_TRUNC | O_CREAT | O_APPEND,
             0666);
     __check(out, "Open of \"_its_out_test.log\" failed", 1);
@@ -286,16 +277,7 @@ test4(char *test_name, void (*function)(void), char *expected_output_file,
     struct timeval start, end;
     __check(gettimeofday(&start, NULL), "gettimeofday failed", 1);
     //launch thread function
-    __check_t(errno = pthread_create(&__its_unit_test_c_func, NULL,
-            ({
-                void *callback()
-                {
-                    (*function)();
-                    __its_unit_test_c_running= 0;
-                    return NULL;
-                }
-                callback;
-            }), NULL), "Function launcher creation failed");
+    __check_t(errno = pthread_create(&__its_unit_test_c_func, NULL, thread_function, (void *)function), "Function launcher creation failed");
     __its_unit_test_c_timeout(timeout_millis);
     __check(gettimeofday(&end, NULL), "gettimeofday failed", 1);
     __its_unit_test_c_running = 0;
@@ -312,9 +294,6 @@ __its_assert(char* expression_text ,int expression)
             __its_unit_test_c_running = 0;
             __check_t(errno = pthread_join(__its_unit_test_c_load, NULL),
                     "Loading effect thread join failed");
-            if (__with_timeout)
-                __check_t(errno = pthread_detach(__its_unit_test_c_func),
-                        "Function launcher thread join failed");
             dprintf(__its_unit_test_save_out,
                         "%sFailed%s\nassertion failed : %s\n", "\x1b[1;31m",
                         "\x1b[0m",
@@ -340,9 +319,6 @@ __its_assert_file(char *first_file, char *second_file)
                 __its_unit_test_c_running = 0;
                 __check_t(errno = pthread_join(__its_unit_test_c_load, NULL),
                         "Loading effect thread join failed");
-                if (__with_timeout)
-                    __check_t(errno = pthread_detach(__its_unit_test_c_func),
-                            "Function launcher thread join failed");
                 dprintf(__its_unit_test_save_out, "%sFailed%s\nThe two files"
                         " are different\n", "\x1b[1;31m", "\x1b[0m");
                 exit(EXIT_FAILURE);

@@ -81,7 +81,7 @@ test_fail(void)
 }
 
 int
-smain(void)
+main(void)
 {
     fprintf(stdout, "--- Launch tests ---\n\ns");
 
