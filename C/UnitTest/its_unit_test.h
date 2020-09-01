@@ -8,7 +8,6 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-#include <stdbool.h>
 #include <sys/time.h>
 #include <pthread.h>
 #include <fcntl.h>
@@ -119,27 +118,6 @@
  */
 #define assert_file(first_file, second_file)\
     do { __its_assert_file(first_file, second_file);} while (0)
-
-/** A global variable indicating if a test is running */
-int __its_unit_test_c_running;
-
-/** A global variable where stdout is saved */
-int __its_unit_test_save_out;
-
-/** A global variable where stderr is saved */
-int __its_unit_test_save_err;
-
-/** A global variable to store the thread used to display a loading effect */
-pthread_t __its_unit_test_c_load;
-
-/** A global variable that store the thread used to launch the test function */
-pthread_t __its_unit_test_c_func;
-
-/**
- * A global variable that indicates if a timeout is set
- * It's used to stop properly the thread of function.
- */
-int __with_timeout;
 
 /**
  * @brief This function testing a function without specific features.
