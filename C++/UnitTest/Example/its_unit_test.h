@@ -36,7 +36,8 @@
  * Macro to execute a test with a check of the output
  * @param function: the tested function
  * @param expected_output_file : the expected output file
- * @param timeout_millis: the maximum time of execution in milli-seconds (optionnal)
+ * @param timeout_millis: the maximum time of execution in milli-seconds
+ * (optionnal)
  */
 #define OTEST(...)                                                             \
     __ITS_GET_MACRO_OTEST(__VA_ARGS__, __ITS_TEST_4, __ITS_TEST_3)             \
@@ -55,7 +56,9 @@
  * @param timeout_millis: the maximum time of execution in milli-seconds
  */
 #define __ITS_TEST_2(function, timeout_millis)                                 \
-    do { __test_timeout(std::string(#function), function, timeout_millis); } while (0)
+    do {                                                                       \
+		__test_timeout(std::string(#function), function, timeout_millis);      \
+	} while (0)
 
 /**
  * Macro to execute a test with a check of the output
@@ -63,7 +66,9 @@
  * @param expected_output_file : the expected output file
  */
 #define __ITS_TEST_3(function, expected_output_file)                           \
-    do { __test_output(std::string(#function), function, expected_output_file);} while (0)
+    do {                                                                       \
+		__test_output(std::string(#function), function, expected_output_file); \
+	} while (0)
 
 /**
  * Macro to execute a test with a check of the output
@@ -73,7 +78,8 @@
  */
 #define __ITS_TEST_4(function, expected_output_file, timeout_millis)           \
     do {                                                                       \
-		__test_output_timeout(std::string(#function), function, expected_output_file, timeout_millis);      \
+		__test_output_timeout(std::string(#function), function,                \
+			expected_output_file, timeout_millis);                             \
 	} while (0)
 
 /**
@@ -138,8 +144,9 @@ void __test_output(std::string __current_test_name, void (*function)(void),
  * @param expected_output_file: the path to the compare file.
  * @param timeout_millis: the time given to the function before failure.
  */
-void __test_output_timeout(std::string __current_test_name, void (*function)(void),
-		   std::string expected_output_file, unsigned long timeout_millis);
+void __test_output_timeout(std::string __current_test_name,
+	void (*function)(void), std::string expected_output_file,
+	unsigned long timeout_millis);
 
 /**
  * @brief Test the given expression. If it's false the programme is exited.

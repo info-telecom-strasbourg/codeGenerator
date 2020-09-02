@@ -20,10 +20,11 @@
 /**
  * Macro to execute a test without a check of the output
  * @param function: the tested function
- * @param timeout_millis: the maximum time of execution in milli-seconds (optionnal)
+ * @param timeout_millis: the maximum time of execution in milli-seconds
+ * (optionnal)
  */
-#define TEST(...)                                                 \
-    __ITS_GET_MACRO_TEST(__VA_ARGS__, __ITS_TEST_2, __ITS_TEST_1) \
+#define TEST(...)                                                              \
+    __ITS_GET_MACRO_TEST(__VA_ARGS__, __ITS_TEST_2, __ITS_TEST_1)              \
     (__VA_ARGS__)
 
 /**
@@ -35,146 +36,39 @@
  * Macro to execute a test with a check of the output
  * @param function: the tested function
  * @param expected_output_file : the expected output file
- * @param timeout_millis: the maximum time of execution in milli-seconds (optionnal)
+ * @param timeout_millis: the maximum time of execution in milli-seconds
+ * (optionnal)
  */
-#define OTEST(...)                                                 \
-    __ITS_GET_MACRO_OTEST(__VA_ARGS__, __ITS_TEST_4, __ITS_TEST_3) \
+#define OTEST(...)                                                             \
+    __ITS_GET_MACRO_OTEST(__VA_ARGS__, __ITS_TEST_4, __ITS_TEST_3)             \
     (__VA_ARGS__)
 
 /**
  * Macro to execute a test without a check of the output
  * @param function: the tested function
  */
-#define __ITS_TEST_1(function)                                                                                       \
-    do                                                                                                               \
-    {                                                                                                                \
-        try                                                                                                          \
-        {                                                                                                            \
-            __its_unit_test_stream_buffer_cout = std::cout.rdbuf();                                                  \
-            __its_unit_test_stream_buffer_cerr = std::cerr.rdbuf();                                                  \
-            std::string __current_test_name = #function;                                                             \
-            std::cout << "Check " << __current_test_name << " : ";                                                   \
-            fflush(stdout);                                                                                          \
-            fflush(stderr);                                                                                          \
-            __its_unit_test_cpp_running = true;                                                                      \
-            __its_unit_test_cpp_load = std::thread(__its_unit_test_cpp_loadingEffect);                               \
-            std::ofstream file("/dev/null");                                                                         \
-            std::cout.rdbuf(file.rdbuf());                                                                           \
-            std::cerr.rdbuf(file.rdbuf());                                                                           \
-            auto start = std::chrono::steady_clock::now();                                                           \
-            function();                                                                                              \
-            auto end = std::chrono::steady_clock::now();                                                             \
-            std::cout.rdbuf(__its_unit_test_stream_buffer_cout);                                                     \
-            std::cerr.rdbuf(__its_unit_test_stream_buffer_cerr);                                                          \
-            unsigned long elapsed_time = std::chrono::duration_cast<std::chrono::microseconds>(end - start).count(); \
-            __its_unit_test_cpp_running = false;                                                                     \
-            __its_unit_test_cpp_load.join();                                                                         \
-            std::cout << "\033[0;32m"                                                                                \
-                      << "Success"                                                                                   \
-                      << "\x1b[0m"                                                                                   \
-                      << " ("                                                                                        \
-                      << (unsigned int)elapsed_time / 1000 << "ms)" << std::endl;                                    \
-            fflush(stdout);                                                                                          \
-            file.close();                                                                                            \
-        }                                                                                                            \
-        catch (std::exception const &e)                                                                              \
-        {                                                                                                            \
-            std::cerr.rdbuf(__its_unit_test_stream_buffer_cerr);                                                     \
-            std::cerr << "Error : " << e.what() << std::endl;                                                        \
-            exit(EXIT_FAILURE);                                                                                      \
-        }                                                                                                            \
-    } while (0)
+#define __ITS_TEST_1(function)                                                 \
+    do { __test_classic(std::string(#function), function); } while (0)
 
 /**
  * Macro to execute a test without a check of the output
  * @param function: the tested function
  * @param timeout_millis: the maximum time of execution in milli-seconds
  */
-#define __ITS_TEST_2(function, timeout_millis)                                                                       \
-    do                                                                                                               \
-    {                                                                                                                \
-        try                                                                                                          \
-        {                                                                                                            \
-            __its_unit_test_stream_buffer_cout = std::cout.rdbuf();                                                  \
-            std::string __current_test_name = #function;                                                             \
-            std::cout << "Check " << __current_test_name << " : ";                                                   \
-            fflush(stdout);                                                                                          \
-            fflush(stderr);                                                                                          \
-            __its_unit_test_cpp_running = true;                                                                      \
-            __its_unit_test_cpp_load = std::thread(__its_unit_test_cpp_loadingEffect);                               \
-            std::ofstream file("/dev/null");                                                                         \
-            std::streambuf *__its_unit_test_stream_buffer_cerr = std::cerr.rdbuf();                                       \
-            std::cout.rdbuf(file.rdbuf());                                                                           \
-            std::cerr.rdbuf(file.rdbuf());                                                                           \
-            auto start = std::chrono::steady_clock::now();                                                           \
-            std::thread launch_func = std::thread([]() {function(); __its_unit_test_cpp_running= false; });                                                         \
-            __its_unit_test_cpp_timeout((timeout_millis), launch_func);                                              \
-            auto end = std::chrono::steady_clock::now();                                                             \
-            __its_unit_test_cpp_load.join();                                                                         \
-            unsigned long elapsed_time = std::chrono::duration_cast<std::chrono::microseconds>(end - start).count(); \
-            std::cout.rdbuf(__its_unit_test_stream_buffer_cout);                                                     \
-            std::cerr.rdbuf(__its_unit_test_stream_buffer_cerr);                                                          \
-            std::cout << "\033[0;32m"                                                                                \
-                      << "Success "                                                                                  \
-                      << "\x1b[0m"                                                                                   \
-                      << " (" << (unsigned int)elapsed_time / 1000 << "ms)" << std::endl;                            \
-            fflush(stdout);                                                                                          \
-            file.close();                                                                                            \
-        }                                                                                                            \
-        catch (std::exception const &e)                                                                              \
-        {                                                                                                            \
-            std::cerr.rdbuf(__its_unit_test_stream_buffer_cerr);                                                     \
-            std::cerr << "Error : " << e.what() << std::endl;                                                        \
-            exit(EXIT_FAILURE);                                                                                      \
-        }                                                                                                            \
-    } while (0)
+#define __ITS_TEST_2(function, timeout_millis)                                 \
+    do {                                                                       \
+		__test_timeout(std::string(#function), function, timeout_millis);      \
+	} while (0)
 
 /**
  * Macro to execute a test with a check of the output
  * @param function: the tested function
  * @param expected_output_file : the expected output file
  */
-#define __ITS_TEST_3(function, expected_output_file)                                                                 \
-    do                                                                                                               \
-    {                                                                                                                \
-        try                                                                                                          \
-        {                                                                                                            \
-            __its_unit_test_stream_buffer_cout = std::cout.rdbuf();                                                  \
-            __its_unit_test_stream_buffer_cerr = std::cerr.rdbuf();                                                  \
-            std::string __current_test_name = #function;                                                             \
-            std::cout << "Check " << __current_test_name << " : ";                                                   \
-            fflush(stdout);                                                                                          \
-            fflush(stderr);                                                                                          \
-            __its_unit_test_cpp_running = true;                                                                      \
-            __its_unit_test_cpp_load = std::thread(__its_unit_test_cpp_loadingEffect);                               \
-            std::ofstream file(#function + std::string("_its_test.log"));                                            \
-            std::cout.rdbuf(file.rdbuf());                                                                           \
-            std::cerr.rdbuf(file.rdbuf());                                                                           \
-            auto start = std::chrono::steady_clock::now();                                                           \
-            function();                                                                                              \
-            auto end = std::chrono::steady_clock::now();                                                             \
-            assert_file(expected_output_file, #function + std::string("_its_test.log"));                             \
-            std::cout.rdbuf(__its_unit_test_stream_buffer_cout);                                                     \
-            std::cerr.rdbuf(__its_unit_test_stream_buffer_cerr);                                                          \
-            unsigned long elapsed_time = std::chrono::duration_cast<std::chrono::microseconds>(end - start).count(); \
-            __its_unit_test_cpp_running = false;                                                                     \
-            __its_unit_test_cpp_load.join();                                                                         \
-            std::cout << "\033[0;32m"                                                                                \
-                      << "Success"                                                                                   \
-                      << "\x1b[0m"                                                                                   \
-                      << " ("                                                                                        \
-                      << (unsigned int)elapsed_time / 1000 << "ms)" << std::endl;                                    \
-            fflush(stdout);                                                                                          \
-            file.close();                                                                                            \
-            remove((#function + std::string("_its_test.log")).c_str());                                              \
-        }                                                                                                            \
-        catch (std::exception const &e)                                                                              \
-        {                                                                                                            \
-            std::cerr.rdbuf(__its_unit_test_stream_buffer_cerr);                                                     \
-            std::cerr << "Error : " << e.what() << std::endl;                                                        \
-            exit(EXIT_FAILURE);                                                                                      \
-        }                                                                                                            \
-    } while (0)
+#define __ITS_TEST_3(function, expected_output_file)                           \
+    do {                                                                       \
+		__test_output(std::string(#function), function, expected_output_file); \
+	} while (0)
 
 /**
  * Macro to execute a test with a check of the output
@@ -182,228 +76,97 @@
  * @param expected_output_file : the expected output file
  * @param timeout_millis: the maximum time of execution in milli-seconds
  */
-#define __ITS_TEST_4(function, expected_output_file, timeout_millis)                                                 \
-    do                                                                                                               \
-    {                                                                                                                \
-        try                                                                                                          \
-        {                                                                                                            \
-            __its_unit_test_stream_buffer_cout = std::cout.rdbuf();                                                  \
-            __its_unit_test_stream_buffer_cerr = std::cerr.rdbuf();                                                  \
-            std::string __current_test_name = #function;                                                             \
-            std::cout << "Check " << __current_test_name << " : ";                                                   \
-            fflush(stdout);                                                                                          \
-            fflush(stderr);                                                                                          \
-            __its_unit_test_cpp_running = true;                                                                      \
-            __its_unit_test_cpp_load = std::thread(__its_unit_test_cpp_loadingEffect);                               \
-            std::ofstream file(#function + std::string("_its_test.log"));                                            \
-            std::cout.rdbuf(file.rdbuf());                                                                           \
-            std::cerr.rdbuf(file.rdbuf());                                                                           \
-            auto start = std::chrono::steady_clock::now();                                                           \
-            std::thread launch_func = std::thread([]() {function(); __its_unit_test_cpp_running = false; });                                                         \
-            __its_unit_test_cpp_timeout((timeout_millis), launch_func);                                              \
-            auto end = std::chrono::steady_clock::now();                                                             \
-            __its_unit_test_cpp_load.join();                                                                         \
-            unsigned long elapsed_time = std::chrono::duration_cast<std::chrono::microseconds>(end - start).count(); \
-            std::cout.rdbuf(__its_unit_test_stream_buffer_cout);                                                     \
-            std::cerr.rdbuf(__its_unit_test_stream_buffer_cerr);                                                          \
-            std::cout << "\033[0;32m"                                                                                \
-                      << "Success "                                                                                  \
-                      << "\x1b[0m"                                                                                   \
-                      << " (" << (unsigned int)elapsed_time / 1000 << "ms)" << std::endl;                            \
-            fflush(stdout);                                                                                          \
-            file.close();                                                                                            \
-            assert_file(expected_output_file, #function + std::string("_its_test.log"));                             \
-            remove((#function + std::string("_its_test.log")).c_str());                                              \
-        }                                                                                                            \
-        catch (std::exception const &e)                                                                              \
-        {                                                                                                            \
-            std::cerr.rdbuf(__its_unit_test_stream_buffer_cerr);                                                     \
-            std::cerr << "Error : " << e.what() << std::endl;                                                        \
-            exit(EXIT_FAILURE);                                                                                      \
-        }                                                                                                            \
-    } while (0)
+#define __ITS_TEST_4(function, expected_output_file, timeout_millis)           \
+    do {                                                                       \
+		__test_output_timeout(std::string(#function), function,                \
+			expected_output_file, timeout_millis);                             \
+	} while (0)
 
 /**
  * Macro that test if the expression passed is true
  * @param expr: the expression tested
  */
-#define assert(expression)                                                       \
-    do                                                                           \
-    {                                                                            \
-        try                                                                      \
-        {                                                                        \
-            if (!(expression))                                                   \
-            {                                                                    \
-                std::ostream stream_err(__its_unit_test_stream_buffer_cerr);     \
-                __its_unit_test_cpp_running = false;                             \
-                __its_unit_test_cpp_load.join();                                 \
-                stream_err << "\x1b[1;31m"                                       \
-                           << "Failed "                                          \
-                           << "\x1b[0m" << std::endl                             \
-                           << "assertion failed : " << #expression << std::endl; \
-                stream_err.flush();                                              \
-                exit(EXIT_FAILURE);                                              \
-            }                                                                    \
-        }                                                                        \
-        catch (std::exception const &e)                                          \
-        {                                                                        \
-            std::cerr.rdbuf(__its_unit_test_stream_buffer_cerr);                 \
-            std::cout << "Error : " << e.what() << std::endl;                    \
-            exit(EXIT_FAILURE);                                                  \
-        }                                                                        \
-    } while (0)
+#define assert(expression)                                                     \
+    do { __its_assert(std::string(#expression), expression); } while (0)
 
 /**
  * Macro that test if two files identical
  * @param first_file: the expected file
  * @param second_file : the tested file
  */
-#define assert_file(first_file, second_file)                                                                               \
-    do                                                                                                                     \
-    {                                                                                                                      \
-        try                                                                                                                \
-        {                                                                                                                  \
-            std::ostream stream_err(__its_unit_test_stream_buffer_cerr);                                                   \
-            bool equal = false;                                                                                            \
-            std::ifstream f1(first_file, std::ifstream::binary | std::ifstream::ate);                                      \
-            if (f1.fail())                                                                                                 \
-            {                                                                                                              \
-                __its_unit_test_cpp_running = false;                                                                       \
-                __its_unit_test_cpp_load.join();                                                                           \
-                stream_err << "\x1b[1;31m"                                                                                 \
-                           << "Failed "                                                                                    \
-                           << "\x1b[0m" << std::endl                                                                       \
-                           << "Failure when opening the file " << first_file << "!" << std::endl;                          \
-                stream_err.flush();                                                                                        \
-                exit(EXIT_FAILURE);                                                                                        \
-            }                                                                                                              \
-            std::ifstream f2(second_file, std::ifstream::binary | std::ifstream::ate);                                     \
-            if (f2.fail())                                                                                                 \
-            {                                                                                                              \
-                __its_unit_test_cpp_running = false;                                                                       \
-                __its_unit_test_cpp_load.join();                                                                           \
-                stream_err << "\x1b[1;31m"                                                                                 \
-                           << "Failed "                                                                                    \
-                           << "\x1b[0m" << std::endl                                                                       \
-                           << "Failure when opening the file " << second_file << "!" << std::endl;                         \
-                stream_err.flush();                                                                                        \
-                exit(EXIT_FAILURE);                                                                                        \
-            }                                                                                                              \
-            if (f1.tellg() == f2.tellg())                                                                                  \
-            {                                                                                                              \
-                f1.seekg(0, std::ifstream::beg);                                                                           \
-                f2.seekg(0, std::ifstream::beg);                                                                           \
-                equal = std::equal(std::istreambuf_iterator<char>(f1.rdbuf()),                                             \
-                                   std::istreambuf_iterator<char>(),                                                       \
-                                   std::istreambuf_iterator<char>(f2.rdbuf()));                                            \
-            }                                                                                                              \
-            f1.close();                                                                                                    \
-            f2.close();                                                                                                    \
-            if (!(equal))                                                                                                  \
-            {                                                                                                              \
-                __its_unit_test_cpp_running = false;                                                                       \
-                __its_unit_test_cpp_load.join();                                                                           \
-                stream_err << "\x1b[1;31m"                                                                                 \
-                           << "Failed "                                                                                    \
-                           << "\x1b[0m" << std::endl                                                                       \
-                           << "The files \"" << first_file "\" and \"" << second_file << "\" are different!" << std::endl; \
-                stream_err.flush();                                                                                        \
-                exit(EXIT_FAILURE);                                                                                        \
-            }                                                                                                              \
-        }                                                                                                                  \
-        catch (std::exception const &e)                                                                                    \
-        {                                                                                                                  \
-            std::cerr.rdbuf(__its_unit_test_stream_buffer_cerr);                                                           \
-            std::cerr << "Error : " << e.what() << std::endl;                                                              \
-            exit(EXIT_FAILURE);                                                                                            \
-        }                                                                                                                  \
-    } while (0)
-
-/* A boolean that indicate if the test is running */
-static bool __its_unit_test_cpp_running;
-
-/* The thread that display the loading effect */
-static std::thread __its_unit_test_cpp_load;
-
-/* A stream buffer to store the cout stream */
-static std::streambuf *__its_unit_test_stream_buffer_cout;
-
-/* A stream buffer to store the cerr stream */
-static std::streambuf *__its_unit_test_stream_buffer_cerr;
+#define assert_file(first_file, second_file)                                   \
+    do { __its_assert_files(first_file, second_file); } while (0)
 
 /**
- * While the test is running, create a waiting animation
+ * @brief This function testing a function without specific features.
+ *
+ * The output is redirected to keep a nice effect for the tests.
+ *
+ * @param __current_test_name: the name of the test function.
+ * @param function: the function itself.
  */
-static void __its_unit_test_cpp_loadingEffect()
-{
-    try
-    {
-        std::ostream stream_err(__its_unit_test_stream_buffer_cerr);
-        int ind = 0;
-        while (__its_unit_test_cpp_running)
-        {
-            switch (ind)
-            {
-            case 0:
-                stream_err << "   \b\b\b";
-                break;
-            case 1:
-                stream_err << ".  \b\b\b";
-                break;
-            case 2:
-                stream_err << ".. \b\b\b";
-                break;
-            case 3:
-                stream_err << "...\b\b\b";
-                break;
-            }
-            stream_err.flush();
-            ind = (ind + 1) % 4;
-            usleep(300000);
-        }
-        stream_err << "   \b\b\b";
-        stream_err.flush();
-    }
-    catch (std::exception const &e)
-    {
-        std::cerr.rdbuf(__its_unit_test_stream_buffer_cerr);
-        std::cerr << "Error : " << e.what() << std::endl;
-        exit(EXIT_FAILURE);
-    }
-}
+void __test_classic(std::string __current_test_name, void (*function)(void));
 
 /**
- * Stop the programm if the test is not finished after a certain time
- * @param time: the maximum time, in milliseconds
- * @param launch_func: the thread that execute the tested function
+ * @brief This function testing a function with a timeout.
+ * The output is redirected to keep a nice effect for the tests.
+ *
+ * @param __current_test_name: the name of the test function.
+ * @param function: the function itself.
+ * @param timeout_millis: the time given to the function before failure.
  */
-static void __its_unit_test_cpp_timeout(float time, std::thread &launch_func)
-{
-    try
-    {
-        std::ostream stream_err(__its_unit_test_stream_buffer_cerr);
+void __test_timeout(std::string __current_test_name, void (*function)(void),
+		   unsigned long timeout_millis);
 
-        auto start_time = std::chrono::steady_clock::now();
-        while (__its_unit_test_cpp_running)
-            if (std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::steady_clock::now() - start_time).count() > time)
-            {
-                __its_unit_test_cpp_running = false;
-                stream_err << "\x1b[1;31m"
-                           << "Timeout (" << time << " ms)"
-                           << "\x1b[0m" << std::endl;
-                stream_err.flush();
-                launch_func.detach();
-                __its_unit_test_cpp_load.join();
-                exit(EXIT_FAILURE);
-            }
-        launch_func.join();
-    }
-    catch (std::exception const &e)
-    {
-        std::cerr.rdbuf(__its_unit_test_stream_buffer_cerr);
-        std::cerr << "Error : " << e.what() << std::endl;
-        exit(EXIT_FAILURE);
-    }
-}
+/**
+ * @brief This function testing a function and it's output.
+ *
+ * The output is redirected to keep a nice effect for the tests.
+ * A file is created to compare with the given file. It is deleted
+ * if the test succeeded. If not, it is not deleted.
+ *
+ * @param test_name: the name of the test function.
+ * @param function: the function itself.
+ * @param expected_output_file: the path to the compare file.
+ */
+void __test_output(std::string __current_test_name, void (*function)(void),
+		   std::string expected_output_file);
+
+/**
+ * @brief This function testing a function and it's output with a timeout.
+ *
+ * The output is redirected to keep a nice effect for the tests.
+ * A file is created to compare with the given file. It is deleted
+ * if the test succeeded. If not, it is not deleted.
+ *
+ * @param __current_test_name: the name of the test function.
+ * @param function: the function itself.
+ * @param expected_output_file: the path to the compare file.
+ * @param timeout_millis: the time given to the function before failure.
+ */
+void __test_output_timeout(std::string __current_test_name,
+	void (*function)(void), std::string expected_output_file,
+	unsigned long timeout_millis);
+
+/**
+ * @brief Test the given expression. If it's false the programme is exited.
+ *
+ * If the test fail, all thread are stoped properly.
+ *
+ * @param expression_text: the expression tested in string.
+ * @param expression: the expression as an integer.
+ */
+void __its_assert_files(std::string first_file, std::string second_file);
+
+/**
+ * @brief Test the files given. If they are different, the test fail.
+ *
+ * If the test fail, all thread are stoped properly.
+ *
+ * @param expression_text: the expression tested in string.
+ * @param expression: the expression as an integer.
+ */
+void __its_assert(std::string expression_text, bool expression);
+
 
 #endif
