@@ -47,7 +47,7 @@
  * @param function: the tested function
  */
 #define __ITS_TEST_1(function)                                                 \
-    do {test1(#function, function); } while (0)
+    do {test1(std::string(#function), function); } while (0)
 
 /**
  * Macro to execute a test without a check of the output
@@ -55,7 +55,7 @@
  * @param timeout_millis: the maximum time of execution in milli-seconds
  */
 #define __ITS_TEST_2(function, timeout_millis)                                 \
-    do { test2(#function, function, timeout_millis); } while (0)
+    do { test2(std::string(#function), function, timeout_millis); } while (0)
 
 /**
  * Macro to execute a test with a check of the output
@@ -63,7 +63,7 @@
  * @param expected_output_file : the expected output file
  */
 #define __ITS_TEST_3(function, expected_output_file)                           \
-    do { test3(#function, function, expected_output_file);} while (0)
+    do { test3(std::string(#function), function, expected_output_file);} while (0)
 
 /**
  * Macro to execute a test with a check of the output
@@ -73,7 +73,7 @@
  */
 #define __ITS_TEST_4(function, expected_output_file, timeout_millis)           \
     do {                                                                       \
-		test4(#function, function, expected_output_file, timeout_millis);      \
+		test4(std::string(#function), function, expected_output_file, timeout_millis);      \
 	} while (0)
 
 /**
@@ -81,7 +81,7 @@
  * @param expr: the expression tested
  */
 #define assert(expression)                                                     \
-    do { __its_assert(#expression, expression); } while (0)
+    do { __its_assert(std::string(#expression), expression); } while (0)
 
 /**
  * Macro that test if two files identical
@@ -159,7 +159,7 @@ void __its_assert_files(std::string first_file, std::string second_file);
  * @param expression_text: the expression tested in string.
  * @param expression: the expression as an integer.
  */
-void __its_assert(char *expression_text, bool expression);
+void __its_assert(std::string expression_text, bool expression);
 
 
 #endif
