@@ -189,7 +189,6 @@ extern long long __remaining_alloc_its;
 *                            Primitive System                                  *
 *******************************************************************************/
 
-#ifdef PRIM_SYST
 extern long long __remaining_primsys_its;
 
 #define access(a,b)                                                            \
@@ -449,14 +448,11 @@ extern long long __remaining_primsys_its;
 		: (__remaining_primsys_its < 0)                                        \
 			? dup2(a,b)                                                        \
 			: -1)
-#endif
-
 
 /*******************************************************************************
 *                                 Thread                                       *
 *******************************************************************************/
 
-#ifdef THREAD_T
 extern long long __remaining_primsys_its;
 
 #define pthread_create(a,b,c,d)                                                \
@@ -550,8 +546,168 @@ extern long long __remaining_primsys_its;
 			? pthread_mutex_init(a,b)                                          \
 			: EINVAL)
 
+#define pthread_mutex_destroy(a)                                               \
+	((__remaining_primsys_its > 0)                                             \
+		? __remaining_primsys_its--, pthread_mutex_destroy(a)                  \
+		: (__remaining_primsys_its < 0)                                        \
+			? pthread_mutex_destroy(a)                                         \
+			: EINVAL)
 
-#endif
+#define pthread_mutex_lock(a)                                                  \
+	((__remaining_primsys_its > 0)                                             \
+		? __remaining_primsys_its--, pthread_mutex_lock(a)                     \
+		: (__remaining_primsys_its < 0)                                        \
+			? pthread_mutex_lock(a)                                            \
+			: EINVAL)
+
+#define pthread_mutex_unlock(a)                                                \
+	((__remaining_primsys_its > 0)                                             \
+		? __remaining_primsys_its--, pthread_mutex_unlock(a)                   \
+		: (__remaining_primsys_its < 0)                                        \
+			? pthread_mutex_unlock(a)                                          \
+			: EINVAL)
+
+#define pthread_mutex_timedlock(a,b)                                           \
+	((__remaining_primsys_its > 0)                                             \
+		? __remaining_primsys_its--, pthread_mutex_timedlock(a,b)              \
+		: (__remaining_primsys_its < 0)                                        \
+			? pthread_mutex_timedlock(a,b)                                     \
+			: EINVAL)
+
+#define pthread_mutex_trylock(a)                                               \
+	((__remaining_primsys_its > 0)                                             \
+		? __remaining_primsys_its--, pthread_mutex_trylock(a)                  \
+		: (__remaining_primsys_its < 0)                                        \
+			? pthread_mutex_trylock(a)                                         \
+			: EINVAL)
+
+#define sem_init(a,b,c)                                                        \
+	((__remaining_primsys_its > 0)                                             \
+		? __remaining_primsys_its--, sem_init(a,b,c)                           \
+		: (__remaining_primsys_its < 0)                                        \
+			? sem_init(a,b,c)                                                  \
+			: -1)
+
+#define sem_destroy(a)                                                         \
+	((__remaining_primsys_its > 0)                                             \
+		? __remaining_primsys_its--, sem_destroy(a)                            \
+		: (__remaining_primsys_its < 0)                                        \
+			? sem_destroy(a)                                                   \
+			: -1)
+
+#define sem_getvalue(a,b)                                                      \
+	((__remaining_primsys_its > 0)                                             \
+		? __remaining_primsys_its--, sem_getvalue(a,b)                         \
+		: (__remaining_primsys_its < 0)                                        \
+			? sem_getvalue(a,b)                                                \
+			: -1)
+
+#define sem_wait(a)                                                            \
+	((__remaining_primsys_its > 0)                                             \
+		? __remaining_primsys_its--, sem_wait(a)                               \
+		: (__remaining_primsys_its < 0)                                        \
+			? sem_wait(a)                                                      \
+			: -1)
+
+#define sem_trywait(a)                                                         \
+	((__remaining_primsys_its > 0)                                             \
+		? __remaining_primsys_its--, sem_trywait(a)                            \
+		: (__remaining_primsys_its < 0)                                        \
+			? sem_trywait(a)                                                   \
+			: -1)
+
+#define sem_timedwait(a,b)                                                     \
+	((__remaining_primsys_its > 0)                                             \
+		? __remaining_primsys_its--, sem_timedwait(a,b)                        \
+		: (__remaining_primsys_its < 0)                                        \
+			? sem_timedwait(a,b)                                               \
+			: -1)
+
+#define sem_post(a)                                                            \
+	((__remaining_primsys_its > 0)                                             \
+		? __remaining_primsys_its--, sem_post(a)                               \
+		: (__remaining_primsys_its < 0)                                        \
+			? sem_post(a)                                                      \
+			: -1)
+
+#define sem_macro(_1, _2, _3, _4, NAME, ...) NAME
+
+#define sem_open(...)                                                          \
+    sem_macro(__VA_ARGS__, sem_open_4,sem_open_3, open_2)                     \
+    (__VA_ARGS__)
+
+#define sem_open_2(a,b)                                                        \
+	((__remaining_primsys_its > 0)                                             \
+		? __remaining_primsys_its--, sem_open(a,b)                             \
+		: (__remaining_primsys_its < 0)                                        \
+			? sem_open(a,b)                                                    \
+			: SEM_FAILED)
+
+#define sem_open_3(a,b,c)
+
+#define sem_open_4(a,b,c,d)                                                    \
+	((__remaining_primsys_its > 0)                                             \
+		? __remaining_primsys_its--, sem_open(a,b,c,d)                         \
+		: (__remaining_primsys_its < 0)                                        \
+			? sem_open(a,b,c,d)                                                \
+			: SEM_FAILED)
+
+#define sem_close(a)                                                           \
+	((__remaining_primsys_its > 0)                                             \
+		? __remaining_primsys_its--, sem_close(a)                              \
+		: (__remaining_primsys_its < 0)                                        \
+			? sem_close(a)                                                     \
+			: -1)
+
+#define sem_unlink(a)                                                          \
+	((__remaining_primsys_its > 0)                                             \
+		? __remaining_primsys_its--, sem_unlink(a)                             \
+		: (__remaining_primsys_its < 0)                                        \
+			? sem_unlink(a)                                                    \
+			: -1)
+
+#define pthread_cond_init(a,b)                                                 \
+	((__remaining_primsys_its > 0)                                             \
+		? __remaining_primsys_its--, pthread_cond_init(a,b)                    \
+		: (__remaining_primsys_its < 0)                                        \
+			? pthread_cond_init(a,b)                                           \
+			: EINVAL)
+
+#define pthread_cond_destroy(a)                                                \
+	((__remaining_primsys_its > 0)                                             \
+		? __remaining_primsys_its--, pthread_cond_destroy(a)                   \
+		: (__remaining_primsys_its < 0)                                        \
+			? pthread_cond_destroy(a)                                          \
+			: EINVAL)
+
+#define pthread_cond_wait(a,b)                                                 \
+	((__remaining_primsys_its > 0)                                             \
+		? __remaining_primsys_its--, pthread_cond_wait(a,b)                    \
+		: (__remaining_primsys_its < 0)                                        \
+			? pthread_cond_wait(a,b)                                           \
+			: EINVAL)
+
+#define pthread_cond_timedwait(a,b,c)                                          \
+	((__remaining_primsys_its > 0)                                             \
+		? __remaining_primsys_its--, pthread_cond_timedwait(a,b,c)             \
+		: (__remaining_primsys_its < 0)                                        \
+			? pthread_cond_timedwait(a,b,c)                                    \
+			: EINVAL)
+
+#define pthread_cond_signal(a)                                                 \
+	((__remaining_primsys_its > 0)                                             \
+		? __remaining_primsys_its--, pthread_cond_signal(a)                    \
+		: (__remaining_primsys_its < 0)                                        \
+			? pthread_cond_signal(a)                                           \
+			: EINVAL)
+
+#define pthread_cond_broadcast(a)                                              \
+	((__remaining_primsys_its > 0)                                             \
+		? __remaining_primsys_its--, pthread_cond_broadcast(a)                 \
+		: (__remaining_primsys_its < 0)                                        \
+			? pthread_cond_broadcast(a)                                        \
+			: EINVAL)
+
 
 /*******************************************************************************
 *                        Functions used in macros                              *
