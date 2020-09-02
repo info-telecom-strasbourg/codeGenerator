@@ -20,10 +20,11 @@
 /**
  * Macro to execute a test without a check of the output
  * @param function: the tested function
- * @param timeout_millis: the maximum time of execution in milli-seconds (optionnal)
+ * @param timeout_millis: the maximum time of execution in milli-seconds
+ * (optionnal)
  */
-#define TEST(...)                                                 \
-    __ITS_GET_MACRO_TEST(__VA_ARGS__, __ITS_TEST_2, __ITS_TEST_1) \
+#define TEST(...)                                                              \
+    __ITS_GET_MACRO_TEST(__VA_ARGS__, __ITS_TEST_2, __ITS_TEST_1)              \
     (__VA_ARGS__)
 
 /**
@@ -37,15 +38,15 @@
  * @param expected_output_file : the expected output file
  * @param timeout_millis: the maximum time of execution in milli-seconds (optionnal)
  */
-#define OTEST(...)                                                 \
-    __ITS_GET_MACRO_OTEST(__VA_ARGS__, __ITS_TEST_4, __ITS_TEST_3) \
+#define OTEST(...)                                                             \
+    __ITS_GET_MACRO_OTEST(__VA_ARGS__, __ITS_TEST_4, __ITS_TEST_3)             \
     (__VA_ARGS__)
 
 /**
  * Macro to execute a test without a check of the output
  * @param function: the tested function
  */
-#define __ITS_TEST_1(function)                                                                                       \
+#define __ITS_TEST_1(function)                                                 \
     do {test1(#function, function); } while (0)
 
 /**
@@ -53,7 +54,7 @@
  * @param function: the tested function
  * @param timeout_millis: the maximum time of execution in milli-seconds
  */
-#define __ITS_TEST_2(function, timeout_millis)                                                                       \
+#define __ITS_TEST_2(function, timeout_millis)                                 \
     do { test2(#function, function, timeout_millis); } while (0)
 
 /**
@@ -61,7 +62,7 @@
  * @param function: the tested function
  * @param expected_output_file : the expected output file
  */
-#define __ITS_TEST_3(function, expected_output_file)                                                                 \
+#define __ITS_TEST_3(function, expected_output_file)                           \
     do { test3(#function, function, expected_output_file);} while (0)
 
 /**
@@ -70,14 +71,16 @@
  * @param expected_output_file : the expected output file
  * @param timeout_millis: the maximum time of execution in milli-seconds
  */
-#define __ITS_TEST_4(function, expected_output_file, timeout_millis)                                                 \
-    do {test4(#function, function, expected_output_file, timeout_millis);} while (0)
+#define __ITS_TEST_4(function, expected_output_file, timeout_millis)           \
+    do {                                                                       \
+		test4(#function, function, expected_output_file, timeout_millis);      \
+	} while (0)
 
 /**
  * Macro that test if the expression passed is true
  * @param expr: the expression tested
  */
-#define assert(expression)                                                       \
+#define assert(expression)                                                     \
     do { __its_assert(#expression, expression); } while (0)
 
 /**
@@ -85,7 +88,7 @@
  * @param first_file: the expected file
  * @param second_file : the tested file
  */
-#define assert_file(first_file, second_file)                                                                               \
+#define assert_file(first_file, second_file)                                   \
     do { __its_assert_files(first_file, second_file); } while (0)
 
 /**
@@ -106,7 +109,8 @@ void test1(std::string __current_test_name, void (*function)(void));
  * @param function: the function itself.
  * @param timeout_millis: the time given to the function before failure.
  */
-void test2(std::string __current_test_name, void (*function)(void), unsigned long timeout_millis);
+void test2(std::string __current_test_name, void (*function)(void),
+		   unsigned long timeout_millis);
 
 /**
  * @brief This function testing a function and it's output.
@@ -119,7 +123,8 @@ void test2(std::string __current_test_name, void (*function)(void), unsigned lon
  * @param function: the function itself.
  * @param expected_output_file: the path to the compare file.
  */
-void test3(std::string __current_test_name, void (*function)(void), std::string expected_output_file);
+void test3(std::string __current_test_name, void (*function)(void),
+		   std::string expected_output_file);
 
 /**
  * @brief This function testing a function and it's output with a timeout.
@@ -133,7 +138,8 @@ void test3(std::string __current_test_name, void (*function)(void), std::string 
  * @param expected_output_file: the path to the compare file.
  * @param timeout_millis: the time given to the function before failure.
  */
-void test4(std::string __current_test_name, void (*function)(void), std::string expected_output_file, unsigned long timeout_millis);
+void test4(std::string __current_test_name, void (*function)(void),
+		   std::string expected_output_file, unsigned long timeout_millis);
 
 /**
  * @brief Test the given expression. If it's false the programme is exited.
