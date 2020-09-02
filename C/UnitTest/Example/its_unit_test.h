@@ -15,7 +15,9 @@
 #include <errno.h>
 #include <string.h>
 
-
+/*******************************************************************************
+*                                   Tests                                      *
+*******************************************************************************/
 
 /**
  * @brief Macro to allows to redefine macros with a different parameters number
@@ -125,6 +127,435 @@
  */
 #define assert_file(first_file, second_file)                                   \
     do { __assert_file_unittest_its(first_file, second_file);} while (0)
+
+/*******************************************************************************
+*                            Memory allocation                                 *
+*******************************************************************************/
+
+/**
+ * The number of memory allocation that will succeed.
+ * If it is negative, they will all succeed.
+ */
+extern long long __remaining_alloc_its;
+
+/**
+ * @brief Redefine calloc to make it fail when you want.
+ *
+ * calloc can still fail. NULL may be return even if __remaining_alloc_its != 0
+ *
+ * @param a: the first parameter of calloc.
+ * @param b: the second parameter of calloc.
+ * @return the result of classic calloc or NULL if commanded failure
+ */
+#define calloc(a,b)                                                            \
+	((__remaining_alloc_its > 0)                                               \
+		? __remaining_alloc_its--, calloc(a,b)                                 \
+		: (__remaining_alloc_its < 0)                                          \
+			? calloc(a,b)                                                      \
+			: NULL)
+
+/**
+ * @brief Redefine malloc to make it fail when you want.
+ *
+ * malloc can still fail. NULL may be return even if __remaining_alloc_its != 0
+ *
+ * @param a: the first parameter of realloc.
+ * @param b: the second parameter of realloc.
+ * @return the result of classic realloc or NULL if commanded failure
+ */
+#define malloc(a)                                                              \
+	((__remaining_alloc_its > 0)                                               \
+		? __remaining_alloc_its--, malloc(a)                                   \
+		: (__remaining_alloc_its < 0)                                          \
+			? malloc(a)                                                        \
+			: NULL)
+
+/**
+ * @brief Redefine realloc to make it fail when you want.
+ *
+ * realloc can still fail. NULL may be return even if __remaining_alloc_its != 0
+ *
+ * @param a: the parameter of malloc.
+ * @return the result of classic malloc or NULL if commanded failure
+ */
+#define realloc(a,b)                                                           \
+	((__remaining_alloc_its > 0)                                               \
+		? __remaining_alloc_its--, realloc(a,b)                                \
+		: (__remaining_alloc_its < 0)                                          \
+			? realloc(a,b)                                                     \
+			: NULL)
+
+/*******************************************************************************
+*                            Primitive System                                  *
+*******************************************************************************/
+
+#ifdef PRIM_SYST
+extern long long __remaining_primsys_its;
+
+#define access(a,b)                                                            \
+	((__remaining_primsys_its > 0)                                             \
+		? __remaining_primsys_its--, access(a,b)                               \
+		: (__remaining_primsys_its < 0)                                        \
+			? access(a,b)                                                      \
+			: -1)
+
+#define stat(a,b)                                                              \
+	((__remaining_primsys_its > 0)                                             \
+		? __remaining_primsys_its--, stat(a,b)                                 \
+		: (__remaining_primsys_its < 0)                                        \
+			? stat(a,b)                                                        \
+			: -1)
+
+#define open_macro(_1, _2, _3, NAME, ...) NAME
+
+#define open(...)                                                              \
+    open_macro(__VA_ARGS__, open_2, open_1)                                    \
+    (__VA_ARGS__)
+
+#define open_1(a,b)                                                            \
+	((__remaining_primsys_its > 0)                                             \
+		? __remaining_primsys_its--, open(a,b)                                 \
+		: (__remaining_primsys_its < 0)                                        \
+			? open(a,b)                                                        \
+			: -1)
+
+#define open_2(a,b,c)                                                          \
+	((__remaining_primsys_its > 0)                                             \
+		? __remaining_primsys_its--, open(a,b,c)                               \
+		: (__remaining_primsys_its < 0)                                        \
+			? open(a,b,c)                                                      \
+			: -1)
+
+#define close(a)                                                               \
+	((__remaining_primsys_its > 0)                                             \
+		? __remaining_primsys_its--, close(a)                                  \
+		: (__remaining_primsys_its < 0)                                        \
+			? close(a)                                                         \
+			: -1)
+
+#define read(a,b,c)                                                            \
+	((__remaining_primsys_its > 0)                                             \
+		? __remaining_primsys_its--, read(a,b,c)                               \
+		: (__remaining_primsys_its < 0)                                        \
+			? read(a,b,c)                                                      \
+			: -1)
+
+#define write(a,b,c)                                                           \
+	((__remaining_primsys_its > 0)                                             \
+		? __remaining_primsys_its--, write(a,b,c)                              \
+		: (__remaining_primsys_its < 0)                                        \
+			? write(a,b,c)                                                     \
+			: -1)
+
+#define lseek(a,b,c)                                                           \
+	((__remaining_primsys_its > 0)                                             \
+		? __remaining_primsys_its--, lseek(a,b,c)                              \
+		: (__remaining_primsys_its < 0)                                        \
+			? lseek(a,b,c)                                                     \
+			: -1)
+
+#define stat(a,b)                                                              \
+	((__remaining_primsys_its > 0)                                             \
+		? __remaining_primsys_its--, stat(a,b)                                 \
+		: (__remaining_primsys_its < 0)                                        \
+			? stat(a,b)                                                        \
+			: -1)
+
+#define fstat(a,b)                                                             \
+	((__remaining_primsys_its > 0)                                             \
+		? __remaining_primsys_its--, fstat(a,b)                                \
+		: (__remaining_primsys_its < 0)                                        \
+			? fstat(a,b)                                                       \
+			: -1)
+
+#define utime(a,b)                                                             \
+	((__remaining_primsys_its > 0)                                             \
+		? __remaining_primsys_its--, utime(a,b)                                \
+		: (__remaining_primsys_its < 0)                                        \
+			? utime(a,b)                                                       \
+			: -1)
+
+#define chmod(a,b)                                                             \
+	((__remaining_primsys_its > 0)                                             \
+		? __remaining_primsys_its--, chmod(a,b)                                \
+		: (__remaining_primsys_its < 0)                                        \
+			? chmod(a,b)                                                       \
+			: -1)
+
+#define fchmod(a,b)                                                            \
+	((__remaining_primsys_its > 0)                                             \
+		? __remaining_primsys_its--, fchmod(a,b)                               \
+		: (__remaining_primsys_its < 0)                                        \
+			? fchmod(a,b)                                                      \
+			: -1)
+
+#define chown(a,b,c)                                                           \
+	((__remaining_primsys_its > 0)                                             \
+		? __remaining_primsys_its--, chown(a,b,c)                              \
+		: (__remaining_primsys_its < 0)                                        \
+			? chown(a,b,c)                                                     \
+			: -1)
+
+#define fchown(a,b,c)                                                          \
+	((__remaining_primsys_its > 0)                                             \
+		? __remaining_primsys_its--, fchown(a,b,c)                             \
+		: (__remaining_primsys_its < 0)                                        \
+			? fchown(a,b,c)                                                    \
+			: -1)
+
+#define mkdir(a,b)                                                             \
+	((__remaining_primsys_its > 0)                                             \
+		? __remaining_primsys_its--, mkdir(a,b)                                \
+		: (__remaining_primsys_its < 0)                                        \
+			? mkdir(a,b)                                                       \
+			: -1)
+
+#define rmdir(a)                                                               \
+	((__remaining_primsys_its > 0)                                             \
+		? __remaining_primsys_its--, rmdir(a)                                  \
+		: (__remaining_primsys_its < 0)                                        \
+			? rmdir(a)                                                         \
+			: -1)
+
+#define link(a,b)                                                              \
+	((__remaining_primsys_its > 0)                                             \
+		? __remaining_primsys_its--, link(a,b)                                 \
+		: (__remaining_primsys_its < 0)                                        \
+			? link(a,b)                                                        \
+			: -1)
+
+#define unlink(a)                                                              \
+	((__remaining_primsys_its > 0)                                             \
+		? __remaining_primsys_its--, unlink(a)                                 \
+		: (__remaining_primsys_its < 0)                                        \
+			? unlink(a)                                                        \
+			: -1)
+
+#define symlink(a,b)                                                           \
+	((__remaining_primsys_its > 0)                                             \
+		? __remaining_primsys_its--, symlink(a,b)                              \
+		: (__remaining_primsys_its < 0)                                        \
+			? symlink(a,b)                                                     \
+			: -1)
+
+#define readlink(a,b,c)                                                        \
+	((__remaining_primsys_its > 0)                                             \
+		? __remaining_primsys_its--, readlink(a,b,c)                           \
+		: (__remaining_primsys_its < 0)                                        \
+			? readlink(a,b,c)                                                  \
+			: -1)
+
+#define lstat(a,b)                                                             \
+	((__remaining_primsys_its > 0)                                             \
+		? __remaining_primsys_its--, lstat(a,b)                                \
+		: (__remaining_primsys_its < 0)                                        \
+			? lstat(a,b)                                                       \
+			: -1)
+
+#define setuid(a)                                                              \
+	((__remaining_primsys_its > 0)                                             \
+		? __remaining_primsys_its--, setuid(a)                                 \
+		: (__remaining_primsys_its < 0)                                        \
+			? setuid(a)                                                        \
+			: -1)
+
+#define setgid(a)                                                              \
+	((__remaining_primsys_its > 0)                                             \
+		? __remaining_primsys_its--, setgid(a)                                 \
+		: (__remaining_primsys_its < 0)                                        \
+			? setgid(a)                                                        \
+			: -1)
+
+#define fork()                                                                 \
+	((__remaining_primsys_its > 0)                                             \
+		? __remaining_primsys_its--, fork()                                    \
+		: (__remaining_primsys_its < 0)                                        \
+			? fork()                                                           \
+			: -1)
+
+#define wait(a)                                                                \
+	((__remaining_primsys_its > 0)                                             \
+		? __remaining_primsys_its--, wait(a)                                   \
+		: (__remaining_primsys_its < 0)                                        \
+			? wait(a)                                                          \
+			: -1)
+
+#define waitpid(a,b,c)                                                         \
+	((__remaining_primsys_its > 0)                                             \
+		? __remaining_primsys_its--, waitpid(a,b,c)                            \
+		: (__remaining_primsys_its < 0)                                        \
+			? waitpid(a,b,c)                                                   \
+			: -1)
+
+#define time(a)                                                                \
+	((__remaining_primsys_its > 0)                                             \
+		? __remaining_primsys_its--, time(a)                                   \
+		: (__remaining_primsys_its < 0)                                        \
+			? time(a)                                                          \
+			: -1)
+
+#define stime(a)                                                               \
+	((__remaining_primsys_its > 0)                                             \
+		? __remaining_primsys_its--, stime(a)                                  \
+		: (__remaining_primsys_its < 0)                                        \
+			? stime(a)                                                         \
+			: -1)
+
+#define gettimeofday(a,b)                                                      \
+	((__remaining_primsys_its > 0)                                             \
+		? __remaining_primsys_its--, gettimeofday(a,b)                         \
+		: (__remaining_primsys_its < 0)                                        \
+			? gettimeofday(a,b)                                                \
+			: -1)
+
+#define times(a)                                                               \
+	((__remaining_primsys_its > 0)                                             \
+		? __remaining_primsys_its--, times(a)                                  \
+		: (__remaining_primsys_its < 0)                                        \
+			? times(a)                                                         \
+			: -1)
+
+#define getrusage(a,b)                                                         \
+	((__remaining_primsys_its > 0)                                             \
+		? __remaining_primsys_its--, getrusage(a,b)                            \
+		: (__remaining_primsys_its < 0)                                        \
+			? getrusage(a,b)                                                   \
+			: -1)
+
+#define pipe(a)                                                                \
+	((__remaining_primsys_its > 0)                                             \
+		? __remaining_primsys_its--, pipe(a)                                   \
+		: (__remaining_primsys_its < 0)                                        \
+			? pipe(a)                                                          \
+			: -1)
+
+#define mkfifo(a,b)                                                            \
+	((__remaining_primsys_its > 0)                                             \
+		? __remaining_primsys_its--, mkfifo(a,b)                               \
+		: (__remaining_primsys_its < 0)                                        \
+			? mkfifo(a,b)                                                      \
+			: -1)
+
+#define dup(a)                                                                 \
+	((__remaining_primsys_its > 0)                                             \
+		? __remaining_primsys_its--, dup(a)                                    \
+		: (__remaining_primsys_its < 0)                                        \
+			? dup(a)                                                           \
+			: -1)
+
+#define dup2(a,b)                                                              \
+	((__remaining_primsys_its > 0)                                             \
+		? __remaining_primsys_its--, dup2(a,b)                                 \
+		: (__remaining_primsys_its < 0)                                        \
+			? dup2(a,b)                                                        \
+			: -1)
+#endif
+
+
+/*******************************************************************************
+*                                 Thread                                       *
+*******************************************************************************/
+
+#ifdef THREAD_T
+extern long long __remaining_primsys_its;
+
+#define pthread_create(a,b,c,d)                                                \
+	((__remaining_primsys_its > 0)                                             \
+		? __remaining_primsys_its--, pthread_create(a,b,c,d)                   \
+		: (__remaining_primsys_its < 0)                                        \
+			? pthread_create(a,b,c,d)                                          \
+			: EAGAIN)
+
+#define pthread_join(a,b)                                                      \
+	((__remaining_primsys_its > 0)                                             \
+		? __remaining_primsys_its--, pthread_join(a,b)                         \
+		: (__remaining_primsys_its < 0)                                        \
+			? pthread_join(a,b)                                                \
+			: EAGAIN)
+
+#define pthread_attr_init(a)                                                   \
+	((__remaining_primsys_its > 0)                                             \
+		? __remaining_primsys_its--, pthread_attr_init(a)                      \
+		: (__remaining_primsys_its < 0)                                        \
+			? pthread_attr_init(a)                                             \
+			: ENOMEM)
+
+#define pthread_attr_destroy(a)                                                \
+	((__remaining_primsys_its > 0)                                             \
+		? __remaining_primsys_its--, pthread_attr_destroy(a)                   \
+		: (__remaining_primsys_its < 0)                                        \
+			? pthread_attr_destroy(a)                                          \
+			: ENOMEM)
+
+#define pthread_kill(a,b)                                                      \
+	((__remaining_primsys_its > 0)                                             \
+		? __remaining_primsys_its--, pthread_kill(a,b)                         \
+		: (__remaining_primsys_its < 0)                                        \
+			? pthread_kill(a,b)                                                \
+			: EINVAL)
+
+#define sigwait(a,b)                                                           \
+	((__remaining_primsys_its > 0)                                             \
+		? __remaining_primsys_its--, sigwait(a,b)                              \
+		: (__remaining_primsys_its < 0)                                        \
+			? sigwait(a,b)                                                     \
+			: EINVAL)
+
+#define pthread_barrier_wait(a)                                                \
+	((__remaining_primsys_its > 0)                                             \
+		? __remaining_primsys_its--, pthread_barrier_wait(a)                   \
+		: (__remaining_primsys_its < 0)                                        \
+			? pthread_barrier_wait(a)                                          \
+			: 2)
+
+#define pthread_barrier_init(a,b,c)                                            \
+	((__remaining_primsys_its > 0)                                             \
+		? __remaining_primsys_its--, pthread_barrier_init(a,b,c)               \
+		: (__remaining_primsys_its < 0)                                        \
+			? pthread_barrier_init(a,b,c)                                      \
+			: ENOMEN)
+
+#define pthread_barrierattr_init(a)                                            \
+	((__remaining_primsys_its > 0)                                             \
+		? __remaining_primsys_its--, pthread_barrierattr_init(a)               \
+		: (__remaining_primsys_its < 0)                                        \
+			? pthread_barrierattr_init(a)                                      \
+			: ENOMEN)
+
+#define pthread_barrierattr_destroy(a)                                         \
+	((__remaining_primsys_its > 0)                                             \
+		? __remaining_primsys_its--, pthread_barrierattr_destroy(a)            \
+		: (__remaining_primsys_its < 0)                                        \
+			? pthread_barrierattr_destroy(a)                                   \
+			: ENOMEN)
+
+#define pthread_barrierattr_setpshared(a,b)                                    \
+	((__remaining_primsys_its > 0)                                             \
+		? __remaining_primsys_its--, pthread_barrierattr_setpshared(a,b)       \
+		: (__remaining_primsys_its < 0)                                        \
+			? pthread_barrierattr_setpshared(a,b)                              \
+			: EINVAL)
+
+#define pthread_barrierattr_getpshared(a,b)                                    \
+	((__remaining_primsys_its > 0)                                             \
+		? __remaining_primsys_its--, pthread_barrierattr_getpshared(a,b)       \
+		: (__remaining_primsys_its < 0)                                        \
+			? pthread_barrierattr_getpshared(a,b)                              \
+			: EINVAL)
+
+#define pthread_mutex_init(a,b)                                                \
+	((__remaining_primsys_its > 0)                                             \
+		? __remaining_primsys_its--, pthread_mutex_init(a,b)                   \
+		: (__remaining_primsys_its < 0)                                        \
+			? pthread_mutex_init(a,b)                                          \
+			: EINVAL)
+
+
+#endif
+
+/*******************************************************************************
+*                        Functions used in macros                              *
+*******************************************************************************/
 
 /**
  * @brief This function testing a function without specific features.

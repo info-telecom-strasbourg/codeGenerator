@@ -15,7 +15,9 @@
 #include <errno.h>
 #include <string.h>
 
-
+/*******************************************************************************
+*                                   Tests                                      *
+*******************************************************************************/
 
 /**
  * @brief Macro to allows to redefine macros with a different parameters number
@@ -125,6 +127,107 @@
  */
 #define assert_file(first_file, second_file)                                   \
     do { __assert_file_unittest_its(first_file, second_file);} while (0)
+
+/*******************************************************************************
+*                            Memory allocation                                 *
+*******************************************************************************/
+
+/**
+ * The number of memory allocation that will succeed.
+ * If it is negative, they will all succeed.
+ */
+extern long long __remaining_alloc_its;
+
+/**
+ * @brief Redefine calloc to make it fail when you want.
+ *
+ * calloc can still fail. NULL may be return even if __remaining_alloc_its != 0
+ *
+ * @param a: the first parameter of calloc.
+ * @param b: the second parameter of calloc.
+ * @return the result of classic calloc or NULL if commanded failure
+ */
+#define calloc(a,b)                                                            \
+	((__remaining_alloc_its > 0)                                               \
+		? __remaining_alloc_its--, calloc(a,b)                                 \
+		: (__remaining_alloc_its < 0)                                          \
+			? calloc(a,b)                                                      \
+			: NULL)
+
+/**
+ * @brief Redefine malloc to make it fail when you want.
+ *
+ * malloc can still fail. NULL may be return even if __remaining_alloc_its != 0
+ *
+ * @param a: the first parameter of realloc.
+ * @param b: the second parameter of realloc.
+ * @return the result of classic realloc or NULL if commanded failure
+ */
+#define malloc(a)                                                              \
+	((__remaining_alloc_its > 0)                                               \
+		? __remaining_alloc_its--, malloc(a)                                   \
+		: (__remaining_alloc_its < 0)                                          \
+			? malloc(a)                                                        \
+			: NULL)
+
+/**
+ * @brief Redefine realloc to make it fail when you want.
+ *
+ * realloc can still fail. NULL may be return even if __remaining_alloc_its != 0
+ *
+ * @param a: the parameter of malloc.
+ * @return the result of classic malloc or NULL if commanded failure
+ */
+#define realloc(a,b)                                                           \
+	((__remaining_alloc_its > 0)                                               \
+		? __remaining_alloc_its--, realloc(a,b)                                \
+		: (__remaining_alloc_its < 0)                                          \
+			? realloc(a,b)                                                     \
+			: NULL)
+
+/*******************************************************************************
+*                            Primitive System                                  *
+*******************************************************************************/
+
+extern long long __remaining_primsys_its;
+
+#define access(a,b)                                                            \
+	((__remaining_primsys_its > 0)                                             \
+		? __remaining_primsys_its--, access(a,b)                               \
+		: (__remaining_primsys_its < 0)                                        \
+			? access(a,b)                                                      \
+			: -1)
+
+#define stat(a,b)                                                              \
+	((__remaining_primsys_its > 0)                                             \
+		? __remaining_primsys_its--, stat(a,b)                                 \
+		: (__remaining_primsys_its < 0)                                        \
+			? stat(a,b)                                                        \
+			: -1)
+
+#define open_macro(_1, _2, NAME, ...) NAME
+
+#define open(...)                                                              \
+    open_macro(__VA_ARGS__, open_2, open_1)                        \
+    (__VA_ARGS__)
+
+#define open_1(a,b)                                                            \
+	((__remaining_primsys_its > 0)                                             \
+		? __remaining_primsys_its--, open(a,b)                                 \
+		: (__remaining_primsys_its < 0)                                        \
+			? open(a,b)                                                        \
+			: -1)
+
+#define open_2(a,b,c)                                                          \
+	((__remaining_primsys_its > 0)                                             \
+		? __remaining_primsys_its--, open(a,b,c)                               \
+		: (__remaining_primsys_its < 0)                                        \
+			? open(a,b)                                                        \
+			: -1)
+
+/*******************************************************************************
+*                        Functions used in macros                              *
+*******************************************************************************/
 
 /**
  * @brief This function testing a function without specific features.
