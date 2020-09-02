@@ -139,13 +139,7 @@
 extern long long __remaining_alloc_its;
 
 /**
- * @brief Redefine calloc to make it fail when you want.
- *
- * calloc can still fail. NULL may be return even if __remaining_alloc_its != 0
- *
- * @param a: the first parameter of calloc.
- * @param b: the second parameter of calloc.
- * @return the result of classic calloc or NULL if commanded failure
+ * All the folowing macros simulate allocation functions failure
  */
 #define calloc(a,b)                                                            \
 	((__remaining_alloc_its > 0)                                               \
@@ -154,15 +148,6 @@ extern long long __remaining_alloc_its;
 			? calloc(a,b)                                                      \
 			: NULL)
 
-/**
- * @brief Redefine malloc to make it fail when you want.
- *
- * malloc can still fail. NULL may be return even if __remaining_alloc_its != 0
- *
- * @param a: the first parameter of realloc.
- * @param b: the second parameter of realloc.
- * @return the result of classic realloc or NULL if commanded failure
- */
 #define malloc(a)                                                              \
 	((__remaining_alloc_its > 0)                                               \
 		? __remaining_alloc_its--, malloc(a)                                   \
@@ -170,14 +155,6 @@ extern long long __remaining_alloc_its;
 			? malloc(a)                                                        \
 			: NULL)
 
-/**
- * @brief Redefine realloc to make it fail when you want.
- *
- * realloc can still fail. NULL may be return even if __remaining_alloc_its != 0
- *
- * @param a: the parameter of malloc.
- * @return the result of classic malloc or NULL if commanded failure
- */
 #define realloc(a,b)                                                           \
 	((__remaining_alloc_its > 0)                                               \
 		? __remaining_alloc_its--, realloc(a,b)                                \
@@ -189,7 +166,12 @@ extern long long __remaining_alloc_its;
 *                            Primitive System                                  *
 *******************************************************************************/
 
+/** The number of primitive system that will succeed */
 extern long long __remaining_primsys_its;
+
+/**
+ * All the folowing macros simulate primitive system functions failure
+ */
 
 #define access(a,b)                                                            \
 	((__remaining_primsys_its > 0)                                             \
@@ -452,8 +434,12 @@ extern long long __remaining_primsys_its;
 /*******************************************************************************
 *                                 Thread                                       *
 *******************************************************************************/
-
+/** The number of PS that will succeed */
 extern long long __remaining_primsys_its;
+
+/**
+ * All the folowing macros simulate threads functions failure
+ */
 
 #define pthread_create(a,b,c,d)                                                \
 	((__remaining_primsys_its > 0)                                             \
