@@ -111,7 +111,7 @@ __its_unit_test_cpp_timeout(float time, thread &launch_func)
 }
 
 void
-__its_assert(string expression_text, bool expression)
+__assert_unittest_its(string expression_text, bool expression)
 {
     try
     {
@@ -133,7 +133,7 @@ __its_assert(string expression_text, bool expression)
 }
 
 void
-__its_assert_files(string first_file, string second_file)
+___assert_file_unittest_its(string first_file, string second_file)
 {
     try
     {
@@ -244,7 +244,7 @@ end_test(unsigned long elapsed_time, ofstream &file)
 
 
 void
-__test_classic(string __current_test_name, void (*function)(void))
+__test_classic_unittest_its(string __current_test_name, void (*function)(void))
 {
 	try
 	{
@@ -263,7 +263,7 @@ __test_classic(string __current_test_name, void (*function)(void))
 }
 
 void
-__test_timeout(string __current_test_name, void (*function)(void),
+__test_timeout_unittest_its(string __current_test_name, void (*function)(void),
 	  unsigned long timeout_millis)
 {
 	try
@@ -288,7 +288,7 @@ __test_timeout(string __current_test_name, void (*function)(void),
 }
 
 void
-__test_output(string __current_test_name, void (*function)(void),
+__test_output_unittest_its(string __current_test_name, void (*function)(void),
 	  string expected_output_file)
 {
 	try
@@ -298,7 +298,7 @@ __test_output(string __current_test_name, void (*function)(void),
 		auto start = chrono::steady_clock::now();
 		function();
 		auto end = chrono::steady_clock::now();
-		__its_assert_files(expected_output_file, __current_test_name +
+		___assert_file_unittest_its(expected_output_file, __current_test_name +
 			string("_its_test.log"));
 		cout.rdbuf(saved_cout);
 		cerr.rdbuf(saved_cerr);
@@ -314,8 +314,9 @@ __test_output(string __current_test_name, void (*function)(void),
 }
 
 void
-__test_output_timeout(string __current_test_name, void (*function)(void),
-	  string expected_output_file, unsigned long timeout_millis)
+__test_output_timeout_unittest_its(string __current_test_name,
+	void (*function)(void), string expected_output_file,
+	unsigned long timeout_millis)
 {
 	try
 	{

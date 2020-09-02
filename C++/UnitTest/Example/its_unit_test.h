@@ -48,7 +48,7 @@
  * @param function: the tested function
  */
 #define __ITS_TEST_1(function)                                                 \
-    do { __test_classic(std::string(#function), function); } while (0)
+    do {__test_classic_unittest_its(std::string(#function), function);}while (0)
 
 /**
  * Macro to execute a test without a check of the output
@@ -57,7 +57,8 @@
  */
 #define __ITS_TEST_2(function, timeout_millis)                                 \
     do {                                                                       \
-		__test_timeout(std::string(#function), function, timeout_millis);      \
+		__test_timeout_unittest_its(std::string(#function), function,          \
+		timeout_millis);                                                       \
 	} while (0)
 
 /**
@@ -67,7 +68,8 @@
  */
 #define __ITS_TEST_3(function, expected_output_file)                           \
     do {                                                                       \
-		__test_output(std::string(#function), function, expected_output_file); \
+		__test_output_unittest_its(std::string(#function), function,           \
+		expected_output_file);                                                 \
 	} while (0)
 
 /**
@@ -78,7 +80,7 @@
  */
 #define __ITS_TEST_4(function, expected_output_file, timeout_millis)           \
     do {                                                                       \
-		__test_output_timeout(std::string(#function), function,                \
+		__test_output_timeout_unittest_its(std::string(#function), function,   \
 			expected_output_file, timeout_millis);                             \
 	} while (0)
 
@@ -87,7 +89,7 @@
  * @param expr: the expression tested
  */
 #define assert(expression)                                                     \
-    do { __its_assert(std::string(#expression), expression); } while (0)
+    do {__assert_unittest_its(std::string(#expression), expression); } while (0)
 
 /**
  * Macro that test if two files identical
@@ -95,7 +97,7 @@
  * @param second_file : the tested file
  */
 #define assert_file(first_file, second_file)                                   \
-    do { __its_assert_files(first_file, second_file); } while (0)
+    do { ___assert_file_unittest_its(first_file, second_file); } while (0)
 
 /**
  * @brief This function testing a function without specific features.
@@ -105,7 +107,8 @@
  * @param __current_test_name: the name of the test function.
  * @param function: the function itself.
  */
-void __test_classic(std::string __current_test_name, void (*function)(void));
+void __test_classic_unittest_its(std::string __current_test_name,
+	void (*function)(void));
 
 /**
  * @brief This function testing a function with a timeout.
@@ -115,8 +118,8 @@ void __test_classic(std::string __current_test_name, void (*function)(void));
  * @param function: the function itself.
  * @param timeout_millis: the time given to the function before failure.
  */
-void __test_timeout(std::string __current_test_name, void (*function)(void),
-		   unsigned long timeout_millis);
+void __test_timeout_unittest_its(std::string __current_test_name,
+	void (*function)(void), unsigned long timeout_millis);
 
 /**
  * @brief This function testing a function and it's output.
@@ -129,8 +132,8 @@ void __test_timeout(std::string __current_test_name, void (*function)(void),
  * @param function: the function itself.
  * @param expected_output_file: the path to the compare file.
  */
-void __test_output(std::string __current_test_name, void (*function)(void),
-		   std::string expected_output_file);
+void __test_output_unittest_its(std::string __current_test_name,
+	void (*function)(void), std::string expected_output_file);
 
 /**
  * @brief This function testing a function and it's output with a timeout.
@@ -144,7 +147,7 @@ void __test_output(std::string __current_test_name, void (*function)(void),
  * @param expected_output_file: the path to the compare file.
  * @param timeout_millis: the time given to the function before failure.
  */
-void __test_output_timeout(std::string __current_test_name,
+void __test_output_timeout_unittest_its(std::string __current_test_name,
 	void (*function)(void), std::string expected_output_file,
 	unsigned long timeout_millis);
 
@@ -156,7 +159,7 @@ void __test_output_timeout(std::string __current_test_name,
  * @param expression_text: the expression tested in string.
  * @param expression: the expression as an integer.
  */
-void __its_assert_files(std::string first_file, std::string second_file);
+void ___assert_file_unittest_its(std::string first_file, std::string second_file);
 
 /**
  * @brief Test the files given. If they are different, the test fail.
@@ -166,7 +169,7 @@ void __its_assert_files(std::string first_file, std::string second_file);
  * @param expression_text: the expression tested in string.
  * @param expression: the expression as an integer.
  */
-void __its_assert(std::string expression_text, bool expression);
+void __assert_unittest_its(std::string expression_text, bool expression);
 
 
 #endif
