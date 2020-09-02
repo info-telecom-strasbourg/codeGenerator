@@ -33,8 +33,8 @@
  * @param timeout_millis: the maximum time of execution in
  * milli-seconds (optional)
  */
-#define TEST(...)                                                 \
-    __ITS_GET_MACRO_TEST(__VA_ARGS__, __ITS_TEST_2, __ITS_TEST_1) \
+#define TEST(...)                                                              \
+    __ITS_GET_MACRO_TEST(__VA_ARGS__, __ITS_TEST_2, __ITS_TEST_1)              \
     (__VA_ARGS__)
 
 /**
@@ -55,8 +55,8 @@
  * @param timeout_millis: the maximum time of execution in milli-seconds
  * (optional)
  */
-#define OTEST(...)                                                 \
-    __ITS_GET_MACRO_OTEST(__VA_ARGS__, __ITS_TEST_4, __ITS_TEST_3) \
+#define OTEST(...)                                                             \
+    __ITS_GET_MACRO_OTEST(__VA_ARGS__, __ITS_TEST_4, __ITS_TEST_3)             \
     (__VA_ARGS__)
 
 /**
@@ -66,7 +66,8 @@
  *
  * @param function: the tested function
  */
-#define __ITS_TEST_1(function) do{test1(#function, function);}while (0)
+#define __ITS_TEST_1(function)                                                 \
+	do{__test_classic_unittest_its(#function, function);}while (0)
 
 /**
  * @brief Macro to execute a test with a timeout
@@ -76,8 +77,10 @@
  * @param function: the tested function
  * @param timeout_millis: the time given to the test
  */
-#define __ITS_TEST_2(function, timeout_millis)\
-    do{test2(#function, function, timeout_millis);}while(0)
+#define __ITS_TEST_2(function, timeout_millis)                                 \
+    do{                                                                        \
+		__test_timeout_unittest_its(#function, function, timeout_millis);      \
+	}while(0)
 
 /**
  * @brief Macro to execute a test of the output of the function
@@ -88,8 +91,10 @@
  * @param expected_output_file: the file that will be compared with the
  * output.
  */
-#define __ITS_TEST_3(function, expected_output_file)\
-    do{test3(#function, function, expected_output_file);}while(0)
+#define __ITS_TEST_3(function, expected_output_file)                           \
+    do{                                                                        \
+		__test_output_unittest_its(#function, function, expected_output_file); \
+	}while(0)
 
 /**
  * @brief Macro to execute a test of the output of the function
@@ -100,24 +105,26 @@
  * @param expected_output_file: the file that will be compared with the
  * output.
  */
-#define __ITS_TEST_4(function, expected_output_file, timeout_millis)\
-    do{\
-        test4(#function, function, expected_output_file, timeout_millis);\
+#define __ITS_TEST_4(function, expected_output_file, timeout_millis)           \
+    do{                                                                        \
+        __test_output_timeout_unittest_its(#function, function,                \
+			expected_output_file, timeout_millis);                             \
        }while(0)
 
 /**
  * Macro that test if the the expression passed is true
  * @param expr: the expression tested
  */
-#define assert(expression) do{__its_assert(#expression, expression); } while(0)
+#define assert(expression)                                                     \
+	do{__assert_unittest_its(#expression, expression); } while(0)
 
 /**
  * Macro that test if two files identical
  * @param first_file: the expected file
  * @param second_file : the tested file
  */
-#define assert_file(first_file, second_file)\
-    do { __its_assert_file(first_file, second_file);} while (0)
+#define assert_file(first_file, second_file)                                   \
+    do { __assert_file_unittest_its(first_file, second_file);} while (0)
 
 /**
  * @brief This function testing a function without specific features.
@@ -127,7 +134,7 @@
  * @param test_name: the name of the test function.
  * @param function: the function itself.
  */
-void test1(char *test_name, void (*function)(void));
+void __test_classic_unittest_its(char *test_name, void (*function)(void));
 
 /**
  * @brief This function testing a function with a timeout.
@@ -137,7 +144,8 @@ void test1(char *test_name, void (*function)(void));
  * @param function: the function itself.
  * @param timeout: the time given to the function before failure.
  */
-void test2(char *test_name, void (*function)(void), unsigned long timeout);
+void __test_timeout_unittest_its(char *test_name, void (*function)(void),
+	unsigned long timeout);
 
 /**
  * @brief This function testing a function and it's output.
@@ -150,7 +158,7 @@ void test2(char *test_name, void (*function)(void), unsigned long timeout);
  * @param function: the function itself.
  * @param expected_output_file: the path to the compare file.
  */
-void test3(char *test_name, void (*function)(void),
+void __test_output_unittest_its(char *test_name, void (*function)(void),
         char *expected_output_file);
 
 /**
@@ -165,7 +173,7 @@ void test3(char *test_name, void (*function)(void),
  * @param expected_output_file: the path to the compare file.
  * @param timeout: the time given to the function before failure.
  */
-void test4(char *test_name, void (*function)(void),
+void __test_output_timeout_unittest_its(char *test_name, void (*function)(void),
         char *expected_output_file, unsigned long timeout_millis);
 
 /**
@@ -176,7 +184,7 @@ void test4(char *test_name, void (*function)(void),
  * @param expression_text: the expression tested in string.
  * @param expression: the expression as an integer.
  */
-void __its_assert(char* expression_text ,int expression);
+void __assert_unittest_its(char* expression_text ,int expression);
 
 /**
  * @brief Test the files given. If they are different, the test fail.
@@ -186,5 +194,6 @@ void __its_assert(char* expression_text ,int expression);
  * @param expression_text: the expression tested in string.
  * @param expression: the expression as an integer.
  */
-void __its_assert_file(char *first_file, char *second_file);
+void __assert_file_unittest_its(char *first_file, char *second_file);
+
 #endif
