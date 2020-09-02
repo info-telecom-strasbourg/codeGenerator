@@ -47,7 +47,7 @@
  * @param function: the tested function
  */
 #define __ITS_TEST_1(function)                                                 \
-    do {test1(std::string(#function), function); } while (0)
+    do { __test_classic(std::string(#function), function); } while (0)
 
 /**
  * Macro to execute a test without a check of the output
@@ -55,7 +55,7 @@
  * @param timeout_millis: the maximum time of execution in milli-seconds
  */
 #define __ITS_TEST_2(function, timeout_millis)                                 \
-    do { test2(std::string(#function), function, timeout_millis); } while (0)
+    do { __test_timeout(std::string(#function), function, timeout_millis); } while (0)
 
 /**
  * Macro to execute a test with a check of the output
@@ -63,7 +63,7 @@
  * @param expected_output_file : the expected output file
  */
 #define __ITS_TEST_3(function, expected_output_file)                           \
-    do { test3(std::string(#function), function, expected_output_file);} while (0)
+    do { __test_output(std::string(#function), function, expected_output_file);} while (0)
 
 /**
  * Macro to execute a test with a check of the output
@@ -73,7 +73,7 @@
  */
 #define __ITS_TEST_4(function, expected_output_file, timeout_millis)           \
     do {                                                                       \
-		test4(std::string(#function), function, expected_output_file, timeout_millis);      \
+		__test_output_timeout(std::string(#function), function, expected_output_file, timeout_millis);      \
 	} while (0)
 
 /**
@@ -99,7 +99,7 @@
  * @param __current_test_name: the name of the test function.
  * @param function: the function itself.
  */
-void test1(std::string __current_test_name, void (*function)(void));
+void __test_classic(std::string __current_test_name, void (*function)(void));
 
 /**
  * @brief This function testing a function with a timeout.
@@ -109,7 +109,7 @@ void test1(std::string __current_test_name, void (*function)(void));
  * @param function: the function itself.
  * @param timeout_millis: the time given to the function before failure.
  */
-void test2(std::string __current_test_name, void (*function)(void),
+void __test_timeout(std::string __current_test_name, void (*function)(void),
 		   unsigned long timeout_millis);
 
 /**
@@ -123,7 +123,7 @@ void test2(std::string __current_test_name, void (*function)(void),
  * @param function: the function itself.
  * @param expected_output_file: the path to the compare file.
  */
-void test3(std::string __current_test_name, void (*function)(void),
+void __test_output(std::string __current_test_name, void (*function)(void),
 		   std::string expected_output_file);
 
 /**
@@ -138,7 +138,7 @@ void test3(std::string __current_test_name, void (*function)(void),
  * @param expected_output_file: the path to the compare file.
  * @param timeout_millis: the time given to the function before failure.
  */
-void test4(std::string __current_test_name, void (*function)(void),
+void __test_output_timeout(std::string __current_test_name, void (*function)(void),
 		   std::string expected_output_file, unsigned long timeout_millis);
 
 /**
