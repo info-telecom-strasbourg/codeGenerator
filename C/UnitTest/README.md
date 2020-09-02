@@ -60,7 +60,7 @@ We advice you to create a **separate directory** for tests. In this directory, y
 
 ## Warnings
 
-It is possible that your IDE detect with the auto-compilation that a `;` is missing. Don't worry, it's due to the override of macros, it will still work!
+It is possible that your IDE detect with the auto-compilation that a `;` is missing. Don't worry, it's due to the override of macros, it will still work! This problem do not appear with classic compilation.
 
 In the *Makefile*, use -pthread, otherwise the libray won't work... (you can understand how to use -pthread in the *Makefile* of the *Example* folder)
 
@@ -68,8 +68,7 @@ In the *Makefile*, use -pthread, otherwise the libray won't work... (you can und
 
 Also, don't use:
 - `__ITS_TEST_1`, `__ITS_TEST_2`, `__ITS_TEST_3`, `__ITS_TEST_4`, `__ITS_GET_MACRO_TEST` and `__ITS_GET_MACRO_OTEST` : they are macros used inside the library.
-- `bool __its_unit_test_c_running`, `pthread_t __its_unit_test_c_load`, `int __its_unit_test_save_out` and `int __its_unit_test_save_err` : they are global variables used inside the library.
-- `void *__its_unit_test_c_loadingEffect(void *arg)` and `void __its_unit_test_c_timeout(long int time, pthread_t *launch_func)`, they are functions used inside the library.
+- `__test_classic_unittest_its`, `__test_timeout_unittest_its`, `__test_output_unittest_its`, `__test_output_timeout_unittest_its`, `__assert_unittest_its`, and `__assert_file_unittest_its` are functions used inside the library. They are equivalent to the macros. We advise you to use the macros because it is easier and reduce your code.
 
 **If you decide to use them, it can lead to unexpected behavior.**
 
