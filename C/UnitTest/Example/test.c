@@ -8,6 +8,7 @@
 #include <unistd.h>
 #include "its_unit_test.h" //include it to have an access to the library
 
+long long __remaining_primsys_its = -1;
 /**
  * Test an equality
  */
