@@ -15,7 +15,7 @@ In a test function, you can use these two functions :
 
 To simulate an allocation error or a primitive system error, you can give `__remaining_alloc_its` and `__remaining_primsys_its` a positive value (the number of successfull allocation / PS). you can give a différent value in each test function.
 
-**Warning** : assert and assert_file must be used in a test function checked by TEST or OTEST, otherwise it won't work! Also, you must have the two global variables `__remaining_alloc_its` and `__remaining_primsys_its` declared.
+**Warning** : assert and assert_file must be used in a test function checked by TEST or OTEST, otherwise it won't work! Also, you must have the two global variables `__remaining_alloc_its`, `__remaining_primsys_its` and `__remaining_threads_fct_its` declared.
 
 ## Display in the terminal
 Here is what the tests will display in the terminal :
