@@ -139,13 +139,7 @@
 extern long long __remaining_alloc_its;
 
 /**
- * @brief Redefine calloc to make it fail when you want.
- *
- * calloc can still fail. NULL may be return even if __remaining_alloc_its != 0
- *
- * @param a: the first parameter of calloc.
- * @param b: the second parameter of calloc.
- * @return the result of classic calloc or NULL if commanded failure
+ * All the folowing macros simulate allocation functions failure
  */
 #define calloc(a,b)                                                            \
 	((__remaining_alloc_its > 0)                                               \
@@ -154,15 +148,6 @@ extern long long __remaining_alloc_its;
 			? calloc(a,b)                                                      \
 			: NULL)
 
-/**
- * @brief Redefine malloc to make it fail when you want.
- *
- * malloc can still fail. NULL may be return even if __remaining_alloc_its != 0
- *
- * @param a: the first parameter of realloc.
- * @param b: the second parameter of realloc.
- * @return the result of classic realloc or NULL if commanded failure
- */
 #define malloc(a)                                                              \
 	((__remaining_alloc_its > 0)                                               \
 		? __remaining_alloc_its--, malloc(a)                                   \
@@ -170,14 +155,6 @@ extern long long __remaining_alloc_its;
 			? malloc(a)                                                        \
 			: NULL)
 
-/**
- * @brief Redefine realloc to make it fail when you want.
- *
- * realloc can still fail. NULL may be return even if __remaining_alloc_its != 0
- *
- * @param a: the parameter of malloc.
- * @return the result of classic malloc or NULL if commanded failure
- */
 #define realloc(a,b)                                                           \
 	((__remaining_alloc_its > 0)                                               \
 		? __remaining_alloc_its--, realloc(a,b)                                \
@@ -189,7 +166,12 @@ extern long long __remaining_alloc_its;
 *                            Primitive System                                  *
 *******************************************************************************/
 
+/** The number of primitive system that will succeed */
 extern long long __remaining_primsys_its;
+
+/**
+ * All the folowing macros simulate primitive system functions failure
+ */
 
 #define access(a,b)                                                            \
 	((__remaining_primsys_its > 0)                                             \
@@ -452,181 +434,185 @@ extern long long __remaining_primsys_its;
 /*******************************************************************************
 *                                 Thread                                       *
 *******************************************************************************/
+/** The number of PS that will succeed */
+extern long long __remaining_threads_fct_its;
 
-extern long long __remaining_primsys_its;
+/**
+ * All the folowing macros simulate threads functions failure
+ */
 
 #define pthread_create(a,b,c,d)                                                \
-	((__remaining_primsys_its > 0)                                             \
-		? __remaining_primsys_its--, pthread_create(a,b,c,d)                   \
-		: (__remaining_primsys_its < 0)                                        \
+	((__remaining_threads_fct_its > 0)                                             \
+		? __remaining_threads_fct_its--, pthread_create(a,b,c,d)                   \
+		: (__remaining_threads_fct_its < 0)                                        \
 			? pthread_create(a,b,c,d)                                          \
 			: EAGAIN)
 
 #define pthread_join(a,b)                                                      \
-	((__remaining_primsys_its > 0)                                             \
-		? __remaining_primsys_its--, pthread_join(a,b)                         \
-		: (__remaining_primsys_its < 0)                                        \
+	((__remaining_threads_fct_its > 0)                                             \
+		? __remaining_threads_fct_its--, pthread_join(a,b)                         \
+		: (__remaining_threads_fct_its < 0)                                        \
 			? pthread_join(a,b)                                                \
 			: EAGAIN)
 
 #define pthread_attr_init(a)                                                   \
-	((__remaining_primsys_its > 0)                                             \
-		? __remaining_primsys_its--, pthread_attr_init(a)                      \
-		: (__remaining_primsys_its < 0)                                        \
+	((__remaining_threads_fct_its > 0)                                             \
+		? __remaining_threads_fct_its--, pthread_attr_init(a)                      \
+		: (__remaining_threads_fct_its < 0)                                        \
 			? pthread_attr_init(a)                                             \
 			: ENOMEM)
 
 #define pthread_attr_destroy(a)                                                \
-	((__remaining_primsys_its > 0)                                             \
-		? __remaining_primsys_its--, pthread_attr_destroy(a)                   \
-		: (__remaining_primsys_its < 0)                                        \
+	((__remaining_threads_fct_its > 0)                                             \
+		? __remaining_threads_fct_its--, pthread_attr_destroy(a)                   \
+		: (__remaining_threads_fct_its < 0)                                        \
 			? pthread_attr_destroy(a)                                          \
 			: ENOMEM)
 
 #define pthread_kill(a,b)                                                      \
-	((__remaining_primsys_its > 0)                                             \
-		? __remaining_primsys_its--, pthread_kill(a,b)                         \
-		: (__remaining_primsys_its < 0)                                        \
+	((__remaining_threads_fct_its > 0)                                             \
+		? __remaining_threads_fct_its--, pthread_kill(a,b)                         \
+		: (__remaining_threads_fct_its < 0)                                        \
 			? pthread_kill(a,b)                                                \
 			: EINVAL)
 
 #define sigwait(a,b)                                                           \
-	((__remaining_primsys_its > 0)                                             \
-		? __remaining_primsys_its--, sigwait(a,b)                              \
-		: (__remaining_primsys_its < 0)                                        \
+	((__remaining_threads_fct_its > 0)                                             \
+		? __remaining_threads_fct_its--, sigwait(a,b)                              \
+		: (__remaining_threads_fct_its < 0)                                        \
 			? sigwait(a,b)                                                     \
 			: EINVAL)
 
 #define pthread_barrier_wait(a)                                                \
-	((__remaining_primsys_its > 0)                                             \
-		? __remaining_primsys_its--, pthread_barrier_wait(a)                   \
-		: (__remaining_primsys_its < 0)                                        \
+	((__remaining_threads_fct_its > 0)                                             \
+		? __remaining_threads_fct_its--, pthread_barrier_wait(a)                   \
+		: (__remaining_threads_fct_its < 0)                                        \
 			? pthread_barrier_wait(a)                                          \
 			: 2)
 
 #define pthread_barrier_init(a,b,c)                                            \
-	((__remaining_primsys_its > 0)                                             \
-		? __remaining_primsys_its--, pthread_barrier_init(a,b,c)               \
-		: (__remaining_primsys_its < 0)                                        \
+	((__remaining_threads_fct_its > 0)                                             \
+		? __remaining_threads_fct_its--, pthread_barrier_init(a,b,c)               \
+		: (__remaining_threads_fct_its < 0)                                        \
 			? pthread_barrier_init(a,b,c)                                      \
 			: ENOMEN)
 
 #define pthread_barrierattr_init(a)                                            \
-	((__remaining_primsys_its > 0)                                             \
-		? __remaining_primsys_its--, pthread_barrierattr_init(a)               \
-		: (__remaining_primsys_its < 0)                                        \
+	((__remaining_threads_fct_its > 0)                                             \
+		? __remaining_threads_fct_its--, pthread_barrierattr_init(a)               \
+		: (__remaining_threads_fct_its < 0)                                        \
 			? pthread_barrierattr_init(a)                                      \
 			: ENOMEN)
 
 #define pthread_barrierattr_destroy(a)                                         \
-	((__remaining_primsys_its > 0)                                             \
-		? __remaining_primsys_its--, pthread_barrierattr_destroy(a)            \
-		: (__remaining_primsys_its < 0)                                        \
+	((__remaining_threads_fct_its > 0)                                             \
+		? __remaining_threads_fct_its--, pthread_barrierattr_destroy(a)            \
+		: (__remaining_threads_fct_its < 0)                                        \
 			? pthread_barrierattr_destroy(a)                                   \
 			: ENOMEN)
 
 #define pthread_barrierattr_setpshared(a,b)                                    \
-	((__remaining_primsys_its > 0)                                             \
-		? __remaining_primsys_its--, pthread_barrierattr_setpshared(a,b)       \
-		: (__remaining_primsys_its < 0)                                        \
+	((__remaining_threads_fct_its > 0)                                             \
+		? __remaining_threads_fct_its--, pthread_barrierattr_setpshared(a,b)       \
+		: (__remaining_threads_fct_its < 0)                                        \
 			? pthread_barrierattr_setpshared(a,b)                              \
 			: EINVAL)
 
 #define pthread_barrierattr_getpshared(a,b)                                    \
-	((__remaining_primsys_its > 0)                                             \
-		? __remaining_primsys_its--, pthread_barrierattr_getpshared(a,b)       \
-		: (__remaining_primsys_its < 0)                                        \
+	((__remaining_threads_fct_its > 0)                                             \
+		? __remaining_threads_fct_its--, pthread_barrierattr_getpshared(a,b)       \
+		: (__remaining_threads_fct_its < 0)                                        \
 			? pthread_barrierattr_getpshared(a,b)                              \
 			: EINVAL)
 
 #define pthread_mutex_init(a,b)                                                \
-	((__remaining_primsys_its > 0)                                             \
-		? __remaining_primsys_its--, pthread_mutex_init(a,b)                   \
-		: (__remaining_primsys_its < 0)                                        \
+	((__remaining_threads_fct_its > 0)                                             \
+		? __remaining_threads_fct_its--, pthread_mutex_init(a,b)                   \
+		: (__remaining_threads_fct_its < 0)                                        \
 			? pthread_mutex_init(a,b)                                          \
 			: EINVAL)
 
 #define pthread_mutex_destroy(a)                                               \
-	((__remaining_primsys_its > 0)                                             \
-		? __remaining_primsys_its--, pthread_mutex_destroy(a)                  \
-		: (__remaining_primsys_its < 0)                                        \
+	((__remaining_threads_fct_its > 0)                                             \
+		? __remaining_threads_fct_its--, pthread_mutex_destroy(a)                  \
+		: (__remaining_threads_fct_its < 0)                                        \
 			? pthread_mutex_destroy(a)                                         \
 			: EINVAL)
 
 #define pthread_mutex_lock(a)                                                  \
-	((__remaining_primsys_its > 0)                                             \
-		? __remaining_primsys_its--, pthread_mutex_lock(a)                     \
-		: (__remaining_primsys_its < 0)                                        \
+	((__remaining_threads_fct_its > 0)                                             \
+		? __remaining_threads_fct_its--, pthread_mutex_lock(a)                     \
+		: (__remaining_threads_fct_its < 0)                                        \
 			? pthread_mutex_lock(a)                                            \
 			: EINVAL)
 
 #define pthread_mutex_unlock(a)                                                \
-	((__remaining_primsys_its > 0)                                             \
-		? __remaining_primsys_its--, pthread_mutex_unlock(a)                   \
-		: (__remaining_primsys_its < 0)                                        \
+	((__remaining_threads_fct_its > 0)                                             \
+		? __remaining_threads_fct_its--, pthread_mutex_unlock(a)                   \
+		: (__remaining_threads_fct_its < 0)                                        \
 			? pthread_mutex_unlock(a)                                          \
 			: EINVAL)
 
 #define pthread_mutex_timedlock(a,b)                                           \
-	((__remaining_primsys_its > 0)                                             \
-		? __remaining_primsys_its--, pthread_mutex_timedlock(a,b)              \
-		: (__remaining_primsys_its < 0)                                        \
+	((__remaining_threads_fct_its > 0)                                             \
+		? __remaining_threads_fct_its--, pthread_mutex_timedlock(a,b)              \
+		: (__remaining_threads_fct_its < 0)                                        \
 			? pthread_mutex_timedlock(a,b)                                     \
 			: EINVAL)
 
 #define pthread_mutex_trylock(a)                                               \
-	((__remaining_primsys_its > 0)                                             \
-		? __remaining_primsys_its--, pthread_mutex_trylock(a)                  \
-		: (__remaining_primsys_its < 0)                                        \
+	((__remaining_threads_fct_its > 0)                                             \
+		? __remaining_threads_fct_its--, pthread_mutex_trylock(a)                  \
+		: (__remaining_threads_fct_its < 0)                                        \
 			? pthread_mutex_trylock(a)                                         \
 			: EINVAL)
 
 #define sem_init(a,b,c)                                                        \
-	((__remaining_primsys_its > 0)                                             \
-		? __remaining_primsys_its--, sem_init(a,b,c)                           \
-		: (__remaining_primsys_its < 0)                                        \
+	((__remaining_threads_fct_its > 0)                                             \
+		? __remaining_threads_fct_its--, sem_init(a,b,c)                           \
+		: (__remaining_threads_fct_its < 0)                                        \
 			? sem_init(a,b,c)                                                  \
 			: -1)
 
 #define sem_destroy(a)                                                         \
-	((__remaining_primsys_its > 0)                                             \
-		? __remaining_primsys_its--, sem_destroy(a)                            \
-		: (__remaining_primsys_its < 0)                                        \
+	((__remaining_threads_fct_its > 0)                                             \
+		? __remaining_threads_fct_its--, sem_destroy(a)                            \
+		: (__remaining_threads_fct_its < 0)                                        \
 			? sem_destroy(a)                                                   \
 			: -1)
 
 #define sem_getvalue(a,b)                                                      \
-	((__remaining_primsys_its > 0)                                             \
-		? __remaining_primsys_its--, sem_getvalue(a,b)                         \
-		: (__remaining_primsys_its < 0)                                        \
+	((__remaining_threads_fct_its > 0)                                             \
+		? __remaining_threads_fct_its--, sem_getvalue(a,b)                         \
+		: (__remaining_threads_fct_its < 0)                                        \
 			? sem_getvalue(a,b)                                                \
 			: -1)
 
 #define sem_wait(a)                                                            \
-	((__remaining_primsys_its > 0)                                             \
-		? __remaining_primsys_its--, sem_wait(a)                               \
-		: (__remaining_primsys_its < 0)                                        \
+	((__remaining_threads_fct_its > 0)                                             \
+		? __remaining_threads_fct_its--, sem_wait(a)                               \
+		: (__remaining_threads_fct_its < 0)                                        \
 			? sem_wait(a)                                                      \
 			: -1)
 
 #define sem_trywait(a)                                                         \
-	((__remaining_primsys_its > 0)                                             \
-		? __remaining_primsys_its--, sem_trywait(a)                            \
-		: (__remaining_primsys_its < 0)                                        \
+	((__remaining_threads_fct_its > 0)                                             \
+		? __remaining_threads_fct_its--, sem_trywait(a)                            \
+		: (__remaining_threads_fct_its < 0)                                        \
 			? sem_trywait(a)                                                   \
 			: -1)
 
 #define sem_timedwait(a,b)                                                     \
-	((__remaining_primsys_its > 0)                                             \
-		? __remaining_primsys_its--, sem_timedwait(a,b)                        \
-		: (__remaining_primsys_its < 0)                                        \
+	((__remaining_threads_fct_its > 0)                                             \
+		? __remaining_threads_fct_its--, sem_timedwait(a,b)                        \
+		: (__remaining_threads_fct_its < 0)                                        \
 			? sem_timedwait(a,b)                                               \
 			: -1)
 
 #define sem_post(a)                                                            \
-	((__remaining_primsys_its > 0)                                             \
-		? __remaining_primsys_its--, sem_post(a)                               \
-		: (__remaining_primsys_its < 0)                                        \
+	((__remaining_threads_fct_its > 0)                                             \
+		? __remaining_threads_fct_its--, sem_post(a)                               \
+		: (__remaining_threads_fct_its < 0)                                        \
 			? sem_post(a)                                                      \
 			: -1)
 
@@ -637,74 +623,74 @@ extern long long __remaining_primsys_its;
     (__VA_ARGS__)
 
 #define sem_open_2(a,b)                                                        \
-	((__remaining_primsys_its > 0)                                             \
-		? __remaining_primsys_its--, sem_open(a,b)                             \
-		: (__remaining_primsys_its < 0)                                        \
+	((__remaining_threads_fct_its > 0)                                             \
+		? __remaining_threads_fct_its--, sem_open(a,b)                             \
+		: (__remaining_threads_fct_its < 0)                                        \
 			? sem_open(a,b)                                                    \
 			: SEM_FAILED)
 
 #define sem_open_3(a,b,c)
 
 #define sem_open_4(a,b,c,d)                                                    \
-	((__remaining_primsys_its > 0)                                             \
-		? __remaining_primsys_its--, sem_open(a,b,c,d)                         \
-		: (__remaining_primsys_its < 0)                                        \
+	((__remaining_threads_fct_its > 0)                                             \
+		? __remaining_threads_fct_its--, sem_open(a,b,c,d)                         \
+		: (__remaining_threads_fct_its < 0)                                        \
 			? sem_open(a,b,c,d)                                                \
 			: SEM_FAILED)
 
 #define sem_close(a)                                                           \
-	((__remaining_primsys_its > 0)                                             \
-		? __remaining_primsys_its--, sem_close(a)                              \
-		: (__remaining_primsys_its < 0)                                        \
+	((__remaining_threads_fct_its > 0)                                             \
+		? __remaining_threads_fct_its--, sem_close(a)                              \
+		: (__remaining_threads_fct_its < 0)                                        \
 			? sem_close(a)                                                     \
 			: -1)
 
 #define sem_unlink(a)                                                          \
-	((__remaining_primsys_its > 0)                                             \
-		? __remaining_primsys_its--, sem_unlink(a)                             \
-		: (__remaining_primsys_its < 0)                                        \
+	((__remaining_threads_fct_its > 0)                                             \
+		? __remaining_threads_fct_its--, sem_unlink(a)                             \
+		: (__remaining_threads_fct_its < 0)                                        \
 			? sem_unlink(a)                                                    \
 			: -1)
 
 #define pthread_cond_init(a,b)                                                 \
-	((__remaining_primsys_its > 0)                                             \
-		? __remaining_primsys_its--, pthread_cond_init(a,b)                    \
-		: (__remaining_primsys_its < 0)                                        \
+	((__remaining_threads_fct_its > 0)                                             \
+		? __remaining_threads_fct_its--, pthread_cond_init(a,b)                    \
+		: (__remaining_threads_fct_its < 0)                                        \
 			? pthread_cond_init(a,b)                                           \
 			: EINVAL)
 
 #define pthread_cond_destroy(a)                                                \
-	((__remaining_primsys_its > 0)                                             \
-		? __remaining_primsys_its--, pthread_cond_destroy(a)                   \
-		: (__remaining_primsys_its < 0)                                        \
+	((__remaining_threads_fct_its > 0)                                             \
+		? __remaining_threads_fct_its--, pthread_cond_destroy(a)                   \
+		: (__remaining_threads_fct_its < 0)                                        \
 			? pthread_cond_destroy(a)                                          \
 			: EINVAL)
 
 #define pthread_cond_wait(a,b)                                                 \
-	((__remaining_primsys_its > 0)                                             \
-		? __remaining_primsys_its--, pthread_cond_wait(a,b)                    \
-		: (__remaining_primsys_its < 0)                                        \
+	((__remaining_threads_fct_its > 0)                                             \
+		? __remaining_threads_fct_its--, pthread_cond_wait(a,b)                    \
+		: (__remaining_threads_fct_its < 0)                                        \
 			? pthread_cond_wait(a,b)                                           \
 			: EINVAL)
 
 #define pthread_cond_timedwait(a,b,c)                                          \
-	((__remaining_primsys_its > 0)                                             \
-		? __remaining_primsys_its--, pthread_cond_timedwait(a,b,c)             \
-		: (__remaining_primsys_its < 0)                                        \
+	((__remaining_threads_fct_its > 0)                                             \
+		? __remaining_threads_fct_its--, pthread_cond_timedwait(a,b,c)             \
+		: (__remaining_threads_fct_its < 0)                                        \
 			? pthread_cond_timedwait(a,b,c)                                    \
 			: EINVAL)
 
 #define pthread_cond_signal(a)                                                 \
-	((__remaining_primsys_its > 0)                                             \
-		? __remaining_primsys_its--, pthread_cond_signal(a)                    \
-		: (__remaining_primsys_its < 0)                                        \
+	((__remaining_threads_fct_its > 0)                                             \
+		? __remaining_threads_fct_its--, pthread_cond_signal(a)                    \
+		: (__remaining_threads_fct_its < 0)                                        \
 			? pthread_cond_signal(a)                                           \
 			: EINVAL)
 
 #define pthread_cond_broadcast(a)                                              \
-	((__remaining_primsys_its > 0)                                             \
-		? __remaining_primsys_its--, pthread_cond_broadcast(a)                 \
-		: (__remaining_primsys_its < 0)                                        \
+	((__remaining_threads_fct_its > 0)                                             \
+		? __remaining_threads_fct_its--, pthread_cond_broadcast(a)                 \
+		: (__remaining_threads_fct_its < 0)                                        \
 			? pthread_cond_broadcast(a)                                        \
 			: EINVAL)
 
@@ -732,7 +718,7 @@ void __test_classic_unittest_its(char *test_name, void (*function)(void));
  * @param timeout: the time given to the function before failure.
  */
 void __test_timeout_unittest_its(char *test_name, void (*function)(void),
-                                 unsigned long timeout);
+	unsigned long timeout);
 
 /**
  * @brief This function testing a function and it's output.
@@ -746,7 +732,7 @@ void __test_timeout_unittest_its(char *test_name, void (*function)(void),
  * @param expected_output_file: the path to the compare file.
  */
 void __test_output_unittest_its(char *test_name, void (*function)(void),
-                                char *expected_output_file);
+        char *expected_output_file);
 
 /**
  * @brief This function testing a function and it's output with a timeout.
@@ -761,7 +747,7 @@ void __test_output_unittest_its(char *test_name, void (*function)(void),
  * @param timeout: the time given to the function before failure.
  */
 void __test_output_timeout_unittest_its(char *test_name, void (*function)(void),
-                                        char *expected_output_file, unsigned long timeout_millis);
+        char *expected_output_file, unsigned long timeout_millis);
 
 /**
  * @brief Test the given expression. If it's false the programme is exited.

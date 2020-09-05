@@ -5,6 +5,7 @@
 
 long long __remaining_primsys_its = -1;
 long long __remaining_alloc_its = -1;
+long long __remaining_threads_fct_its = -1;
 
 struct test_struct{
 	int data_int;
