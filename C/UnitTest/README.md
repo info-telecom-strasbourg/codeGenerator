@@ -13,7 +13,9 @@ In a test function, you can use these two functions :
 - `assert(expression)` to check that an expression is true
 - `assert_file(first_file, second_file) ` to check if first_file and second_file are identical. It can be text or binary files.
 
-**Warning** : assert and assert_file must be used in a test function checked by TEST or OTEST, otherwise it won't work!
+To simulate an allocation error or a primitive system error, you can give `__remaining_alloc_its` and `__remaining_primsys_its` a positive value (the number of successfull allocation / PS). you can give a différent value in each test function.
+
+**Warning** : assert and assert_file must be used in a test function checked by TEST or OTEST, otherwise it won't work! Also, you must have the two global variables `__remaining_alloc_its`, `__remaining_primsys_its` and `__remaining_threads_fct_its` declared.
 
 ## Display in the terminal
 Here is what the tests will display in the terminal :
@@ -27,9 +29,12 @@ Here is what the tests will display in the terminal :
 ## Example of utilisation
 
 ```cpp
+long long __remaining_alloc_its = -1; // if you do not want the library to make your allocation fail
+long long __remaining_primsys_its = -1: // if you do not want the library to make your primitive system fail
 void myTestFunction()
 {
     ...
+	__remaining_alloc_its = 3; //__
     assert(expr); // Test an expression
     assert_file(file_1, file_2); // Check if two files are identical
     ...
@@ -57,6 +62,7 @@ If you want to have an overview of how to use this library, you can take a look 
 ## Advices
 
 We advice you to create a **separate directory** for tests. In this directory, you will have your file(s) with the tests and a Makefile to run it easily (you can also use your principal Makefile and create a command `make test` that will do the same thing). It's better to have a `main` only for tests than to run them in your principal program. Like this, you will be able to split tasks if you work on team.
+We also advice you to reinitialize `__remaining_alloc_its` and `__remaining_primsys_its` in each test function. It's a global variable and you must no forget that if it is set to 3, it will be modified and will be decreased. If you do not reset it, it can lead to errors.
 
 ## Warnings
 
