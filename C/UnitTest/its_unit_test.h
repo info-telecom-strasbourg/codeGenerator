@@ -14,6 +14,8 @@
 #include <unistd.h>
 #include <errno.h>
 #include <string.h>
+#include <sys/types.h>
+#include <signal.h>
 
 /*******************************************************************************
 *                                   Tests                                      *
@@ -127,6 +129,14 @@
  */
 #define assert_file(first_file, second_file)                                   \
     do { __assert_file_unittest_its(first_file, second_file);} while (0)
+
+/**
+ * Macro that test if the exit code is correct
+ * @param function: the tested function
+ * @param exit_code: the expected exit code
+ */
+#define ETEST(function, exit_code)                                            \
+	do{ __exit_test_unittest(#function, function, exit_code);} while(0)
 
 /*******************************************************************************
 *                            Memory allocation                                 *
