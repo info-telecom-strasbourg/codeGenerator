@@ -306,18 +306,29 @@ __exit_test_unittest(char *test_name, void (*function)(void), int exit_code)
 	switch (cpid = fork()) {
 		case -1:
 			check(-1, "fork failed", 1);
+			break;
 		case 0:
 			(*function)();
 			dup2(saved_stderr, STDERR_FILENO);
-			dprintf(STDERR_FILENO, "Your function didn't called exit !\n");
+			dprintf(STDERR_FILENO, "%sYour function didn't called exit !%s\n",
+			"\x1b[1;31m", "\x1b[0m");
 			kill(getppid(), SIGKILL);
 			exit(EXIT_FAILURE);
 		default:
 			break;
 	}
-	check(waitpid(cpid, &status, 0));
+	check(waitpid(cpid, &status, 0), "wait failed", 1);
 	if(WIFEXITED(status))
-		assert(WEXITSTATUS(status) == exit_code);
+	{
+		test_running = 0;
+        check_t(errno = pthread_join(loading_thread, NULL),
+                "Loading effect thread join failed");
+				dprintf(saved_stdout,
+		                    "%sFailed%s\nassertion failed : %i =! %i\n", "\x1b[1;31m",
+		                    "\x1b[0m",
+		                     WIFEXITED(status), exit_code);
+        exit(EXIT_FAILURE);
+	}
 	else
 		__assert_unittest_its("Not finished with exit", 0);
 

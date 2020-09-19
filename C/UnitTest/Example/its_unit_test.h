@@ -14,6 +14,9 @@
 #include <unistd.h>
 #include <errno.h>
 #include <string.h>
+#include <sys/types.h>
+#include <signal.h>
+#include <sys/wait.h>
 
 /*******************************************************************************
 *                                   Tests                                      *
@@ -127,6 +130,14 @@
  */
 #define assert_file(first_file, second_file)                                   \
     do { __assert_file_unittest_its(first_file, second_file);} while (0)
+
+/**
+ * Macro that test if the exit code is correct
+ * @param function: the tested function
+ * @param exit_code: the expected exit code
+ */
+#define ETEST(function, exit_code)                                            \
+	do{ __exit_test_unittest(#function, function, exit_code);} while(0)
 
 /*******************************************************************************
 *                            Memory allocation                                 *
@@ -750,6 +761,19 @@ void __test_output_timeout_unittest_its(char *test_name, void (*function)(void),
         char *expected_output_file, unsigned long timeout_millis);
 
 /**
+ * @brief Test the exit code. If the function do not exit or if the exit code
+ * is not the expected one, the test fail.
+ *
+ * The output is redirected to keep a nice effect for the tests.
+ *
+ * @param test_name: the name of the test function.
+ * @param function: the function itself.
+ * @param exit_code: the expected exit code.
+ */
+void __exit_test_unittest(char *test_name, void (*function)(void),
+int exit_code);
+
+/**
  * @brief Test the given expression. If it's false the programme is exited.
  *
  * If the test fail, all thread are stoped properly.
@@ -768,5 +792,6 @@ void __assert_unittest_its(char* expression_text ,int expression);
  * @param expression: the expression as an integer.
  */
 void __assert_file_unittest_its(char *first_file, char *second_file);
+
 
 #endif

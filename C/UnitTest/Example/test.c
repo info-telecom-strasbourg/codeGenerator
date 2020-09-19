@@ -9,6 +9,7 @@
 #include "its_unit_test.h" //include it to have an access to the library
 
 long long __remaining_primsys_its = -1;
+long long __remaining_threads_fct_its = -1;
 /**
  * Test an equality
  */
@@ -81,18 +82,25 @@ test_fail(void)
     assert(1 != 1);
 }
 
+void
+test_exit(void)
+{
+	printf("FUCK");
+}
+
 int
 main(void)
 {
-    fprintf(stdout, "--- Launch tests ---\n\ns");
+    fprintf(stdout, "--- Launch tests ---\n\n");
 
-    TEST(test_equality);
-    TEST(test_compare_string);
-    TEST(test_timeout, 2100);
-    OTEST(test_output, "output_1.txt");
-    OTEST(test_output_and_timeout, "output_1.txt", 2100);
-     TEST(test_file_comparison);
-     TEST(test_fail);
+    // TEST(test_equality);
+    // TEST(test_compare_string);
+    // TEST(test_timeout, 2100);
+    // OTEST(test_output, "output_1.txt");
+    // OTEST(test_output_and_timeout, "output_1.txt", 2100);
+    // TEST(test_file_comparison);
+    // TEST(test_fail);
+	ETEST(test_exit, EXIT_FAILURE);
 
     return EXIT_SUCCESS;
 }
