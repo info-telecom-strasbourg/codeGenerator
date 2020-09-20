@@ -131,8 +131,6 @@ launch_timeout(long int time)
 			__remaining_threads_fct_its = -1;
             check_t(errno = pthread_join(loading_thread, NULL),
                     "Loading effect thread join failed");
-            check_t(errno = pthread_detach(func_thread),
-                    "Function launcher thread join failed");
             dprintf(saved_stderr, "%sTimeout (%ld ms)%s\n",
                     "\x1b[1;31m", time, "\x1b[0m");
             exit(EXIT_FAILURE);

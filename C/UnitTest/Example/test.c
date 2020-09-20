@@ -89,7 +89,7 @@ test_fail(void)
 void
 test_exit(void)
 {
-	printf("FUCK");
+	printf("Test exit\n");
 	exit(EXIT_SUCCESS);
 }
 
