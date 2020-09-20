@@ -165,9 +165,10 @@ thread_function(void *arg)
  * - saved_stderr: to save stderr.
  *
  * @param test_name: the name of the function called for test.
+ * @param start_effect: indicate if the animation thread must be launched.
  */
 static void
-setup_test(char *test_name)
+setup_test(char *test_name, int start_effect)
 {
     check(saved_stdout = dup(STDOUT_FILENO),
             "stdout redirection failed", 0);
@@ -177,9 +178,10 @@ setup_test(char *test_name)
     fflush(stdout);
     fflush(stderr);
     test_running = 1;
-    check_t(errno = pthread_create(&loading_thread, NULL,
-            loading_threadingEffect, NULL),
-            "Loading effect thread creation failed");
+	if(start_effect)
+	    check_t(errno = pthread_create(&loading_thread, NULL,
+	            loading_threadingEffect, NULL),
+	            "Loading effect thread creation failed");
 }
 
 /**
@@ -217,7 +219,7 @@ end_test(struct timeval start, struct timeval end, int out)
 void
 __test_classic_unittest_its(char *test_name, void (*function)(void))
 {
-    setup_test(test_name);
+    setup_test(test_name, 1);
 	int out;
 	check(out = open("/dev/null", O_RDWR | O_APPEND),
 	        "Open of \"/dev/null\" failed", 1);
@@ -240,7 +242,7 @@ void
 __test_timeout_unittest_its(char *test_name, void (*function)(void),
 	unsigned long timeout)
 {
-    setup_test(test_name);
+    setup_test(test_name, 1);
 	int out = open("/dev/null", O_RDWR | O_APPEND);
 	check(out, "Open of \"/dev/null\" failed", 1);
 	check(dup2(out, STDOUT_FILENO), "stdout redirection failed", 1);
@@ -256,7 +258,7 @@ __test_timeout_unittest_its(char *test_name, void (*function)(void),
 void
 __test_output_unittest_its(char *test_name, void (*function)(void), char *expected_output_file)
 {
-    setup_test(test_name);
+    setup_test(test_name, 1);
     int out = open("_its_out_test.log", O_RDWR | O_TRUNC | O_CREAT | O_APPEND, 0666);
     check(out, "Open of \"_its_out_test.log\" failed", 1);
     check(dup2(out, STDOUT_FILENO), "stdout redirection failed", 1);
@@ -279,7 +281,7 @@ void
 __test_output_timeout_unittest_its(char *test_name, void (*function)(void),
 	char *expected_output_file, unsigned long timeout_millis)
 {
-    setup_test(test_name);
+    setup_test(test_name, 1);
     int out = open("_its_out_test.log", O_RDWR | O_TRUNC | O_CREAT | O_APPEND,
             0666);
     check(out, "Open of \"_its_out_test.log\" failed", 1);
@@ -300,7 +302,7 @@ __test_output_timeout_unittest_its(char *test_name, void (*function)(void),
 void
 __exit_test_unittest(char *test_name, void (*function)(void), int exit_code)
 {
-	setup_test(test_name);
+	setup_test(test_name, 0);
 	int out;
 	int status;
 	pid_t cpid;
@@ -331,6 +333,9 @@ __exit_test_unittest(char *test_name, void (*function)(void), int exit_code)
 			__remaining_alloc_its = -1;
 			__remaining_primsys_its = -1;
 			__remaining_threads_fct_its = -1;
+			check_t(errno = pthread_create(&loading_thread, NULL,
+		            loading_threadingEffect, NULL),
+		            "Loading effect thread creation failed");
 			break;
 	}
 	check(waitpid(cpid, &status, 0), "wait failed", 1);
