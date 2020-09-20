@@ -199,9 +199,11 @@ ___assert_file_unittest_its(string first_file, string second_file)
  *
  * @param __current_test_name: the name of the tested function.
  * @param redir: the name of the file where cout and cerr will be redirected to.
+ * @param running_effect: indicate if the running effect should be launched.
+ * @return an ofstream to redirect files.
  */
 static ofstream
-init_test(string __current_test_name, string redir)
+init_test(string __current_test_name, string redir, bool running_effect)
 {
 	saved_cout = cout.rdbuf();
 	saved_cerr = cerr.rdbuf();
@@ -209,7 +211,8 @@ init_test(string __current_test_name, string redir)
 	fflush(stdout);
 	fflush(stderr);
 	test_running = true;
-	load_effect = thread(load_effectingEffect);
+	if(running_effect)
+		load_effect = thread(load_effectingEffect);
 	ofstream file(redir);
 	cout.rdbuf(file.rdbuf());
 	cerr.rdbuf(file.rdbuf());
@@ -248,7 +251,7 @@ __test_classic_unittest_its(string __current_test_name, void (*function)(void))
 {
 	try
 	{
-		ofstream file = init_test(__current_test_name, "/dev/null");
+		ofstream file = init_test(__current_test_name, "/dev/null", true);
 		auto start = chrono::steady_clock::now();
 		function();
 		auto end = chrono::steady_clock::now();
@@ -268,7 +271,7 @@ __test_timeout_unittest_its(string __current_test_name, void (*function)(void),
 {
 	try
 	{
-		ofstream file = init_test(__current_test_name, "/dev/null");
+		ofstream file = init_test(__current_test_name, "/dev/null", true);
 		auto start = chrono::steady_clock::now();
 		thread launch_func = thread([function]()
 		{
@@ -294,7 +297,7 @@ __test_output_unittest_its(string __current_test_name, void (*function)(void),
 	try
 	{
 		ofstream file = init_test(__current_test_name, __current_test_name +
-			string("_its_test.log"));
+			string("_its_test.log"), true);
 		auto start = chrono::steady_clock::now();
 		function();
 		auto end = chrono::steady_clock::now();
@@ -321,7 +324,7 @@ __test_output_timeout_unittest_its(string __current_test_name,
 	try
 	{
 		ofstream file = init_test(__current_test_name, __current_test_name +
-			string("_its_test.log"));
+			string("_its_test.log"), true);
 		auto start = chrono::steady_clock::now();
 		thread launch_func = thread([function]()
 		{
@@ -336,6 +339,58 @@ __test_output_timeout_unittest_its(string __current_test_name,
 		assert_file(expected_output_file, __current_test_name +
 			string("_its_test.log"));
 		remove((__current_test_name + string("_its_test.log")).c_str());
+	}
+	catch (exception const &e)
+	{
+		catch_err(e);
+	}
+}
+
+void
+__exit_test_unittest(string __current_test_name, void (*function)(void), int exit_code)
+{
+	try
+	{
+		pid_t cpid;
+		int status;
+		ofstream file = init_test(__current_test_name, "/dev/null", false);
+		ostream stream_err(saved_cerr);
+		auto start = chrono::steady_clock::now();
+		switch (cpid = fork()) {
+			case -1:
+				test_running = false;
+				load_effect.join();
+				stream_err << "fork failed" << endl;
+				exit(EXIT_FAILURE);
+			case 0:
+				function();
+				stream_err << "\x1b[1;31m" << "Your function didn't " <<
+					"called exit !" << "\x1b[0m" << endl;
+				kill(getppid(), SIGKILL);
+				exit(EXIT_FAILURE);
+			default:
+				load_effect = thread(load_effectingEffect);
+				break;
+		}
+		waitpid(cpid, &status, 0);
+		if(WIFEXITED(status))
+		{
+			if(WEXITSTATUS(status) != exit_code)
+			{
+				test_running = false;
+				load_effect.join();
+				stream_err << "\x1b[1;31m" << "Failed\nassertion failed : "
+					<< WEXITSTATUS(status) << " != " << exit_code << "\x1b[0m"
+					<< endl;
+				exit(EXIT_FAILURE);
+			}
+		}
+		else
+			__assert_unittest_its("Not finished with exit", false);
+		auto end = chrono::steady_clock::now();
+		unsigned long elapsed_time = chrono::duration_cast<chrono::microseconds>
+			(end - start).count();
+		end_test(elapsed_time, file);
 	}
 	catch (exception const &e)
 	{

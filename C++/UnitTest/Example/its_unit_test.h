@@ -11,6 +11,8 @@
 #include <chrono>
 #include <fstream>
 #include <unistd.h>
+#include <sys/types.h>
+#include <sys/wait.h>
 
 /**
  * Macro to allows to redefine macros with a different parameters number
@@ -85,6 +87,16 @@
 	} while (0)
 
 /**
+ * Macro that test if the exit code is correct
+ * @param function: the tested function
+ * @param exit_code: the expected exit code
+ */
+#define ETEST(function, exit_code)                                             \
+	do{                                                                        \
+		__exit_test_unittest(#function, function, exit_code);                  \
+	} while(0)
+
+/**
  * Macro that test if the expression passed is true
  * @param expr: the expression tested
  */
@@ -150,6 +162,19 @@ void __test_output_unittest_its(std::string __current_test_name,
 void __test_output_timeout_unittest_its(std::string __current_test_name,
 	void (*function)(void), std::string expected_output_file,
 	unsigned long timeout_millis);
+
+/**
+ * @brief Test the exit code. If the function do not exit or if the exit code
+ * is not the expected one, the test fail.
+ *
+ * The output is redirected to keep a nice effect for the tests.
+ *
+ * @param test_name: the name of the test function.
+ * @param function: the function itself.
+ * @param exit_code: the expected exit code.
+ */
+void __exit_test_unittest(std::string test_name, void (*function)(void),
+int exit_code);
 
 /**
  * @brief Test the given expression. If it's false the programme is exited.

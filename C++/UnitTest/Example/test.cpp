@@ -87,6 +87,16 @@ void test_fail(void)
     assert(1 != 1);
 }
 
+void test_exit(void)
+{
+	exit(EXIT_SUCCESS);
+	exit(EXIT_SUCCESS);
+	exit(EXIT_SUCCESS);
+	exit(EXIT_SUCCESS);
+	exit(EXIT_SUCCESS);
+	exit(EXIT_SUCCESS);
+}
+
 int main(void)
 {
     std::cout << "--- Launch tests ---" << std::endl << std::endl;
@@ -98,7 +108,8 @@ int main(void)
     OTEST(test_output, "output_1.txt");
     OTEST(test_output, "output_1.txt", 2100);
     TEST(test_file_comparison);
-    TEST(test_fail);
+	ETEST(test_exit, EXIT_SUCCESS);
+	TEST(test_fail);
 
     return EXIT_SUCCESS;
 }
