@@ -320,14 +320,16 @@ __exit_test_unittest(char *test_name, void (*function)(void), int exit_code)
 	check(waitpid(cpid, &status, 0), "wait failed", 1);
 	if(WIFEXITED(status))
 	{
-		test_running = 0;
-        check_t(errno = pthread_join(loading_thread, NULL),
-                "Loading effect thread join failed");
-				dprintf(saved_stdout,
-		                    "%sFailed%s\nassertion failed : %i =! %i\n", "\x1b[1;31m",
-		                    "\x1b[0m",
-		                     WIFEXITED(status), exit_code);
-        exit(EXIT_FAILURE);
+		if(WEXITSTATUS(status) != exit_code)
+		{
+			test_running = 0;
+			check_t(errno = pthread_join(loading_thread, NULL),
+			"Loading effect thread join failed");
+			dprintf(saved_stdout,
+				"%sFailed%s\nassertion failed : %i =! %i\n", "\x1b[1;31m",
+				"\x1b[0m", WEXITSTATUS(status), exit_code);
+				exit(EXIT_FAILURE);
+		}
 	}
 	else
 		__assert_unittest_its("Not finished with exit", 0);
@@ -346,8 +348,7 @@ __assert_unittest_its(char *expression_text, int expression)
                 "Loading effect thread join failed");
         dprintf(saved_stdout,
                     "%sFailed%s\nassertion failed : %s\n", "\x1b[1;31m",
-                    "\x1b[0m",
-                     expression_text);
+                    "\x1b[0m", expression_text);
         exit(EXIT_FAILURE);
     }
 }

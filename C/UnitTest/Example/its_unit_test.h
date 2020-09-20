@@ -72,7 +72,12 @@
  * @param function: the tested function
  */
 #define __ITS_TEST_1(function)                                                 \
-	do{__test_classic_unittest_its(#function, function);}while (0)
+	do{                                                                        \
+		__remaining_alloc_its = -1;                                            \
+		__remaining_primsys_its = -1;                                          \
+		__remaining_threads_fct_its = -1;                                      \
+		__test_classic_unittest_its(#function, function);                      \
+	}while (0)
 
 /**
  * @brief Macro to execute a test with a timeout
@@ -84,6 +89,9 @@
  */
 #define __ITS_TEST_2(function, timeout_millis)                                 \
     do{                                                                        \
+		__remaining_alloc_its = -1;                                            \
+		__remaining_primsys_its = -1;                                          \
+		__remaining_threads_fct_its = -1;                                      \
 		__test_timeout_unittest_its(#function, function, timeout_millis);      \
 	}while(0)
 
@@ -98,6 +106,9 @@
  */
 #define __ITS_TEST_3(function, expected_output_file)                           \
     do{                                                                        \
+		__remaining_alloc_its = -1;                                            \
+		__remaining_primsys_its = -1;                                          \
+		__remaining_threads_fct_its = -1;                                      \
 		__test_output_unittest_its(#function, function, expected_output_file); \
 	}while(0)
 
@@ -112,16 +123,43 @@
  */
 #define __ITS_TEST_4(function, expected_output_file, timeout_millis)           \
     do{                                                                        \
+		__remaining_alloc_its = -1;                                            \
+		__remaining_primsys_its = -1;                                          \
+		__remaining_threads_fct_its = -1;                                      \
         __test_output_timeout_unittest_its(#function, function,                \
 			expected_output_file, timeout_millis);                             \
        }while(0)
+
+/**
+ * Macro that test if the exit code is correct
+ * @param function: the tested function
+ * @param exit_code: the expected exit code
+ */
+#define ETEST(function, exit_code)                                             \
+	do{                                                                        \
+		__remaining_alloc_its = -1;                                            \
+		__remaining_primsys_its = -1;                                          \
+		__remaining_threads_fct_its = -1;                                      \
+		__exit_test_unittest(#function, function, exit_code);                  \
+	} while(0)
 
 /**
  * Macro that test if the the expression passed is true
  * @param expr: the expression tested
  */
 #define assert(expression)                                                     \
-	do{__assert_unittest_its(#expression, expression); } while(0)
+	do{                                                                        \
+		int save_alloc = __remaining_alloc_its;                                \
+		int save_sys = __remaining_primsys_its;                                \
+		int save_thr = __remaining_threads_fct_its;                            \
+		__remaining_alloc_its = -1;                                            \
+		__remaining_primsys_its = -1;                                          \
+		__remaining_threads_fct_its = -1;                                      \
+		__assert_unittest_its(#expression, expression);                        \
+		__remaining_alloc_its = save_alloc;                                    \
+		__remaining_primsys_its = save_sys;                                    \
+		__remaining_threads_fct_its = save_thr;                                \
+	} while(0)
 
 /**
  * Macro that test if two files identical
@@ -129,15 +167,19 @@
  * @param second_file : the tested file
  */
 #define assert_file(first_file, second_file)                                   \
-    do { __assert_file_unittest_its(first_file, second_file);} while (0)
+    do {                                                                       \
+		int save_alloc = __remaining_alloc_its;                                \
+		int save_sys = __remaining_primsys_its;                                \
+		int save_thr = __remaining_threads_fct_its;                            \
+		__remaining_alloc_its = -1;                                            \
+		__remaining_primsys_its = -1;                                          \
+		__remaining_threads_fct_its = -1;                                      \
+		__assert_file_unittest_its(first_file, second_file);                   \
+		__remaining_alloc_its = save_alloc;                                    \
+		__remaining_primsys_its = save_sys;                                    \
+		__remaining_threads_fct_its = save_thr;                                \
+	} while (0)
 
-/**
- * Macro that test if the exit code is correct
- * @param function: the tested function
- * @param exit_code: the expected exit code
- */
-#define ETEST(function, exit_code)                                            \
-	do{ __exit_test_unittest(#function, function, exit_code);} while(0)
 
 /*******************************************************************************
 *                            Memory allocation                                 *
@@ -630,7 +672,7 @@ extern long long __remaining_threads_fct_its;
 #define sem_macro(_1, _2, _3, _4, NAME, ...) NAME
 
 #define sem_open(...)                                                          \
-    sem_macro(__VA_ARGS__, sem_open_4,sem_open_3, open_2)                     \
+    sem_macro(__VA_ARGS__, sem_open_4, sem_open_3, sem_open_2)                 \
     (__VA_ARGS__)
 
 #define sem_open_2(a,b)                                                        \

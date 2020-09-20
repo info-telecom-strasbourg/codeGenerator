@@ -10,6 +10,7 @@
 
 long long __remaining_primsys_its = -1;
 long long __remaining_threads_fct_its = -1;
+long long __remaining_alloc_its = -1;
 /**
  * Test an equality
  */
@@ -86,6 +87,7 @@ void
 test_exit(void)
 {
 	printf("FUCK");
+	exit(EXIT_SUCCESS);
 }
 
 int
@@ -99,8 +101,8 @@ main(void)
     // OTEST(test_output, "output_1.txt");
     // OTEST(test_output_and_timeout, "output_1.txt", 2100);
     // TEST(test_file_comparison);
-    // TEST(test_fail);
-	ETEST(test_exit, EXIT_FAILURE);
+    //TEST(test_fail);
+	ETEST(test_exit, EXIT_SUCCESS);
 
     return EXIT_SUCCESS;
 }

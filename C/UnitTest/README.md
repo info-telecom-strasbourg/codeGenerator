@@ -31,6 +31,8 @@ Here is what the tests will display in the terminal :
 ```cpp
 long long __remaining_alloc_its = -1; // if you do not want the library to make your allocation fail
 long long __remaining_primsys_its = -1: // if you do not want the library to make your primitive system fail
+long long __remaining_threads_fct_its = -1; // if you do not want the library to maye your threads function fail
+
 void myTestFunction()
 {
     ...
