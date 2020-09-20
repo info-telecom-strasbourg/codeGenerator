@@ -118,14 +118,17 @@ static void
 launch_timeout(long int time)
 {
     struct timeval start_time, cur_time;
-    check(gettimeofday(&start_time, NULL), "gettimeofday failed", 1);
+    check(gettimeofday(&start_time, NULL, 1), "gettimeofday failed", 1);
     while (test_running)
     {
-        check(gettimeofday(&cur_time, NULL), "gettimeofday failed", 1);
+        check(gettimeofday(&cur_time, NULL, 1), "gettimeofday failed", 1);
         if (((cur_time.tv_sec * 1000000 + cur_time.tv_usec) -
             (start_time.tv_sec * 1000000 + start_time.tv_usec)) / 1000 > time)
         {
             test_running = 0;
+			__remaining_alloc_its = -1;
+			__remaining_primsys_its = -1;
+			__remaining_threads_fct_its = -1;
             check_t(errno = pthread_join(loading_thread, NULL),
                     "Loading effect thread join failed");
             check_t(errno = pthread_detach(func_thread),
@@ -145,6 +148,9 @@ thread_function(void *arg)
 	void (*function)(void) = (void(*)()) arg;
 	(*function)();
 	test_running= 0;
+	__remaining_alloc_its = -1;
+	__remaining_primsys_its = -1;
+	__remaining_threads_fct_its = -1;
 	return NULL;
 }
 
@@ -225,6 +231,9 @@ __test_classic_unittest_its(char *test_name, void (*function)(void))
 	struct timeval start, end;
 	check(gettimeofday(&start, NULL), "gettimeofday failed", 1);
 	(*function)();
+	__remaining_alloc_its = -1;
+	__remaining_primsys_its = -1;
+	__remaining_threads_fct_its = -1;
 	check(gettimeofday(&end, NULL), "gettimeofday failed", 1);
 	end_test(start, end, out);
 }
@@ -258,6 +267,9 @@ __test_output_unittest_its(char *test_name, void (*function)(void), char *expect
     struct timeval start, end;
     check(gettimeofday(&start, NULL), "gettimeofday failed", 1);
     (*function)();
+	__remaining_alloc_its = -1;
+	__remaining_primsys_its = -1;
+	__remaining_threads_fct_its = -1;
     check(gettimeofday(&end, NULL), "gettimeofday failed", 1);
     end_test(start, end, out);
     test_running = 0;
@@ -309,12 +321,18 @@ __exit_test_unittest(char *test_name, void (*function)(void), int exit_code)
 			break;
 		case 0:
 			(*function)();
+			__remaining_alloc_its = -1;
+			__remaining_primsys_its = -1;
+			__remaining_threads_fct_its = -1;
 			dup2(saved_stderr, STDERR_FILENO);
 			dprintf(STDERR_FILENO, "%sYour function didn't called exit !%s\n",
 			"\x1b[1;31m", "\x1b[0m");
 			kill(getppid(), SIGKILL);
 			exit(EXIT_FAILURE);
 		default:
+			__remaining_alloc_its = -1;
+			__remaining_primsys_its = -1;
+			__remaining_threads_fct_its = -1;
 			break;
 	}
 	check(waitpid(cpid, &status, 0), "wait failed", 1);

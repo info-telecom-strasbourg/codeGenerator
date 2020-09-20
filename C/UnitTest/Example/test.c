@@ -6,6 +6,9 @@
 
 #include <stdlib.h>
 #include <unistd.h>
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <fcntl.h>
 #include "its_unit_test.h" //include it to have an access to the library
 
 long long __remaining_primsys_its = -1;
@@ -95,12 +98,12 @@ main(void)
 {
     fprintf(stdout, "--- Launch tests ---\n\n");
 
-    // TEST(test_equality);
-    // TEST(test_compare_string);
-    // TEST(test_timeout, 2100);
-    // OTEST(test_output, "output_1.txt");
-    // OTEST(test_output_and_timeout, "output_1.txt", 2100);
-    // TEST(test_file_comparison);
+    TEST(test_equality);
+    TEST(test_compare_string);
+    TEST(test_timeout, 2100);
+    OTEST(test_output, "output_1.txt");
+    OTEST(test_output_and_timeout, "output_1.txt", 2100);
+    TEST(test_file_comparison);
     //TEST(test_fail);
 	ETEST(test_exit, EXIT_SUCCESS);
 
