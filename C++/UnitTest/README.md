@@ -1,14 +1,14 @@
 # UnitTest library for C++
 
 ## Content
-This library allows you to run unit tests on your project. You will be able to check the good behaviour of your functions, by testing them one by one.
+This library allows you to run unit tests on your project. You will be able to check the good behaviour of your functions, by testing them one by one. 
 
 This library gives you variable way to check your test functions:
 - `TEST(function)` to run a classic test.
 - `TEST(function, timeout_millis)` to run a test with a timeout (in milliseconds).
 - `OTEST(function, expected_output_file)` to compare standard output with the given file.
 - `OTEST(function, expected_output_file, timeout_millis)` to compare standard output with the given file with a timeout (in milliseconds).
-
+  
 In a test function, you can use these two functions :
 - `assert(expression)` to check that an expression is true
 - `assert_file(first_file, second_file) ` to check if first_file and second_file are identical. It can be text or binary files.
@@ -18,9 +18,9 @@ In a test function, you can use these two functions :
 ## Display in the terminal
 Here is what the tests will display in the terminal :
 - If a test passes, it displays <span style="color: rgb(0,255,0)">Success</span> and the time taken by the function
-- If in a test, an assertion is false, it displays <span style="color: rgb(255,0 ,0)">Failed</span> and exits the programm.
+- If in a test, an assertion is false, it displays <span style="color: rgb(255,0 ,0)">Failed</span> and exits the programm. 
 - If a test lasts longer than the timeout, it displays <span style="color: rgb(255,0 ,0)">Timeout</span>, the time out, and it exit the programm.
-- If compared files aren't equal, it displays that the files are <span style="color: rgb(255,0 ,0)">different</span>.
+- If compared files aren't equal, it displays that the files are <span style="color: rgb(255,0 ,0)">different</span>. 
 - If you test the output, it displays that your expected_output_file is <span style="color: rgb(255,0 ,0)">different</span> from the real output. A *.log* file is created in order to see the real output, and understand the differences.
 
 
@@ -42,13 +42,13 @@ void main(void)
     TEST(myTestFunction);
 
     // Test myTestFunction with a timeout (here, the function must finish in 1 second maximum)
-    TEST(myTestFunction, 1000);
+    TEST(myTestFunction, 1000); 
 
     // Test myTestFunction, and check if the output is identical of the output_expected file
     OTEST(myTestFunction, output_exected);
 
     // Test myTestFunction with a timeout (here, the function must finish in 1 second maximum), and check if the output is identical of the output_expected file
-    OTEST(myTestFunction, output_exected, 1000);
+    OTEST(myTestFunction, output_exected, 1000); 
     ...
 }
 ```
@@ -66,7 +66,8 @@ In the *Makefile*, use -pthread, otherwise the libray won't work... (you can und
 
 Also, don't use:
 - `__ITS_TEST_1`, `__ITS_TEST_2`, `__ITS_TEST_3`, `__ITS_TEST_4`, `__ITS_GET_MACRO_TEST` and `__ITS_GET_MACRO_OTEST` : they are macros used inside the library.
-- `__test_classic_unittest_its`, `__test_timeout_unittest_its`, `__test_output_unittest_its`, `__test_output_timeout_unittest_its`, `__assert_unittest_its`, and `__assert_file_unittest_its` are functions used inside the library. They are equivalent to the macros. We advise you to use the macros because it is easier and reduce your code.
+- `bool __its_unit_test_cpp_running`, `std::thread __its_unit_test_cpp_load`, `std::streambuf *__its_unit_stream_buffer_cout` and `std::streambuf *__its_unit_stream_buffer_cerr`: they are global variables used inside the library.
+- `void __its_unit_test_cpp_loadingEffect()` and `void __its_unit_test_cpp_timeout(float time, std::thread &launch_func)`, they are functions used inside the library.
 
 **If you decide to use them, it can lead to unexpected behavior.**
 

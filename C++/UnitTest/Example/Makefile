@@ -1,17 +1,21 @@
-all:
-	g++ -c -o its_unit_test.o its_unit_test.cpp -Wall -Wextra -Werror
-	g++ -c -o test.o test.cpp -Wall -Wextra -Werror
-	g++ -o test test.o its_unit_test.o -pthread -Wall -Wextra -Werror
-run:
-	@g++ -c -o its_unit_test.o its_unit_test.cpp -Wall -Wextra -Werror
-	@g++ -c -o test.o test.cpp -Wall -Wextra -Werror
-	@g++ -o test test.o its_unit_test.o -pthread -Wall -Wextra -Werror
-	@./test || true
-	@rm -f its_unit_test.o
-	@rm -f test.o
-	@rm -f test
+CC		:= g++
+C_FLAGS := -std=c++11 -g -pthread
+
+LIBRARIES	:=
+
+ifeq ($(OS),Windows_NT)
+EXECUTABLE	:= test.exe
+else
+EXECUTABLE	:= test
+endif
+
+all: 	$(EXECUTABLE)
 
 clean:
-	rm -f its_unit_test.o
-	rm -f test.o
-	rm -f test
+	$(RM) $(EXECUTABLE)
+
+run: all
+	$(EXECUTABLE)
+
+$(EXECUTABLE): *.cpp
+	$(CC) $(C_FLAGS) -I -L $^ -o $@ $(LIBRARIES)
