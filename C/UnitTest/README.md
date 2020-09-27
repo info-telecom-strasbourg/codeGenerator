@@ -8,12 +8,13 @@ This library gives you variable way to check your test functions:
 - `TEST(function, timeout_millis)` to run a test with a timeout (in milliseconds).
 - `OTEST(function, expected_output_file)` to compare standard output with the given file.
 - `OTEST(function, expected_output_file, timeout_millis)` to compare standard output with the given file with a timeout (in milliseconds).
+- `ETEST(function, exit_code)` to check if your function exit with the correct exit code.
 
 In a test function, you can use these two functions :
 - `assert(expression)` to check that an expression is true
 - `assert_file(first_file, second_file) ` to check if first_file and second_file are identical. It can be text or binary files.
 
-To simulate an allocation error or a primitive system error, you can give `__remaining_alloc_its` and `__remaining_primsys_its` a positive value (the number of successfull allocation / PS). you can give a différent value in each test function.
+To simulate an allocation error or a primitive system error, you can give `__remaining_alloc_its`, `__remaining_primsys_its` and `__remaining_threads_fct_its` a positive value (the number of successful l allocation / PS). You can give a different value in each test function. If you do not give a value a value at the beginning of your test, they will be put to `-1` and all allocations/PS/threads will succeed. 
 
 **Warning** : assert and assert_file must be used in a test function checked by TEST or OTEST, otherwise it won't work! Also, you must have the two global variables `__remaining_alloc_its`, `__remaining_primsys_its` and `__remaining_threads_fct_its` declared.
 
@@ -31,6 +32,8 @@ Here is what the tests will display in the terminal :
 ```cpp
 long long __remaining_alloc_its = -1; // if you do not want the library to make your allocation fail
 long long __remaining_primsys_its = -1: // if you do not want the library to make your primitive system fail
+long long __remaining_threads_fct_its = -1; // if you do not want the library to maye your threads function fail
+
 void myTestFunction()
 {
     ...
