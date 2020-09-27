@@ -2,7 +2,7 @@
  * Template file to understand the usage of the library "unit_test.hpp" for C++
  */
 
-#include "its_unit_test.h" //include it to have an access to the library
+#include "../unit_test.hpp" //include it to have an access to the library
 
 #include <iostream>
 #include <unistd.h>
