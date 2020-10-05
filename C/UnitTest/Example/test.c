@@ -11,9 +11,10 @@
 #include <fcntl.h>
 #include "its_unit_test.h" //include it to have an access to the library
 
+long long __remaining_alloc_its = -1;
 long long __remaining_primsys_its = -1;
 long long __remaining_threads_fct_its = -1;
-long long __remaining_alloc_its = -1;
+
 /**
  * Test an equality
  */
@@ -116,6 +117,5 @@ main(void)
     // //TEST(test_fail);
 	// ETEST(test_exit, EXIT_SUCCESS);
 	TEST(test_malloc);
-
     return EXIT_SUCCESS;
 }

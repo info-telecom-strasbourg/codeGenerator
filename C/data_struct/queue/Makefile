@@ -9,7 +9,7 @@ test:
 	@gcc -c -o queue.o queue.c -Wall -Wextra -Werror
 	@gcc -c -o test.o tests/test.c -I . -Wall -Wextra -Werror
 	@gcc -o test test.o its_unit_test.o queue.o -pthread -Wall -Wextra -Werror
-	@./test
+	@./test || true
 	@rm -f test.o
 	@rm -f its_unit_test.o
 	@rm -f queue.o
