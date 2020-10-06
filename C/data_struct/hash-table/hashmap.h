@@ -5,6 +5,49 @@
 #include <stdlib.h>
 #include <string.h>
 
+/**************************** How to use a HashMap *****************************
+* A HashMap is a data strucutre. It contains Data-Key pairs.                   *
+* The keys in the HashMap are unique. Different keys may have the same value,  *
+* thus the values may not be unique.                                           *
+* One could insert the <K, V> pair in a list but then one would need to scan   *
+* the entire list to find the value associated withe the key. With a HasMap    *
+* one wants to reduce the search area. Thus, the long list of items is break   *
+* into n small lists as shown below. Whenever a key is given, one search for   *
+* the key in those small lists. If the key is found, the value is returned.    *
+* Otherwise there is no <K, V> pair for the given key.                         *
+* The size of the HashMap is equal to the number of small lists.
+
+* To look up a value the key is given as input to the hash function and returns*
+* the slot number in which to search the value. Then the value is searched in  *
+* the list. If the key is found in the list, the corresponding value is        *
+* returned.
+*                                                                              *
+*        ____________                                                          *
+*       |            |                                                         *
+*  _____|__       ___v____       ________       ________       ________        *
+* | slot 1 |     | K1, V1 | ->  | K2, V2 | ->  | K3, V3 | ... | Kn, Vn |       *
+*  --------       --------       --------       --------       --------        *
+*                                                                              *
+*        ____________                                                          *
+*       |            |                                                         *
+*  _____|__       ___v____       ________       ________       ________        *
+* | slot 2 |     | Ka, Va | ->  | Kb, Vb | ->  | Kc, Vc | ... | Kz, Vz |       *
+*  --------       --------       --------       --------       --------        *
+*                                                                              *
+*   .                                                                          *
+*   .                                                                          *
+*   .                                                                          *
+*                                                                              *
+*        ____________                                                          *
+*       |            |                                                         *
+*  _____|__       ___v______      __________      __________       __________  *
+* | slot n |     | Ka1, Va1 | -> | Kb2, Vb2 | -> | Kc3, Vc3 | ... | Kzn, Vzn | *
+*  --------       ----------      -----------     ----------       ----------  *
+*                                                                              *
+*                                                                              *
+*******************************************************************************/
+
+
 typedef struct node
 {
     void               *key;
