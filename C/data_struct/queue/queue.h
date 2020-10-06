@@ -33,7 +33,7 @@
 /**
  * @brief A structure representing a node in the queue.
  *
- * A node store a data (any type) and point to the next node in the queue.
+ * A node store a data (any type) and points to the next node in the queue.
  */
 typedef struct queue_node {
     void              *data; /**< The data stored in the node.
@@ -133,7 +133,7 @@ int dequeue(queue_t *queue, void *data);
 int queue_peek(const queue_t *queue, void *data);
 
 /**
- * @brief Delete a queue and free all the memory allocated by it.
+ * @brief Delete a queue and frees all the memory allocated by it.
  *
  * @param queue: the queue will be deleted.
  */
