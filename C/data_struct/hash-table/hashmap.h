@@ -88,7 +88,7 @@ hash_table_t *create_table(unsigned long long size);
  * 
  * @return the slot or list number in which to search for the key
  */
-unsigned long long hash_code_int(hash_table_t *h_map, unsigned long long key);
+unsigned long long hash_code_int(hash_table_t *h_map, void *key);
 
 /**
  * @brief Insert a <K, V> pair in the HashMap.
@@ -99,7 +99,7 @@ unsigned long long hash_code_int(hash_table_t *h_map, unsigned long long key);
  * 
  * @return the slot or list number in which to search for the key
  */
-void insert(hash_table_t *h_map, unsigned long long key, void *val);
+void insert(hash_table_t *h_map, void *key, void *val);
 
 /**
  * @brief Search the key in the HashMap and returns the corresponding value.
@@ -109,7 +109,7 @@ void insert(hash_table_t *h_map, unsigned long long key, void *val);
  * 
  * @return the value of the <K, V> pair
  */
-void* lookup(hash_table_t *h_map, unsigned long long key);
+void* lookup(hash_table_t *h_map, void *key);
 
 /**
  * @brief Delete a HashMap and frees all the memory allocated by it.

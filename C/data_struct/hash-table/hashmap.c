@@ -4,19 +4,19 @@
 hash_table_t *create_table(unsigned long long size)
 {
     hash_table_t *h_map = malloc(sizeof(hash_table_t));
-    t->size = size;
-    t->list = malloc(sizeof(hash_node_t*) * size);
+    h_map->size = size;
+    h_map->list = malloc(sizeof(hash_node_t*) * size);
     for (unsigned long long i = 0; i < size; i++)
-        t->list[i] = NULL;
+        h_map->list[i] = NULL;
     return h_map;
 }
 
-unsigned long long hash_code(hash_table_t *h_map, unsigned long long key)
+unsigned long long hash_code(hash_table_t *h_map, void *key)
 {
-    return key % h_map->size;
+    return (unsigned long long)key % h_map->size;
 }
 
-void insert(hash_table_t *h_map, unsigned long long key, void *val)
+void insert(hash_table_t *h_map, void *key, void *val)
 {
     hash_node_t *list, *temp, *new_node;
 
@@ -29,7 +29,7 @@ void insert(hash_table_t *h_map, unsigned long long key, void *val)
     temp = list;
 
     while(temp){
-        if(temp->key==key){
+        if(temp->key == key){
             free(temp->val);
             temp->val = val;
             return;
@@ -44,13 +44,13 @@ void insert(hash_table_t *h_map, unsigned long long key, void *val)
 
 }
 
-void* lookup(hash_table_t *h_map, unsigned long long key)
+void* lookup(hash_table_t *h_map, void *key)
 {
-    unsigned long long pos   = hash_code(t,key);
-    hash_node_t        *list = t->list[pos];
+    unsigned long long pos   = hash_code(h_map, key);
+    hash_node_t        *list = h_map->list[pos];
     hash_node_t        *temp = list;
     while(temp){
-        if(temp->key==key){
+        if(temp->key == key){
             return temp->val;
         }
         temp = temp->next;
@@ -58,7 +58,7 @@ void* lookup(hash_table_t *h_map, unsigned long long key)
     return NULL;
 }
 
-void freeHashMap(hash_table_t *h_map)
+void free_hash_map(hash_table_t *h_map)
 {
     for (unsigned long long i = 0; i < h_map->size; i++) {
         if(h_map->list[i] != NULL)
