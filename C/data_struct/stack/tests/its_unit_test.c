@@ -32,29 +32,29 @@ static void *
 loading_threadingEffect(void *arg)
 {
     (void)arg;
-    int ind = 0;
-    while (test_running)
-    {
-        switch (ind)
-        {
-            case 0:
-                dprintf(saved_stdout, "   \b\b\b");
-                break;
-            case 1:
-                dprintf(saved_stdout, ".  \b\b\b");
-                break;
-            case 2:
-                dprintf(saved_stdout, ".. \b\b\b");
-                break;
-            case 3:
-                dprintf(saved_stdout, "...\b\b\b");
-                break;
-        }
-        ind = (ind + 1) % 4;
-        usleep(300000);
-    }
-    dprintf(saved_stdout, "   \b\b\b");
-    return NULL;
+	int ind = 0;
+	while (test_running)
+	{
+		switch (ind)
+		{
+		case 0:
+			dprintf(saved_stdout, "   \b\b\b");
+			break;
+		case 1:
+			dprintf(saved_stdout, ".  \b\b\b");
+			break;
+		case 2:
+			dprintf(saved_stdout, ".. \b\b\b");
+			break;
+		case 3:
+			dprintf(saved_stdout, "...\b\b\b");
+			break;
+		}
+		ind = (ind + 1) % 4;
+		usleep(300000);
+	}
+	dprintf(saved_stdout, "   \b\b\b");
+	return NULL;
 }
 
 /**
@@ -69,13 +69,13 @@ loading_threadingEffect(void *arg)
 static void
 check(int exp, const char *msg, int red)
 {
-    if (exp == -1)
-    {
-        if (red)
+	if (exp == -1)
+	{
+	    if (red)
             dup2(saved_stderr, STDERR_FILENO);
-        perror(msg);
-        exit(EXIT_FAILURE);
-    }
+		perror(msg);
+		exit(EXIT_FAILURE);
+	}
 }
 
 /**
@@ -92,12 +92,12 @@ check(int exp, const char *msg, int red)
 static void
 check_t(int exp, const char *msg)
 {
-    if(exp != 0)
-    {
-        dup2(saved_stderr, STDERR_FILENO);
-        perror(msg);
-        exit(EXIT_FAILURE);
-    }
+	if(exp != 0)
+	{
+		dup2(saved_stderr, STDERR_FILENO);
+		perror(msg);
+		exit(EXIT_FAILURE);
+	}
 }
 
 /**
@@ -118,18 +118,19 @@ static void
 launch_timeout(long int time)
 {
     struct timeval start_time, cur_time;
-    check(gettimeofday(&start_time, NULL), "gettimeofday failed", 1);
+    check(gettimeofday(&start_time, NULL, 1), "gettimeofday failed", 1);
     while (test_running)
     {
-        check(gettimeofday(&cur_time, NULL), "gettimeofday failed", 1);
+        check(gettimeofday(&cur_time, NULL, 1), "gettimeofday failed", 1);
         if (((cur_time.tv_sec * 1000000 + cur_time.tv_usec) -
-             (start_time.tv_sec * 1000000 + start_time.tv_usec)) / 1000 > time)
+            (start_time.tv_sec * 1000000 + start_time.tv_usec)) / 1000 > time)
         {
             test_running = 0;
+			__remaining_alloc_its = -1;
+			__remaining_primsys_its = -1;
+			__remaining_threads_fct_its = -1;
             check_t(errno = pthread_join(loading_thread, NULL),
                     "Loading effect thread join failed");
-            check_t(errno = pthread_detach(func_thread),
-                    "Function launcher thread join failed");
             dprintf(saved_stderr, "%sTimeout (%ld ms)%s\n",
                     "\x1b[1;31m", time, "\x1b[0m");
             exit(EXIT_FAILURE);
@@ -142,10 +143,13 @@ launch_timeout(long int time)
 static void *
 thread_function(void *arg)
 {
-    void (*function)(void) = (void(*)()) arg;
-    (*function)();
-    test_running= 0;
-    return NULL;
+	void (*function)(void) = (void(*)()) arg;
+	(*function)();
+	test_running= 0;
+	__remaining_alloc_its = -1;
+	__remaining_primsys_its = -1;
+	__remaining_threads_fct_its = -1;
+	return NULL;
 }
 
 /**
@@ -161,21 +165,23 @@ thread_function(void *arg)
  * - saved_stderr: to save stderr.
  *
  * @param test_name: the name of the function called for test.
+ * @param start_effect: indicate if the animation thread must be launched.
  */
 static void
-setup_test(char *test_name)
+setup_test(char *test_name, int start_effect)
 {
     check(saved_stdout = dup(STDOUT_FILENO),
-          "stdout redirection failed", 0);
+            "stdout redirection failed", 0);
     check(saved_stderr = dup(STDERR_FILENO),
-          "stderr redirection failed", 0);
+            "stderr redirection failed", 0);
     fprintf(stdout, "Check %s : ", test_name);
     fflush(stdout);
     fflush(stderr);
     test_running = 1;
-    check_t(errno = pthread_create(&loading_thread, NULL,
-                                   loading_threadingEffect, NULL),
-            "Loading effect thread creation failed");
+	if(start_effect)
+	    check_t(errno = pthread_create(&loading_thread, NULL,
+	            loading_threadingEffect, NULL),
+	            "Loading effect thread creation failed");
 }
 
 /**
@@ -199,48 +205,51 @@ end_test(struct timeval start, struct timeval end, int out)
     fflush(stderr);
     check(close(out), "Close of \"/dev/null\" failed", 1);
     check(dup2(saved_stdout, STDOUT_FILENO),
-          "stdout redirection failed", 0);
+            "stdout redirection failed", 0);
     check(dup2(saved_stderr, STDERR_FILENO),
-          "stderr redirection failed", 0);
+            "stderr redirection failed", 0);
     check(close(saved_stdout),
-          "Close of saved_stdout failed", 0);
+            "Close of saved_stdout failed", 0);
     fprintf(stdout, "%sSuccess%s (%ld ms)\n", "\033[0;32m", "\x1b[0m",
             ((end.tv_sec * 1000000 + end.tv_usec) -
-             (start.tv_sec * 1000000 + start.tv_usec)) / 1000);
+            (start.tv_sec * 1000000 + start.tv_usec)) / 1000);
     fflush(stdout);
 }
 
 void
 __test_classic_unittest_its(char *test_name, void (*function)(void))
 {
-    setup_test(test_name);
-    int out;
-    check(out = open("/dev/null", O_RDWR | O_APPEND),
-          "Open of \"/dev/null\" failed", 1);
+    setup_test(test_name, 1);
+	int out;
+	check(out = open("/dev/null", O_RDWR | O_APPEND),
+	        "Open of \"/dev/null\" failed", 1);
 
-    check(dup2(out, STDOUT_FILENO), "stdout redirection failed", 1);
+	check(dup2(out, STDOUT_FILENO), "stdout redirection failed", 1);
 
-    check(dup2(out, STDERR_FILENO), "stderr redirection failed", 1);
+	check(dup2(out, STDERR_FILENO), "stderr redirection failed", 1);
 
-    struct timeval start, end;
-    check(gettimeofday(&start, NULL), "gettimeofday failed", 1);
-    (*function)();
-    check(gettimeofday(&end, NULL), "gettimeofday failed", 1);
-    end_test(start, end, out);
+	struct timeval start = {0, 0}, end = {0, 0};
+	check(gettimeofday(&start, NULL), "gettimeofday failed", 1);
+	(*function)();
+	__remaining_alloc_its = -1;
+	__remaining_primsys_its = -1;
+	__remaining_threads_fct_its = -1;
+	check(gettimeofday(&end, NULL), "gettimeofday failed", 1);
+	end_test(start, end, out);
 }
 
 void
 __test_timeout_unittest_its(char *test_name, void (*function)(void),
-                            unsigned long timeout)
+	unsigned long timeout)
 {
-    setup_test(test_name);
-    int out = open("/dev/null", O_RDWR | O_APPEND);
-    check(out, "Open of \"/dev/null\" failed", 1);
-    check(dup2(out, STDOUT_FILENO), "stdout redirection failed", 1);
-    check(dup2(out, STDERR_FILENO), "stderr redirection failed", 1);
-    struct timeval start, end;
-    check(gettimeofday(&start, NULL), "gettimeofday failed", 0);
-    check_t(errno = pthread_create(&func_thread, NULL,thread_function, (void *)function), "Function launcher creation failed");
+    setup_test(test_name, 1);
+	int out = open("/dev/null", O_RDWR | O_APPEND);
+	check(out, "Open of \"/dev/null\" failed", 1);
+	check(dup2(out, STDOUT_FILENO), "stdout redirection failed", 1);
+	check(dup2(out, STDERR_FILENO), "stderr redirection failed", 1);
+	struct timeval start = {0, 0}, end = {0, 0};
+	check(gettimeofday(&start, NULL), "gettimeofday failed", 0);
+	check_t(errno = pthread_create(&func_thread, NULL,thread_function, (void *)function), "Function launcher creation failed");
     launch_timeout(timeout);
     check(gettimeofday(&end, NULL), "gettimeofday failed", 1);
     end_test(start, end, out);
@@ -249,15 +258,18 @@ __test_timeout_unittest_its(char *test_name, void (*function)(void),
 void
 __test_output_unittest_its(char *test_name, void (*function)(void), char *expected_output_file)
 {
-    setup_test(test_name);
+    setup_test(test_name, 1);
     int out = open("_its_out_test.log", O_RDWR | O_TRUNC | O_CREAT | O_APPEND, 0666);
     check(out, "Open of \"_its_out_test.log\" failed", 1);
     check(dup2(out, STDOUT_FILENO), "stdout redirection failed", 1);
     check(dup2(out, STDERR_FILENO), "stderr redirection failed", 1);
 
-    struct timeval start, end;
+    struct timeval start = {0, 0}, end = {0, 0};
     check(gettimeofday(&start, NULL), "gettimeofday failed", 1);
     (*function)();
+	__remaining_alloc_its = -1;
+	__remaining_primsys_its = -1;
+	__remaining_threads_fct_its = -1;
     check(gettimeofday(&end, NULL), "gettimeofday failed", 1);
     end_test(start, end, out);
     test_running = 0;
@@ -267,15 +279,15 @@ __test_output_unittest_its(char *test_name, void (*function)(void), char *expect
 
 void
 __test_output_timeout_unittest_its(char *test_name, void (*function)(void),
-                                   char *expected_output_file, unsigned long timeout_millis)
+	char *expected_output_file, unsigned long timeout_millis)
 {
-    setup_test(test_name);
+    setup_test(test_name, 1);
     int out = open("_its_out_test.log", O_RDWR | O_TRUNC | O_CREAT | O_APPEND,
-                   0666);
+            0666);
     check(out, "Open of \"_its_out_test.log\" failed", 1);
     check(dup2(out, STDOUT_FILENO), "stdout redirection failed", 1);
     check(dup2(out, STDERR_FILENO), "stderr redirection failed", 1);
-    struct timeval start, end;
+    struct timeval start = {0, 0}, end = {0, 0};
     check(gettimeofday(&start, NULL), "gettimeofday failed", 1);
     //launch thread function
     check_t(errno = pthread_create(&func_thread, NULL, thread_function, (void *)function), "Function launcher creation failed");
@@ -288,7 +300,67 @@ __test_output_timeout_unittest_its(char *test_name, void (*function)(void),
 }
 
 void
-__assert_unittest_its(char* expression_text ,int expression)
+__exit_test_unittest(char *test_name, void (*function)(void), int exit_code)
+{
+	setup_test(test_name, 0);
+	int out;
+	int status;
+	pid_t cpid;
+	check(out = open("/dev/null", O_RDWR | O_APPEND),
+	        "Open of \"/dev/null\" failed", 1);
+
+	check(dup2(out, STDOUT_FILENO), "stdout redirection failed", 1);
+	check(dup2(out, STDERR_FILENO), "stderr redirection failed", 1);
+
+	struct timeval start = {0, 0}, end = {0, 0};
+	check(gettimeofday(&start, NULL), "gettimeofday failed", 1);
+
+	switch (cpid = fork()) {
+		case -1:
+			check(-1, "fork failed", 1);
+			break;
+		case 0:
+			(*function)();
+			__remaining_alloc_its = -1;
+			__remaining_primsys_its = -1;
+			__remaining_threads_fct_its = -1;
+			dup2(saved_stderr, STDERR_FILENO);
+			dprintf(STDERR_FILENO, "%sYour function didn't called exit !%s\n",
+			"\x1b[1;31m", "\x1b[0m");
+			kill(getppid(), SIGKILL);
+			exit(EXIT_FAILURE);
+		default:
+			__remaining_alloc_its = -1;
+			__remaining_primsys_its = -1;
+			__remaining_threads_fct_its = -1;
+			check_t(errno = pthread_create(&loading_thread, NULL,
+		            loading_threadingEffect, NULL),
+		            "Loading effect thread creation failed");
+			break;
+	}
+	check(waitpid(cpid, &status, 0), "wait failed", 1);
+	if(WIFEXITED(status))
+	{
+		if(WEXITSTATUS(status) != exit_code)
+		{
+			test_running = 0;
+			check_t(errno = pthread_join(loading_thread, NULL),
+			"Loading effect thread join failed");
+			dprintf(saved_stdout,
+				"%sFailed%s\nassertion failed : %i =! %i\n", "\x1b[1;31m",
+				"\x1b[0m", WEXITSTATUS(status), exit_code);
+				exit(EXIT_FAILURE);
+		}
+	}
+	else
+		__assert_unittest_its("Not finished with exit", 0);
+
+	check(gettimeofday(&end, NULL), "gettimeofday failed", 1);
+    end_test(start, end, out);
+}
+
+void
+__assert_unittest_its(char *expression_text, int expression)
 {
     if (!(expression))
     {
@@ -296,9 +368,8 @@ __assert_unittest_its(char* expression_text ,int expression)
         check_t(errno = pthread_join(loading_thread, NULL),
                 "Loading effect thread join failed");
         dprintf(saved_stdout,
-                "%sFailed%s\nassertion failed : %s\n", "\x1b[1;31m",
-                "\x1b[0m",
-                expression_text);
+                    "%sFailed%s\nassertion failed : %s\n", "\x1b[1;31m",
+                    "\x1b[0m", expression_text);
         exit(EXIT_FAILURE);
     }
 }
@@ -306,26 +377,26 @@ __assert_unittest_its(char* expression_text ,int expression)
 void
 __assert_file_unittest_its(char *first_file, char *second_file)
 {
-    int file_origi = open(first_file, O_RDONLY);
-    int file_saved = open(second_file, O_RDONLY);
-    check(file_origi, "A problem occured when files were opened", 1);
-    check(file_saved, "A problem occured when files were opened", 1);
-    char buf_origi[1024] = "", buf_saved[1024] = "";
-    int read_origi = 0, read_saved = 0;
-    while ((read_origi = read(file_origi, buf_origi, 1024)) >= 0 &&
-           (read_saved = read(file_saved, buf_saved, 1024)) > 0)
-        if (read_origi != read_saved ||
-            memcmp(buf_origi, buf_saved, read_saved))
-        {
-            test_running = 0;
-            check_t(errno = pthread_join(loading_thread, NULL),
-                    "Loading effect thread join failed");
-            dprintf(saved_stdout, "%sFailed%s\nThe two files"
-                                  " are different\n", "\x1b[1;31m", "\x1b[0m");
-            exit(EXIT_FAILURE);
-        }
-    check(read_origi, "An error occurred while reading files", 1);
-    check(read_saved, "An error occurred while reading files", 1);
-    check(close(file_saved), "Close of a file failed", 0);
-    check(close(file_origi), "Close of a file failed", 0);
+        int file_origi = open(first_file, O_RDONLY);
+        int file_saved = open(second_file, O_RDONLY);
+        check(file_origi, "A problem occured when files were opened", 1);
+        check(file_saved, "A problem occured when files were opened", 1);
+        char buf_origi[1024] = "", buf_saved[1024] = "";
+        int read_origi = 0, read_saved = 0;
+        while ((read_origi = read(file_origi, buf_origi, 1024)) >= 0 &&
+                (read_saved = read(file_saved, buf_saved, 1024)) > 0)
+            if (read_origi != read_saved ||
+                memcmp(buf_origi, buf_saved, read_saved))
+            {
+                test_running = 0;
+                check_t(errno = pthread_join(loading_thread, NULL),
+                        "Loading effect thread join failed");
+                dprintf(saved_stdout, "%sFailed%s\nThe two files"
+                        " are different\n", "\x1b[1;31m", "\x1b[0m");
+                exit(EXIT_FAILURE);
+            }
+        check(read_origi, "An error occurred while reading files", 1);
+        check(read_saved, "An error occurred while reading files", 1);
+        check(close(file_saved), "Close of a file failed", 0);
+        check(close(file_origi), "Close of a file failed", 0);
 }
