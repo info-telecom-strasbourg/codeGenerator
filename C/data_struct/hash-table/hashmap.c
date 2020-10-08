@@ -46,16 +46,18 @@ int insert(hash_table_t *h_map, void *key, void *val)
     list = h_map->list[pos];
     temp = list;
 
-    while(temp){
-        if(h_map->comp_function(temp->key, key) == 0){
+    while(temp)
+	{
+        if(h_map->comp_function(temp->key, key) == 0)
+		{
             free(temp->val);
             temp->val = val;
             return 0;
         }
         temp = temp->next;
     }
-    new_node = malloc(sizeof(hash_node_t));
 
+    new_node = malloc(sizeof(hash_node_t));
 	if(new_node == NULL)
 		return -1;
 
@@ -65,7 +67,7 @@ int insert(hash_table_t *h_map, void *key, void *val)
 		free(new_node);
 		return -1;
 	}
-	memcpy(new_node->val, val, h_map->val_memsize);
+
     new_node->key = malloc(sizeof(h_map->key_memsize));
 	if(new_node->key == NULL)
 	{
@@ -73,6 +75,8 @@ int insert(hash_table_t *h_map, void *key, void *val)
 		free(new_node);
 		return -1;
 	}
+	
+	memcpy(new_node->val, val, h_map->val_memsize);
 	memcpy(new_node->key, key, h_map->key_memsize);
     new_node->next = list;
     h_map->list[pos] = new_node;
@@ -84,7 +88,8 @@ void* lookup(hash_table_t *h_map, void *key)
     unsigned long long pos   = h_map->hash_function(h_map, key);
     hash_node_t        *list = h_map->list[pos];
     hash_node_t        *temp = list;
-    while(temp){
+    while(temp)
+	{
         if(h_map->comp_function(temp->key, key) == 0)
             return temp->val;
         temp = temp->next;

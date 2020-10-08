@@ -64,17 +64,17 @@ typedef struct node
 
 typedef struct table
 {
-    unsigned long long size;            /**< The size of the subsequent list. */
+    unsigned long long size;           /**< The size of the subsequent list. */
 	size_t             val_memsize;    /**< Memory size of a value */
 	size_t             key_memsize;    /**< Memory size of a value */
 	unsigned long long (*hash_function)(struct table *, void *); /**< The hash
 																    function. */
 	int (*comp_function)(void *, void *); /**< The compare function, it must
-												  return 0 if the two arguments
-												  are equals and a non zero
-												  value if they are not. */
-    hash_node_t        **list;          /**< Pointer to identify
-                                          the table of subsequent lists. */
+											   return 0 if the two arguments
+											   are equals and a non zero
+											   value if they are not. */
+    hash_node_t        **list;          /**< Pointer to identify the table of
+											 subsequent lists. */
 } hash_table_t;
 
 
