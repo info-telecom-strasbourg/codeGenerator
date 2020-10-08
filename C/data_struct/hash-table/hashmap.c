@@ -19,7 +19,7 @@ hash_table_t *create_table(unsigned long long size,
     h_map->size = size;
     h_map->list = calloc(size, sizeof(hash_node_t *));
 
-	if(!h_map->list)
+	if(h_map->list == NULL)
 	{
 		free(h_map);
 		return NULL;
@@ -56,18 +56,18 @@ int insert(hash_table_t *h_map, void *key, void *val)
     }
     new_node = malloc(sizeof(hash_node_t));
 
-	if(!new_node)
+	if(new_node == NULL)
 		return -1;
 
     new_node->val = malloc(sizeof(h_map->val_memsize));
-	if(!new_node->val)
+	if(new_node->val == NULL)
 	{
 		free(new_node);
 		return -1;
 	}
 	memcpy(new_node->val, val, h_map->val_memsize);
     new_node->key = malloc(sizeof(h_map->key_memsize));
-	if(!new_node->key)
+	if(new_node->key == NULL)
 	{
 		free(new_node->val);
 		free(new_node);
