@@ -12,8 +12,19 @@ hash_table_t *create_table(unsigned long long size,
 					       int (*comp_function)(void *, void *))
 {
     hash_table_t *h_map = malloc(sizeof(hash_table_t));
+
+	if(!h_map)
+		return NULL;
+
     h_map->size = size;
     h_map->list = calloc(size, sizeof(hash_node_t *));
+
+	if(!h_map->list)
+	{
+		free(h_map);
+		return NULL;
+	}
+
 	h_map->hash_function = hash_function ? hash_function : hash_code;
 	h_map->comp_function = comp_function ? comp_function : comp;
     return h_map;
@@ -24,7 +35,7 @@ unsigned long long hash_code(hash_table_t *h_map, void *key)
     return (unsigned long long)key % h_map->size;
 }
 
-void insert(hash_table_t *h_map, void *key, void *val)
+int insert(hash_table_t *h_map, void *key, void *val)
 {
     hash_node_t *list, *temp, *new_node;
 
@@ -44,12 +55,28 @@ void insert(hash_table_t *h_map, void *key, void *val)
         temp = temp->next;
     }
     new_node = malloc(sizeof(hash_node_t));
+
+	if(!new_node)
+		return -1;
+
     new_node->val = malloc(sizeof(h_map->val_memsize));
+	if(!new_node->val)
+	{
+		free(new_node);
+		return -1;
+	}
 	memcpy(new_node->val, val, h_map->val_memsize);
     new_node->key = malloc(sizeof(h_map->key_memsize));
+	if(!new_node->key)
+	{
+		free(new_node->val);
+		free(new_node);
+		return -1;
+	}
 	memcpy(new_node->key, key, h_map->key_memsize);
     new_node->next = list;
     h_map->list[pos] = new_node;
+	return 0;
 }
 
 void* lookup(hash_table_t *h_map, void *key)
