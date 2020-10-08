@@ -10,7 +10,7 @@ long long __remaining_threads_fct_its = -1;
 void
 test_create_table(void)
 {
-    hash_table_t *hash_map = create_table(5);
+    hash_table_t *hash_map = create_table(5, NULL, NULL);
     assert(hash_map != NULL);
     assert(hash_map->size == 5);
     assert(hash_map->list != NULL);

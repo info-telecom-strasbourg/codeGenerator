@@ -16,10 +16,10 @@
 * Whenever a key is given, one search for the key in those small lists.        *
 * If the key is found, the value is returned. Otherwise there is no <K, V>     *
 * Otherwise there is no <K, V> pair for the given key.                         *
-* The size of the HashMap is equal to the number of small lists.
+* The size of the HashMap is equal to the number of small lists.               *
 *                                                                              *
 * To look up a value the key is given as input to the hash function and returns*
-* the slot number or the list number in which to search the key. Then the    *
+* the slot number or the list number in which to search the key. Then the      *
 * value is searched in the list. If the key is found in the list, the          *
 * corresponding value is returned.                                             *
 *                                                                              *
@@ -57,7 +57,6 @@ typedef struct node
 {
     void               *key;    /**< The key of the node.
                                   It can be anything. */
-	unsigned long long index;
     void               *val;    /**< The data stored in the node.
                                   It can be anything. */
     struct node        *next;   /**< Pointer to identify the next node. */
@@ -65,30 +64,42 @@ typedef struct node
 
 typedef struct table
 {
-    unsigned long long size;            /**< The size of the subsequent list */
-	size_t             node_memsize;
-    hash_node_t        **list;          /**< Pointer to identify 
+    unsigned long long size;            /**< The size of the subsequent list. */
+	size_t             val_memsize;    /**< Memory size of a value */
+	size_t             key_memsize;    /**< Memory size of a value */
+	unsigned long long (*hash_function)(struct table *, void *); /**< The hash
+																    function. */
+	int (*comp_function)(void *, void *); /**< The compare function, it must
+												  return 0 if the two arguments
+												  are equals and a non zero
+												  value if they are not. */
+    hash_node_t        **list;          /**< Pointer to identify
                                           the table of subsequent lists. */
 } hash_table_t;
+
 
 /**
  * @brief Creates a HashMap of size.
  *
  * @param size size of the HashMap
- * 
+ * @param hash_function the hash function that will be used.
+ * @param comp_function thecompar function that will be used to compare keys.
+ *
  * @return the pointer to the created HashMap
  */
-hash_table_t *create_table(unsigned long long size);
-
+ hash_table_t *create_table(unsigned long long size,
+ 	                       unsigned long long (*hash_function)
+ 						   (hash_table_t *, void *),
+ 					       int (*comp_function)(void *, void *));
 /**
  * @brief Get the slot number in which to search for the key.
  *
  * @param h_map the pointer to the HashMap
  * @param key the key of the pair
- * 
+ *
  * @return the slot or list number in which to search for the key
  */
-unsigned long long hash_code_int(hash_table_t *h_map, void *key);
+unsigned long long hash_code(hash_table_t *h_map, void *key);
 
 /**
  * @brief Insert a <K, V> pair in the HashMap.
@@ -96,7 +107,7 @@ unsigned long long hash_code_int(hash_table_t *h_map, void *key);
  * @param h_map the pointer to the HashMap
  * @param key the key of the pair
  * @param val the value of the pair
- * 
+ *
  * @return the slot or list number in which to search for the key
  */
 void insert(hash_table_t *h_map, void *key, void *val);
@@ -106,14 +117,14 @@ void insert(hash_table_t *h_map, void *key, void *val);
  *
  * @param h_map the pointer to the HashMap
  * @param key the key of the pair
- * 
+ *
  * @return the value of the <K, V> pair
  */
 void* lookup(hash_table_t *h_map, void *key);
 
 /**
  * @brief Delete a HashMap and frees all the memory allocated by it.
- * 
+ *
  * @param h_map the pointer to the HashMap
  *
  * @param queue: the queue will be deleted.
