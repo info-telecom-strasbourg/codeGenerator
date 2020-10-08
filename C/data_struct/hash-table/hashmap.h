@@ -70,9 +70,9 @@ typedef struct table
 	unsigned long long (*hash_function)(struct table *, void *); /**< The hash
 																    function. */
 	int (*comp_function)(void *, void *); /**< The compare function, it must
-											   return 0 if the two arguments
-											   are equals and a non zero
-											   value if they are not. */
+											   return 1 if the two arguments
+											   are equals and 0 if they are
+											   not. */
     hash_node_t        **list;          /**< Pointer to identify the table of
 											 subsequent lists. */
 } hash_table_t;

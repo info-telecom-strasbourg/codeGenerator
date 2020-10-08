@@ -1,11 +1,5 @@
 #include "hashmap.h"
 
-int
-comp (void *a, void *b)
-{
-	return *(int *)a == *(int *)b;
-}
-
 hash_table_t *
 create_table(unsigned long long size,
 	         unsigned long long (*hash_function)(hash_table_t *, void *),
@@ -50,7 +44,7 @@ insert(hash_table_t *h_map, void *key, void *val)
 
     while(temp)
 	{
-        if(h_map->comp_function(temp->key, key) == 0)
+        if(h_map->comp_function(temp->key, key))
 		{
             free(temp->val);
             temp->val = val;
@@ -93,7 +87,7 @@ lookup(hash_table_t *h_map, void *key)
     hash_node_t        *temp = list;
     while(temp)
 	{
-        if(h_map->comp_function(temp->key, key) == 0)
+        if(h_map->comp_function(temp->key, key))
             return temp->val;
         temp = temp->next;
     }
@@ -112,4 +106,10 @@ free_hash_map(hash_table_t *h_map)
         }
     free(h_map->list);
     free(h_map);
+}
+
+int
+comp (void *a, void *b)
+{
+	return *(int *)a == *(int *)b;
 }
