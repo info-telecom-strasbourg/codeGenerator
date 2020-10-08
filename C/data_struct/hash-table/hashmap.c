@@ -41,7 +41,7 @@ int insert(hash_table_t *h_map, void *key, void *val)
 
     unsigned long long pos = h_map->hash_function(h_map,key);
     if (pos > h_map->size)
-        return;
+        return -1;
 
     list = h_map->list[pos];
     temp = list;
@@ -50,7 +50,7 @@ int insert(hash_table_t *h_map, void *key, void *val)
         if(h_map->comp_function(temp->key, key) == 0){
             free(temp->val);
             temp->val = val;
-            return;
+            return 0;
         }
         temp = temp->next;
     }

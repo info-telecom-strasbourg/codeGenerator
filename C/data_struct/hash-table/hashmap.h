@@ -108,9 +108,9 @@ unsigned long long hash_code(hash_table_t *h_map, void *key);
  * @param key the key of the pair
  * @param val the value of the pair
  *
- * @return the slot or list number in which to search for the key
+ * @return a number that indicate if the <K, V> was correctly inserted.
  */
-void insert(hash_table_t *h_map, void *key, void *val);
+int insert(hash_table_t *h_map, void *key, void *val);
 
 /**
  * @brief Search the key in the HashMap and returns the corresponding value.
