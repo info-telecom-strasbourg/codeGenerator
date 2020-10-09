@@ -30,6 +30,8 @@ If you want to have an overview of how to use this library, you can take a look 
 
 Do not forget to call `delete_queue` when you do not use the queue anymore, it will free the memory allocated by the library.
 
+If you use arrays or strings, you should use fixed memory size (`char[10]` instead of `char *` or `int[3]` instead of `int *`). If you decide to use non fixed arrays, you will have to manage the memory yourself because the library do not manage allocated variables.
+
 ## Warnings
 
 The size given to `create_queue` is essential. It defines what you want to store in the queue.
