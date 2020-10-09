@@ -131,5 +131,14 @@ void* lookup(hash_table_t *h_map, void *key);
  */
 void free_hash_map(hash_table_t *h_map);
 
+/**
+ * @brief Free the memory allocated by a specific node.
+ *
+ * @param h_map: a pointer to the Hashmap.
+ * @param key: the key associated to the node you want to free.
+ */
+void delete_node(hash_table_t *h_map, void* key);
+
+int comp (void *a, void *b);
 
 #endif //HASH_TABLE_HASHMAP_H

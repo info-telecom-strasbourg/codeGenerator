@@ -108,8 +108,33 @@ free_hash_map(hash_table_t *h_map)
     free(h_map);
 }
 
+void
+delete_node(hash_table_t *h_map, void *key)
+{
+	unsigned long long pos   = h_map->hash_function(h_map, key);
+    hash_node_t        *list = h_map->list[pos];
+    hash_node_t        *temp = list;
+    hash_node_t        *prec = NULL;
+
+    while(temp)
+	{
+        if(h_map->comp_function(temp->key, key))
+        {
+			if(prec != NULL)
+				prec->next = temp->next;
+			else
+				list = NULL;
+			free(temp->val);
+            free(temp->key);
+            free(temp);
+		}
+		prec = temp;
+        temp = temp->next;
+    }
+}
+
 int
 comp (void *a, void *b)
 {
-	return *(int *)a == *(int *)b;
+	return *(unsigned long long *)a == *(unsigned long long *)b;
 }
