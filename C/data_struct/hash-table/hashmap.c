@@ -124,9 +124,11 @@ delete_node(hash_table_t *h_map, void *key)
 				prec->next = temp->next;
 			else
 				list = NULL;
+
 			free(temp->val);
             free(temp->key);
             free(temp);
+			return;
 		}
 		prec = temp;
         temp = temp->next;
