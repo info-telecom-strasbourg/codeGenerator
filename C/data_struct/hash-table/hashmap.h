@@ -88,9 +88,11 @@ typedef struct table
  * @return the pointer to the created HashMap
  */
  hash_table_t *create_table(unsigned long long size,
- 	                       unsigned long long (*hash_function)
- 						   (hash_table_t *, void *),
- 					       int (*comp_function)(void *, void *));
+	                        size_t val_memsize,
+							size_t key_memsize,
+ 	                        unsigned long long (*hash_function)
+ 						    (hash_table_t *, void *),
+ 					        int (*comp_function)(void *, void *));
 /**
  * @brief Get the slot number in which to search for the key.
  *

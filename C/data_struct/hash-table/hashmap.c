@@ -2,6 +2,8 @@
 
 hash_table_t *
 create_table(unsigned long long size,
+	         size_t val_memsize,
+	         size_t key_memsize,
 	         unsigned long long (*hash_function)(hash_table_t *, void *),
 			 int (*comp_function)(void *, void *))
 {
@@ -11,6 +13,8 @@ create_table(unsigned long long size,
 		return NULL;
 
     h_map->size = size;
+    h_map->val_memsize = val_memsize;
+    h_map->key_memsize = key_memsize;
     h_map->list = calloc(size, sizeof(hash_node_t *));
 
 	if(h_map->list == NULL)
