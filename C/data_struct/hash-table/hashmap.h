@@ -88,8 +88,8 @@ typedef struct table
  * @return the pointer to the created HashMap
  */
  hash_table_t *create_table(unsigned long long size,
+	                        size_t key_memsize,
 	                        size_t val_memsize,
-							size_t key_memsize,
  	                        unsigned long long (*hash_function)
  						    (hash_table_t *, void *),
  					        int (*comp_function)(void *, void *));

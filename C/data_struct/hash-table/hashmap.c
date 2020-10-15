@@ -2,8 +2,8 @@
 
 hash_table_t *
 create_table(unsigned long long size,
-	         size_t val_memsize,
 	         size_t key_memsize,
+	         size_t val_memsize,
 	         unsigned long long (*hash_function)(hash_table_t *, void *),
 			 int (*comp_function)(void *, void *))
 {
@@ -13,8 +13,8 @@ create_table(unsigned long long size,
 		return NULL;
 
     h_map->size = size;
+	h_map->key_memsize = key_memsize;
     h_map->val_memsize = val_memsize;
-    h_map->key_memsize = key_memsize;
     h_map->list = calloc(size, sizeof(hash_node_t *));
 
 	if(h_map->list == NULL)
@@ -31,7 +31,7 @@ create_table(unsigned long long size,
 unsigned long long
 hash_code(hash_table_t *h_map, void *key)
 {
-    return (unsigned long long)key % h_map->size;
+    return (*(unsigned long long *)key) % h_map->size;
 }
 
 int
@@ -50,8 +50,7 @@ insert(hash_table_t *h_map, void *key, void *val)
 	{
         if(h_map->comp_function(temp->key, key))
 		{
-            free(temp->val);
-            temp->val = val;
+            memcpy(temp->val, val, h_map->val_memsize);
             return 0;
         }
         temp = temp->next;
