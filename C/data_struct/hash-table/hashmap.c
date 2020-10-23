@@ -1,13 +1,13 @@
 #include "hashmap.h"
 
-hash_table_t *
+hash_table_s *
 create_table(unsigned long long size,
 	         size_t key_memsize,
 	         size_t val_memsize,
-	         unsigned long long (*hash_function)(hash_table_t *, void *),
+	         unsigned long long (*hash_function)(hash_table_s *, void *),
 			 int (*comp_function)(void *, void *))
 {
-    hash_table_t *h_map = malloc(sizeof(hash_table_t));
+    hash_table_s *h_map = malloc(sizeof(hash_table_s));
 
 	if(!h_map)
 		return NULL;
@@ -15,7 +15,7 @@ create_table(unsigned long long size,
     h_map->size = size;
 	h_map->key_memsize = key_memsize;
     h_map->val_memsize = val_memsize;
-    h_map->list = calloc(size, sizeof(hash_node_t *));
+    h_map->list = calloc(size, sizeof(hash_node_s *));
 
 	if(h_map->list == NULL)
 	{
@@ -29,15 +29,15 @@ create_table(unsigned long long size,
 }
 
 unsigned long long
-hash_code(hash_table_t *h_map, void *key)
+hash_code(hash_table_s *h_map, void *key)
 {
     return (*(unsigned long long *)key) % h_map->size;
 }
 
 int
-insert(hash_table_t *h_map, void *key, void *val)
+insert(hash_table_s *h_map, void *key, void *val)
 {
-    hash_node_t *list, *temp, *new_node;
+    hash_node_s *list, *temp, *new_node;
 
     unsigned long long pos = h_map->hash_function(h_map,key);
     if (pos > h_map->size)
@@ -56,7 +56,7 @@ insert(hash_table_t *h_map, void *key, void *val)
         temp = temp->next;
     }
 
-    new_node = malloc(sizeof(hash_node_t));
+    new_node = malloc(sizeof(hash_node_s));
 	if(new_node == NULL)
 		return -1;
 
@@ -83,11 +83,11 @@ insert(hash_table_t *h_map, void *key, void *val)
 }
 
 void *
-lookup(hash_table_t *h_map, void *key)
+lookup(hash_table_s *h_map, void *key)
 {
     unsigned long long pos   = h_map->hash_function(h_map, key);
-    hash_node_t        *list = h_map->list[pos];
-    hash_node_t        *temp = list;
+    hash_node_s        *list = h_map->list[pos];
+    hash_node_s        *temp = list;
     while(temp)
 	{
         if(h_map->comp_function(temp->key, key))
@@ -98,7 +98,7 @@ lookup(hash_table_t *h_map, void *key)
 }
 
 void
-free_hash_map(hash_table_t *h_map)
+free_hash_map(hash_table_s *h_map)
 {
     for (unsigned long long i = 0; i < h_map->size; i++)
         if(h_map->list[i] != NULL)
@@ -112,12 +112,12 @@ free_hash_map(hash_table_t *h_map)
 }
 
 void
-delete_node(hash_table_t *h_map, void *key)
+delete_node(hash_table_s *h_map, void *key)
 {
 	unsigned long long pos   = h_map->hash_function(h_map, key);
-    hash_node_t        *list = h_map->list[pos];
-    hash_node_t        *temp = list;
-    hash_node_t        *prec = NULL;
+    hash_node_s        *list = h_map->list[pos];
+    hash_node_s        *temp = list;
+    hash_node_s        *prec = NULL;
 
     while(temp)
 	{

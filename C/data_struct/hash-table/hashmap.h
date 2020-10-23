@@ -60,7 +60,7 @@ typedef struct node
     void               *val;    /**< The data stored in the node.
                                   It can be anything. */
     struct node        *next;   /**< Pointer to identify the next node. */
-} hash_node_t;
+} hash_node_s;
 
 typedef struct table
 {
@@ -73,9 +73,9 @@ typedef struct table
 											   return 1 if the two arguments
 											   are equals and 0 if they are
 											   not. */
-    hash_node_t        **list;          /**< Pointer to identify the table of
+    hash_node_s        **list;          /**< Pointer to identify the table of
 											 subsequent lists. */
-} hash_table_t;
+} hash_table_s;
 
 
 /**
@@ -87,11 +87,11 @@ typedef struct table
  *
  * @return the pointer to the created HashMap
  */
- hash_table_t *create_table(unsigned long long size,
+ hash_table_s *create_table(unsigned long long size,
 	                        size_t key_memsize,
 	                        size_t val_memsize,
  	                        unsigned long long (*hash_function)
- 						    (hash_table_t *, void *),
+ 						    (hash_table_s *, void *),
  					        int (*comp_function)(void *, void *));
 /**
  * @brief Get the slot number in which to search for the key.
@@ -101,7 +101,7 @@ typedef struct table
  *
  * @return the slot or list number in which to search for the key
  */
-unsigned long long hash_code(hash_table_t *h_map, void *key);
+unsigned long long hash_code(hash_table_s *h_map, void *key);
 
 /**
  * @brief Insert a <K, V> pair in the HashMap.
@@ -112,7 +112,7 @@ unsigned long long hash_code(hash_table_t *h_map, void *key);
  *
  * @return a number that indicate if the <K, V> was correctly inserted.
  */
-int insert(hash_table_t *h_map, void *key, void *val);
+int insert(hash_table_s *h_map, void *key, void *val);
 
 /**
  * @brief Search the key in the HashMap and returns the corresponding value.
@@ -122,7 +122,7 @@ int insert(hash_table_t *h_map, void *key, void *val);
  *
  * @return the value of the <K, V> pair
  */
-void* lookup(hash_table_t *h_map, void *key);
+void* lookup(hash_table_s *h_map, void *key);
 
 /**
  * @brief Delete a HashMap and frees all the memory allocated by it.
@@ -131,7 +131,7 @@ void* lookup(hash_table_t *h_map, void *key);
  *
  * @param queue: the queue will be deleted.
  */
-void free_hash_map(hash_table_t *h_map);
+void free_hash_map(hash_table_s *h_map);
 
 /**
  * @brief Free the memory allocated by a specific node.
@@ -139,7 +139,7 @@ void free_hash_map(hash_table_t *h_map);
  * @param h_map: a pointer to the Hashmap.
  * @param key: the key associated to the node you want to free.
  */
-void delete_node(hash_table_t *h_map, void* key);
+void delete_node(hash_table_s *h_map, void* key);
 
 int comp (void *a, void *b);
 
