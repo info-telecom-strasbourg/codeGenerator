@@ -1,8 +1,8 @@
 #ifndef QUEUE_QUEUE_H
 #define QUEUE_QUEUE_H
 
-#include <glob.h>
-
+#include <stdlib.h>
+#include <string.h>
 /***************************** How to use a queue ******************************
 * A queue is a data structure. It is a FIFO (First In First Out) list. You     *
 * have to use specific methods to access the data stored in the stack. Each    *

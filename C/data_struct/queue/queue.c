@@ -1,6 +1,5 @@
 #include "queue.h"
-#include <stdlib.h>
-#include <string.h>
+
 
 int
 create_queue(queue_t *queue, size_t node_memsize)
