@@ -15,13 +15,13 @@ struct test_struct{
 void
 test_create_queue(void)
 {
-    queue_t my_queue;
+    queue_s my_queue;
     assert(create_queue(&my_queue, sizeof(int)) == 0);
     assert(my_queue.head == NULL);
     assert(my_queue.tail == NULL);
     assert(my_queue.node_memsize == sizeof(int));
 	delete_queue(&my_queue);
-	queue_t my_queue2;
+	queue_s my_queue2;
 	assert(create_queue(&my_queue2, sizeof(long long)) == 0);
     assert(my_queue2.head == NULL);
     assert(my_queue2.tail == NULL);
@@ -32,7 +32,7 @@ test_create_queue(void)
 void
 test_enqueue()
 {
-	queue_t my_queue;
+	queue_s my_queue;
 	create_queue(&my_queue, sizeof(int));
 	int data = 1;
 	assert(enqueue(&my_queue, &data)== 0);
@@ -42,7 +42,7 @@ test_enqueue()
 	assert(*(int *)my_queue.tail->data == 2);
 	delete_queue(&my_queue);
 
-	queue_t my_queue2;
+	queue_s my_queue2;
 	create_queue(&my_queue2, sizeof(struct test_struct));
 	struct test_struct data_struct = { 1, '1'};
 	assert(enqueue(&my_queue2, &data_struct) == 0);
@@ -54,7 +54,7 @@ test_enqueue()
 void
 test_dequeue()
 {
-	queue_t my_queue;
+	queue_s my_queue;
 	create_queue(&my_queue, sizeof(int));
 	int data = 1;
 	enqueue(&my_queue, &data);
@@ -71,7 +71,7 @@ test_dequeue()
 	assert(my_queue.tail == NULL);
 	delete_queue(&my_queue);
 
-	queue_t my_queue2;
+	queue_s my_queue2;
 	create_queue(&my_queue2, sizeof(struct test_struct));
 	struct test_struct data_struct = {1, '1'};
 	struct test_struct data_struct2 = {2, '2'};
@@ -92,7 +92,7 @@ test_dequeue()
 void
 test_queue_peek()
 {
-	queue_t my_queue;
+	queue_s my_queue;
 	create_queue(&my_queue, sizeof(int));
 	int data1 = 1;
 	int data2 = 2;
@@ -106,7 +106,7 @@ test_queue_peek()
 	assert(data_dequeued == 1);
 	delete_queue(&my_queue);
 
-	queue_t my_queue2;
+	queue_s my_queue2;
 	create_queue(&my_queue2, sizeof(struct test_struct));
 	struct test_struct data_struct = {1, '1'};
 	enqueue(&my_queue2, &data_struct);
@@ -125,11 +125,11 @@ test_queue_peek()
 void
 test_delete_queue()
 {
-	queue_t my_queue;
+	queue_s my_queue;
 	create_queue(&my_queue, sizeof(int));
 	delete_queue(&my_queue);
 
-	queue_t my_queue2;
+	queue_s my_queue2;
 	int data1 = 1;
 	create_queue(&my_queue2, sizeof(int));
 	enqueue(&my_queue2, &data1);
@@ -140,7 +140,7 @@ test_delete_queue()
 void
 test_is_empty()
 {
-	queue_t my_queue;
+	queue_s my_queue;
 	create_queue(&my_queue, sizeof(int));
 	assert(queue_is_empty(&my_queue));
 
@@ -153,7 +153,7 @@ test_is_empty()
 	assert(queue_is_empty(&my_queue));
 	delete_queue(&my_queue);
 
-	queue_t my_queue2;
+	queue_s my_queue2;
 	create_queue(&my_queue2, sizeof(struct test_struct));
 	assert(queue_is_empty(&my_queue2));
 
