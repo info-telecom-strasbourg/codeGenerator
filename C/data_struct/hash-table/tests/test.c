@@ -44,7 +44,7 @@ test_create_table(void)
     assert(hash_map->hash_function == hash_code);
     assert(hash_map->comp_function == comp);
     assert(hash_map->list != NULL);
-    free_hash_map(hash_map);
+    delete_hash_map(hash_map);
 
     hash_table_s *hash_map2 = create_table(5, sizeof(struct test_keys), sizeof(int), test_hash_func, test_comp_func);
     assert(hash_map2 != NULL);
@@ -54,7 +54,7 @@ test_create_table(void)
     assert(hash_map2->hash_function == test_hash_func);
     assert(hash_map2->comp_function == test_comp_func);
     assert(hash_map2->list != NULL);
-    free_hash_map(hash_map2);
+    delete_hash_map(hash_map2);
 }
 
 void
@@ -67,7 +67,7 @@ test_hash_code(void)
 	assert((hash_code(hash_map, &key_1)) == (unsigned long long)4);
 	assert(hash_code(hash_map, &key_2) == 3);
 	assert(hash_code(hash_map, &key_3) == 4);
-	free_hash_map(hash_map);
+	delete_hash_map(hash_map);
 }
 
 void
@@ -108,7 +108,7 @@ test_insert(void)
 		assert(*(unsigned long long *)hash_map->list[i]->next->key == keys[i]);
 		assert(*(unsigned long long *)hash_map->list[i]->key == keys_2[i]);
 	}
-	free_hash_map(hash_map);
+	delete_hash_map(hash_map);
 
 	hash_table_s *hash_map2 = create_table(7, sizeof(struct test_keys), sizeof(struct test_struct), test_hash_func, test_comp_func);
 	struct test_keys keys2[3] = {{1, "un"}, {2, "de"}, {3, "ce"}};
@@ -132,7 +132,7 @@ test_insert(void)
 	assert(strcmp(((struct test_keys *)hash_map2->list[(keys2[1].key_int + keys2[1].key_str[0] + keys2[1].key_str[1]) % hash_map2->size]->next->key)->key_str, keys2[1].key_str) == 0);
 	assert(strcmp(((struct test_keys *)hash_map2->list[(keys2[2].key_int + keys2[2].key_str[0] + keys2[2].key_str[1]) % hash_map2->size]->key)->key_str, keys2[2].key_str) == 0);
 	// faire avec les arrays
-	free_hash_map(hash_map2);
+	delete_hash_map(hash_map2);
 }
 
 void
@@ -145,14 +145,14 @@ test_lookup(void)
 	for (i = 0; i < 5; i++)
 		insert(hash_map, &(keys[i]), &(vals[i]));
 	
-	int *vals_recup[5];
+	int vals_recup[5];
 	for (i=0; i < 5; i++)
-		vals_recup[i] = lookup(hash_map, &keys[i]);
+		lookup(hash_map, &keys[i], &(vals_recup[i]));
 
 	for (i = 0; i < 5; i++)
-		assert(vals[i] == *(vals_recup[i]));
+		assert(vals[i] == vals_recup[i]);
 
-	free_hash_map(hash_map);
+	delete_hash_map(hash_map);
 
 	hash_table_s *hash_map2 = create_table(7, sizeof(struct test_keys), sizeof(struct test_struct), test_hash_func, test_comp_func);
 	struct test_keys keys2[3] = {{1, "un"}, {2, "de"}, {3, "tr"}};
@@ -160,21 +160,21 @@ test_lookup(void)
 	for (i = 0; i < 3; i++)
 		insert(hash_map2, &(keys2[i]), &(vals2[i]));
 
-	struct test_struct *recup_val2[3];
+	struct test_struct recup_val2[3];
 	for(i = 0; i < 3; i++)
-		recup_val2[i] = lookup(hash_map2, &(keys2[i]));
-	
+		lookup(hash_map2, &(keys2[i]), &(recup_val2[i]));
+
 	for(i = 0; i < 3; i++)
 	{
-		assert(recup_val2[i]->data_int == vals2[i].data_int);
-		assert(strcmp(recup_val2[i]->data_char, vals2[i].data_char) == 0);
+		assert(recup_val2[i].data_int == vals2[i].data_int);
+		assert(strcmp(recup_val2[i].data_char, vals2[i].data_char) == 0);
 	}
 
-	free_hash_map(hash_map2);
+	delete_hash_map(hash_map2);
 }
 
 void
-test_free_hash_map(void)
+test_delete_hash_map(void)
 {
 	hash_table_s *hash_map = create_table(5, sizeof(unsigned long long), sizeof(int), NULL, NULL);
 	unsigned long long keys[5] = {0, 1, 2, 3, 4};
@@ -183,7 +183,7 @@ test_free_hash_map(void)
 	for (i = 0; i < 5; i++)
 		insert(hash_map, &(keys[i]), &(vals[i]));
 
-	free_hash_map(hash_map);
+	delete_hash_map(hash_map);
 
 	hash_table_s *hash_map2 = create_table(7, sizeof(struct test_keys), sizeof(struct test_struct), test_hash_func, test_comp_func);
 	struct test_keys keys2[3] = {{1, "un"}, {2, "de"}, {3, "tr"}};
@@ -191,7 +191,7 @@ test_free_hash_map(void)
 	for (i = 0; i < 3; i++)
 		insert(hash_map2, &(keys2[i]), &(vals2[i]));
 
-	free_hash_map(hash_map2);
+	delete_hash_map(hash_map2);
 }
 
 void
@@ -204,14 +204,15 @@ test_delete_node(void)
 	for (i = 0; i < 5; i++)
 		insert(hash_map, &(keys[i]), &(vals[i]));
 	
+	int recup_val;
 	delete_node(hash_map, &(keys[1]));
-	assert(NULL == lookup(hash_map, &(keys[1])));
+	assert(-1 == lookup(hash_map, &(keys[1]), &recup_val));
 
 	delete_node(hash_map, &(keys[4]));
-	assert(NULL == lookup(hash_map, &(keys[4])));
-	assert(NULL != lookup(hash_map, &(keys[0])));
+	assert(-1 == lookup(hash_map, &(keys[4]), &recup_val));
+	assert(0 == lookup(hash_map, &(keys[0]), &recup_val));
 
-	free_hash_map(hash_map);
+	delete_hash_map(hash_map);
 
 	hash_table_s *hash_map2 = create_table(7, sizeof(struct test_keys), sizeof(struct test_struct), test_hash_func, test_comp_func);
 	struct test_keys keys2[3] = {{1, "un"}, {2, "de"}, {3, "ce"}};
@@ -219,14 +220,15 @@ test_delete_node(void)
 	for (i = 0; i < 3; i++)
 		insert(hash_map2, &(keys2[i]), &(vals2[i]));
 
+	struct test_struct val_recup;
 	delete_node(hash_map2, &(keys2[0]));
-	assert(NULL == lookup(hash_map2, &(keys2[0])));
+	assert(-1 == lookup(hash_map2, &(keys2[0]), &val_recup));
 
 	delete_node(hash_map2, &(keys2[1]));
-	assert(NULL == lookup(hash_map2, &(keys2[1])));
-	assert(NULL != lookup(hash_map2, &(keys2[2])));
+	assert(-1 == lookup(hash_map2, &(keys2[1]), &val_recup));
+	assert(0 == lookup(hash_map2, &(keys2[2]), &val_recup));
 
-	free_hash_map(hash_map2);
+	delete_hash_map(hash_map2);
 }
 
 int
@@ -237,6 +239,6 @@ main(void)
     TEST(test_comp);
     TEST(test_insert);
     TEST(test_lookup);
-    TEST(test_free_hash_map);
+    TEST(test_delete_hash_map);
     TEST(test_delete_node);
 }

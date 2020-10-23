@@ -119,19 +119,11 @@ int insert(hash_table_s *h_map, void *key, void *val);
  *
  * @param h_map the pointer to the HashMap
  * @param key the key of the pair
- *
- * @return the value of the <K, V> pair
+ * @param val the pointer to store the data
+ * @return an integer that indicate if the function succeeded (0 for success
+ * -1 for error)
  */
-void* lookup(hash_table_s *h_map, void *key);
-
-/**
- * @brief Delete a HashMap and frees all the memory allocated by it.
- *
- * @param h_map the pointer to the HashMap
- *
- * @param queue: the queue will be deleted.
- */
-void free_hash_map(hash_table_s *h_map);
+int lookup(hash_table_s *h_map, void *key, void *value);
 
 /**
  * @brief Free the memory allocated by a specific node.
@@ -140,6 +132,13 @@ void free_hash_map(hash_table_s *h_map);
  * @param key: the key associated to the node you want to free.
  */
 void delete_node(hash_table_s *h_map, void* key);
+
+/**
+ * @brief Delete a HashMap and frees all the memory allocated by it.
+ *
+ * @param h_map the pointer to the HashMap
+ */
+void delete_hash_map(hash_table_s *h_map);
 
 int comp (void *a, void *b);
 

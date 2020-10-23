@@ -82,8 +82,8 @@ insert(hash_table_s *h_map, void *key, void *val)
 	return 0;
 }
 
-void *
-lookup(hash_table_s *h_map, void *key)
+int
+lookup(hash_table_s *h_map, void *key, void *value)
 {
     unsigned long long pos   = h_map->hash_function(h_map, key);
     hash_node_s        *list = h_map->list[pos];
@@ -91,24 +91,13 @@ lookup(hash_table_s *h_map, void *key)
     while(temp)
 	{
         if(h_map->comp_function(temp->key, key))
-            return temp->val;
+        {
+            memcpy(value, temp->val, h_map->val_memsize);
+            return 0;
+        }
         temp = temp->next;
     }
-    return NULL;
-}
-
-void
-free_hash_map(hash_table_s *h_map)
-{
-    for (unsigned long long i = 0; i < h_map->size; i++)
-        if(h_map->list[i] != NULL)
-        {
-            free(h_map->list[i]->val);
-            free(h_map->list[i]->key);
-            free(h_map->list[i]);
-        }
-    free(h_map->list);
-    free(h_map);
+    return -1;
 }
 
 void
@@ -135,6 +124,20 @@ delete_node(hash_table_s *h_map, void *key)
 		prec = temp;
         temp = temp->next;
     }
+}
+
+void
+delete_hash_map(hash_table_s *h_map)
+{
+    for (unsigned long long i = 0; i < h_map->size; i++)
+        if(h_map->list[i] != NULL)
+        {
+            free(h_map->list[i]->val);
+            free(h_map->list[i]->key);
+            free(h_map->list[i]);
+        }
+    free(h_map->list);
+    free(h_map);
 }
 
 int
