@@ -1,7 +1,7 @@
 # Stacks for C
 
 ## Content
-This library allows you to use stacks for C. It defines several types such as `stack_t` and `stack_node_t`. You can use both of them but the second one is already used by the library so you won't have to use it. Don't bother about the content of those 2 structures, you won't have to use them. Everything is managed by the library. You just have to use `stack_t`.
+This library allows you to use stacks for C. It defines several types such as `stack_s` and `stack_node_s`. You can use both of them but the second one is already used by the library so you won't have to use it. Don't bother about the content of those 2 structures, you won't have to use them. Everything is managed by the library. You just have to use `stack_s`.
 
 
 ## Example of utilisation
@@ -9,7 +9,7 @@ This library allows you to use stacks for C. It defines several types such as `s
 ```c
 int main(void)
 {
-    stack_t my_stack;
+    stack_s my_stack;
 	create_stack(&my_stack, sizeof(int)); //The stack will contain int datas but you can give anything you want
 
 	int data1 = 1;

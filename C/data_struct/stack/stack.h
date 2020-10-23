@@ -1,7 +1,8 @@
 #ifndef STACK_STACK_H
 #define STACK_STACK_H
 
-#include <glob.h>
+#include <stdlib.h>
+#include <string.h>
 
 /***************************** How to use a stack ******************************
 * A stack is a data structure. It is a FILO (First In Last Out) list. You have *
@@ -39,7 +40,7 @@ typedef struct stack_node {
     void              *data; /**< The data stored in the node. It can be
                                   anything. */
     struct stack_node *prev; /**< Pointer to identify the previous node. */
-} stack_node_t;
+} stack_node_s;
 
 /**
  * @brief A structure representing a stack.
@@ -54,8 +55,8 @@ typedef struct stack_node {
 typedef struct stack {
     size_t       node_memsize; /**< The size of the data will be stored in a
                                     node. */
-    stack_node_t *tail; /**< The tail (last node) of the stack. */
-} stack_t;
+    stack_node_s *tail; /**< The tail (last node) of the stack. */
+} stack_s;
 
 /**
  * @brief Initialize the attributes of a stack.
@@ -72,7 +73,7 @@ typedef struct stack {
  * 0 -> the function succeeded.
  * -1 -> the function failed.
  */
-int create_stack(stack_t *stack, size_t node_memsize);
+int create_stack(stack_s *stack, size_t node_memsize);
 
 /**
  * @brief Push a new node at the end of the stack.
@@ -87,7 +88,7 @@ int create_stack(stack_t *stack, size_t node_memsize);
  * 0 -> the function succeeded.
  * -1 -> the function failed.
  */
-int push_stack(stack_t *stack, const void *data);
+int push_stack(stack_s *stack, const void *data);
 
 /**
  * @brief Remove the last node of the stack.
@@ -107,7 +108,7 @@ int push_stack(stack_t *stack, const void *data);
  * 0 -> the function succeeded.
  * -1 -> the function failed.
  */
-int pop_stack(stack_t *stack, void *data);
+int pop_stack(stack_s *stack, void *data);
 
 /**
  * @brief Check the last node of the stack. After calling this function, the
@@ -127,14 +128,14 @@ int pop_stack(stack_t *stack, void *data);
  * 0 -> the function succeeded.
  * -1 -> the function failed.
  */
-int stack_peek(const stack_t *stack, void *data);
+int stack_peek(const stack_s *stack, void *data);
 
 /**
  * @brief Delete a stack and free all the memory allocated by it.
  *
  * @param stack: the stack that will be deleted.
  */
-void delete_stack(stack_t *stack);
+void delete_stack(stack_s *stack);
 
 /**
  * @brief Check if the stack is empty.
@@ -144,6 +145,6 @@ void delete_stack(stack_t *stack);
  * 1 -> the stack is empty.
  * 0 -> the stack is not empty.
  */
-int stack_is_empty(const stack_t *stack);
+int stack_is_empty(const stack_s *stack);
 
 #endif //STACK_STACK_H

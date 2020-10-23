@@ -15,12 +15,12 @@ struct test_struct{
 void
 test_create_stack(void)
 {
-    stack_t my_stack;
+    stack_s my_stack;
     assert(create_stack(&my_stack, sizeof(int)) == 0);
     assert(my_stack.tail == NULL);
     assert(my_stack.node_memsize == sizeof(int));
 	delete_stack(&my_stack);
-	stack_t my_stack2;
+	stack_s my_stack2;
 	assert(create_stack(&my_stack2, sizeof(long long)) == 0);
     assert(my_stack2.tail == NULL);
     assert(my_stack2.node_memsize == sizeof(long long));
@@ -30,7 +30,7 @@ test_create_stack(void)
 void
 test_push_stack(void)
 {
-	stack_t my_stack;
+	stack_s my_stack;
     create_stack(&my_stack, sizeof(int));
 	int data = 1;
 	push_stack(&my_stack, &data);
@@ -40,7 +40,7 @@ test_push_stack(void)
 	assert(*(int *)my_stack.tail->data == 2);
 	delete_stack(&my_stack);
 
-	stack_t my_stack2;
+	stack_s my_stack2;
     create_stack(&my_stack2, sizeof(struct test_struct));
 	struct test_struct struct_test_data = {1, 'c'};
 	push_stack(&my_stack2, &struct_test_data);
@@ -56,7 +56,7 @@ test_push_stack(void)
 void
 test_pop_stack(void)
 {
-	stack_t my_stack;
+	stack_s my_stack;
     create_stack(&my_stack, sizeof(int));
 	int data = 1, data2 = 2;
 	push_stack(&my_stack, &data);
@@ -68,7 +68,7 @@ test_pop_stack(void)
 	assert(recv_data2 == 1);
 	delete_stack(&my_stack);
 
-	stack_t my_stack2;
+	stack_s my_stack2;
     create_stack(&my_stack2, sizeof(struct test_struct));
 	struct test_struct struct_test_data = {1, 'c'};
 	struct test_struct struct_test_data2 = {2, 'h'};
@@ -88,7 +88,7 @@ test_pop_stack(void)
 void
 test_stack_peek(void)
 {
-	stack_t my_stack;
+	stack_s my_stack;
     create_stack(&my_stack, sizeof(int));
 	int data = 1, data2 = 2;
 	push_stack(&my_stack, &data);
@@ -103,7 +103,7 @@ test_stack_peek(void)
 	assert(*(int *)my_stack.tail->data == 1);
 	delete_stack(&my_stack);
 
-	stack_t my_stack2;
+	stack_s my_stack2;
     create_stack(&my_stack2, sizeof(struct test_struct));
 	struct test_struct struct_test_data = {1, 'c'};
 	struct test_struct struct_test_data2 = {2, 'h'};
@@ -128,11 +128,11 @@ test_stack_peek(void)
 void
 test_delete_stack()
 {
-	stack_t my_stack;
+	stack_s my_stack;
 	create_stack(&my_stack, sizeof(int));
 	delete_stack(&my_stack);
 
-	stack_t my_stack2;
+	stack_s my_stack2;
 	int data1 = 1;
 	create_stack(&my_stack2, sizeof(int));
 	push_stack(&my_stack2, &data1);
@@ -143,7 +143,7 @@ test_delete_stack()
 void
 test_is_empty()
 {
-	stack_t my_stack;
+	stack_s my_stack;
 	create_stack(&my_stack, sizeof(int));
 	assert(stack_is_empty(&my_stack));
 
@@ -156,7 +156,7 @@ test_is_empty()
 	assert(stack_is_empty(&my_stack));
 	delete_stack(&my_stack);
 
-	stack_t my_stack2;
+	stack_s my_stack2;
 	create_stack(&my_stack2, sizeof(struct test_struct));
 	assert(stack_is_empty(&my_stack2));
 
