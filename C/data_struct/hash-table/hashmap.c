@@ -115,8 +115,7 @@ void
 delete_node(hash_table_s *h_map, void *key)
 {
 	unsigned long long pos   = h_map->hash_function(h_map, key);
-    hash_node_s        *list = h_map->list[pos];
-    hash_node_s        *temp = list;
+    hash_node_s *temp = h_map->list[pos];
     hash_node_s        *prec = NULL;
 
     while(temp)
@@ -126,9 +125,9 @@ delete_node(hash_table_s *h_map, void *key)
 			if(prec != NULL)
 				prec->next = temp->next;
 			else
-				list = NULL;
+                h_map->list[pos] = NULL;
 
-			free(temp->val);
+            free(temp->val);
             free(temp->key);
             free(temp);
 			return;

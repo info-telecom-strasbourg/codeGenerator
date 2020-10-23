@@ -197,7 +197,36 @@ test_free_hash_map(void)
 void
 test_delete_node(void)
 {
+	hash_table_s *hash_map = create_table(5, sizeof(unsigned long long), sizeof(int), NULL, NULL);
+	unsigned long long keys[5] = {0, 1, 2, 5, 6};
+	int vals[5] = {10, 20, 30, 40, 50};
+	int i;
+	for (i = 0; i < 5; i++)
+		insert(hash_map, &(keys[i]), &(vals[i]));
+	
+	delete_node(hash_map, &(keys[1]));
+	assert(NULL == lookup(hash_map, &(keys[1])));
 
+	delete_node(hash_map, &(keys[4]));
+	assert(NULL == lookup(hash_map, &(keys[4])));
+	assert(NULL != lookup(hash_map, &(keys[0])));
+
+	free_hash_map(hash_map);
+
+	hash_table_s *hash_map2 = create_table(7, sizeof(struct test_keys), sizeof(struct test_struct), test_hash_func, test_comp_func);
+	struct test_keys keys2[3] = {{1, "un"}, {2, "de"}, {3, "ce"}};
+	struct test_struct vals2[3] = {{10, "di"}, {20, "vi"}, {30, "tr"}};
+	for (i = 0; i < 3; i++)
+		insert(hash_map2, &(keys2[i]), &(vals2[i]));
+
+	delete_node(hash_map2, &(keys2[0]));
+	assert(NULL == lookup(hash_map2, &(keys2[0])));
+
+	delete_node(hash_map2, &(keys2[1]));
+	assert(NULL == lookup(hash_map2, &(keys2[1])));
+	assert(NULL != lookup(hash_map2, &(keys2[2])));
+
+	free_hash_map(hash_map2);
 }
 
 int
