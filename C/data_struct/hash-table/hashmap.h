@@ -49,7 +49,7 @@
 *******************************************************************************/
 
 /**
- * @brief A structure representing a node in the hashMap.
+ * @brief A structure representing a node in the hash table.
  *
  * A node store a data (any type) and points to the next node in the list.
  */
@@ -62,6 +62,9 @@ typedef struct node
     struct node        *next;   /**< Pointer to identify the next node. */
 } hash_node_s;
 
+/**
+ * @brief A structure representing a hash table
+ */
 typedef struct table
 {
     unsigned long long size;           /**< The size of the subsequent list. */
