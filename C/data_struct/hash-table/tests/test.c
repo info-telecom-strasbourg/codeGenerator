@@ -117,9 +117,22 @@ test_insert(void)
 	for(i = 0; i < 5; i++)
 		insert(hash_map2, &(keys2[i]), &(vals2[i]));
 
-	assert(*(int *)hash_map2->list[(keys2[0].key_int + keys2[0].key_str[0] + keys2[0].key_str[1])%hash_map2->size]->val == vals2[0].data_int);
-	assert(*(int *)hash_map2->list[(keys2[1].key_int + keys2[1].key_str[0] + keys2[1].key_str[1])%hash_map2->size]->next->val == vals2[1].data_int);
-	assert(*(int *)hash_map2->list[(keys2[2].key_int + keys2[2].key_str[0] + keys2[2].key_str[1])%hash_map2->size]->val == vals2[2].data_int);
+	assert(((struct test_struct *)hash_map2->list[(keys2[0].key_int + keys2[0].key_str[0] + keys2[0].key_str[1]) % hash_map2->size]->val)->data_int == vals2[0].data_int);
+	assert(((struct test_struct *)hash_map2->list[(keys2[1].key_int + keys2[1].key_str[0] + keys2[1].key_str[1])%hash_map2->size]->next->val)->data_int == vals2[1].data_int);
+	assert(((struct test_struct *)hash_map2->list[(keys2[2].key_int + keys2[2].key_str[0] + keys2[2].key_str[1])%hash_map2->size]->val)->data_int == vals2[2].data_int);
+
+	assert(strcmp(((struct test_struct *)hash_map2->list[(keys2[0].key_int + keys2[0].key_str[0] + keys2[0].key_str[1]) % hash_map2->size]->val)->data_char, vals2[0].data_char) == 0);
+	assert(strcmp(((struct test_struct *)hash_map2->list[(keys2[1].key_int + keys2[1].key_str[0] + keys2[1].key_str[1])%hash_map2->size]->next->val)->data_char, vals2[1].data_char) == 0);
+	assert(strcmp(((struct test_struct *)hash_map2->list[(keys2[2].key_int + keys2[2].key_str[0] + keys2[2].key_str[1])%hash_map2->size]->val)->data_char, vals2[2].data_char) == 0);
+
+
+	assert(((struct test_keys *)hash_map2->list[(keys2[0].key_int + keys2[0].key_str[0] + keys2[0].key_str[1]) % hash_map2->size]->key)->key_int == keys2[0].key_int);
+	assert(((struct test_keys *)hash_map2->list[(keys2[1].key_int + keys2[1].key_str[0] + keys2[1].key_str[1])%hash_map2->size]->next->key)->key_int == keys2[1].key_int);
+	assert(((struct test_keys *)hash_map2->list[(keys2[2].key_int + keys2[2].key_str[0] + keys2[2].key_str[1])%hash_map2->size]->key)->key_int == keys2[2].key_int);
+
+	assert(strcmp(((struct test_keys *)hash_map2->list[(keys2[0].key_int + keys2[0].key_str[0] + keys2[0].key_str[1]) % hash_map2->size]->key)->key_str, keys2[0].key_str) == 0);
+	assert(strcmp(((struct test_keys *)hash_map2->list[(keys2[1].key_int + keys2[1].key_str[0] + keys2[1].key_str[1])%hash_map2->size]->next->key)->key_str, keys2[1].key_str) == 0);
+	assert(strcmp(((struct test_keys *)hash_map2->list[(keys2[2].key_int + keys2[2].key_str[0] + keys2[2].key_str[1])%hash_map2->size]->key)->key_str, keys2[2].key_str) == 0);
 	// faire avec les arrays
 	free_hash_map(hash_map2);
 }
