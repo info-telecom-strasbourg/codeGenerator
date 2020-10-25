@@ -1,13 +1,16 @@
 #include "stack.h"
 
-int
-create_stack(stack_s *stack, size_t node_memsize)
+stack_s *
+create_stack(size_t node_memsize)
 {
     if (node_memsize == 0)
-        return -1;
+        return NULL;
+    stack_s *stack = malloc(sizeof(stack_s));
+    if(stack == NULL)
+        return NULL;
     stack->node_memsize = node_memsize;
     stack->tail = NULL;
-    return 0;
+    return stack;
 }
 
 int

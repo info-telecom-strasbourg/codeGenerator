@@ -67,13 +67,12 @@ typedef struct stack {
  * unexpected behaviour. You may use sizeof(data_type) to have the correct
  * size.
  *
- * @param stack: the stack you want to initialize.
  * @param node_memsize: the size of the data that will be stored in the stack.
  * @return an int that indicate if the creation were done without error:
- * 0 -> the function succeeded.
- * -1 -> the function failed.
+ * not NULL -> the function succeeded.
+ * NULL -> the function failed.
  */
-int create_stack(stack_s *stack, size_t node_memsize);
+stack_s *create_stack(size_t node_memsize);
 
 /**
  * @brief Push a new node at the end of the stack.
