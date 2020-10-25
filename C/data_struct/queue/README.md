@@ -9,17 +9,16 @@ This library allows you to use Queues for C. It defines several types such as `q
 ```c
 int main(void)
 {
-    queue_s my_queue;
-	create_queue(&my_queue, sizeof(int)); //The queue will contain int datas but you can give anything you want
+    queue_s *my_queue = create_queue(sizeof(int)); //The queue will contain int datas but you can give anything you want
 
 	int data1 = 1;
-	enqueue(&my_queue, data1); //add data1 in the queue
+	enqueue(my_queue, data1); //add data1 in the queue
 	int data2 = 2;
-	enqueue(&my_queue, data2); //add data2 in the queue
+	enqueue(my_queue, data2); //add data2 in the queue
 
 	int recup_data1;
-	dequeue(&my_queue, &recup_data1); //get a value from the queue
-	delete_queue(&my_queue); //free all the memory used by the queue
+	dequeue(my_queue, &recup_data1); //get a value from the queue
+	delete_queue(my_queue); //free all the memory used by the queue
 }
 ```
 If you want to have an overview of how to use this library, you can take a look at the *Example* folder.

@@ -9,17 +9,16 @@ This library allows you to use stacks for C. It defines several types such as `s
 ```c
 int main(void)
 {
-    stack_s my_stack;
-	create_stack(&my_stack, sizeof(int)); //The stack will contain int datas but you can give anything you want
+    stack_s *my_stack = create_stack(sizeof(int)); //The stack will contain int datas but you can give anything you want
 
 	int data1 = 1;
-	push_stack(&my_stack, data1); //add data1 in the stack
+	push_stack(my_stack, data1); //add data1 in the stack
 	int data2 = 2;
-	push_stack(&my_stack, data2); //add data2 in the stack
+	push_stack(my_stack, data2); //add data2 in the stack
 
 	int recup_data1;
-	pop_stack(&my_stack, &recup_data1); //get a value from the stack
-	delete_stack(&my_stack); //free all the memory used by the stack
+	pop_stack(my_stack, &recup_data1); //get a value from the stack
+	delete_stack(my_stack); //free all the memory used by the stack
 }
 ```
 If you want to have an overview of how to use this library, you can take a look at the *Example* folder.
