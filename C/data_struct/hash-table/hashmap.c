@@ -23,13 +23,13 @@ create_table(unsigned long long size,
 		return NULL;
 	}
 
-	h_map->hash_function = hash_function ? hash_function : hash_code;
-	h_map->comp_function = comp_function ? comp_function : comp;
+	h_map->hash_function = hash_function ? hash_function : __hash_code;
+	h_map->comp_function = comp_function ? comp_function : __comp;
     return h_map;
 }
 
 unsigned long long
-hash_code(hash_table_s *h_map, void *key)
+__hash_code(hash_table_s *h_map, void *key)
 {
     return (*(unsigned long long *)key) % h_map->size;
 }
@@ -141,7 +141,7 @@ delete_hash_map(hash_table_s *h_map)
 }
 
 int
-comp (void *a, void *b)
+__comp (void *a, void *b)
 {
 	return *(unsigned long long *)a == *(unsigned long long *)b;
 }

@@ -41,8 +41,8 @@ test_create_table(void)
     assert(hash_map->size == 5);
     assert(hash_map->val_memsize == sizeof(int));
     assert(hash_map->key_memsize == sizeof(int));
-    assert(hash_map->hash_function == hash_code);
-    assert(hash_map->comp_function == comp);
+    assert(hash_map->hash_function == __hash_code);
+    assert(hash_map->comp_function == __comp);
     assert(hash_map->list != NULL);
     delete_hash_map(hash_map);
 
@@ -64,9 +64,9 @@ test_hash_code(void)
 	unsigned long long key_1 = 4;
 	unsigned long long key_2 = 8;
 	unsigned long long key_3 = 9;
-	assert((hash_code(hash_map, &key_1)) == (unsigned long long)4);
-	assert(hash_code(hash_map, &key_2) == 3);
-	assert(hash_code(hash_map, &key_3) == 4);
+	assert((__hash_code(hash_map, &key_1)) == (unsigned long long)4);
+	assert(__hash_code(hash_map, &key_2) == 3);
+	assert(__hash_code(hash_map, &key_3) == 4);
 	delete_hash_map(hash_map);
 }
 
@@ -75,9 +75,9 @@ test_comp(void)
 {
 	unsigned long long a = 4;
 	unsigned long long b = 4;
-	assert(comp(&a,&b));
+	assert(__comp(&a,&b));
 	b = 5;
-	assert(!comp(&a,&b));
+	assert(!__comp(&a,&b));
 }
 
 void
