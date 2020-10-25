@@ -1,14 +1,16 @@
 #include "queue.h"
 
-
-int
-create_queue(queue_s *queue, size_t node_memsize)
+queue_s *
+create_queue(size_t node_memsize)
 {
     if (node_memsize == 0)
-        return -1;
+        return NULL;
+    queue_s *queue = malloc(sizeof(queue_s));
+    if(queue == NULL)
+        return NULL;
     queue->head = queue->tail = NULL;
     queue->node_memsize = node_memsize;
-    return 0;
+    return queue;
 }
 
 int
@@ -85,7 +87,7 @@ delete_queue(queue_s *queue)
         free(temp);
     }
 
-    queue->head = queue->tail = NULL;
+    free(queue);
 }
 
 int

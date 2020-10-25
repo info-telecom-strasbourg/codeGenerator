@@ -61,20 +61,18 @@ typedef struct queue {
 } queue_s;
 
 /**
- * @brief Initialize the attributes of a queue.
+ * @brief Initialize a queue.
  *
  * This function check if the node_memsize is not 0 (the size of the data
  * stored can not be  0). Be careful, if you pass a negative parameter, the
  * size_t will convert it to a positive variable and can lead to unexpected
  * behaviour. You may use sizeof(data_type) to have the correct size.
  *
- * @param queue: the queue you want to initialize.
  * @param node_memsize: the size of the data that will be stored in the queue.
- * @return an int that indicate if the creation were done without error:
- * 0 -> the function succeeded.
- * -1 -> the function failed.
+ * @return a pointer to the created queue (NULL if an error occured and not
+ * NULL if it succeded).
  */
-int create_queue(queue_s *queue, size_t node_memsize);
+queue_s *create_queue(size_t node_memsize);
 
 /**
  * @brief Push a new node at the end of the queue.
