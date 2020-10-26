@@ -1,21 +1,22 @@
 #include "stack.h"
-#include <stdlib.h>
-#include <string.h>
 
-int
-create_stack(stack_t *stack, size_t node_memsize)
+stack_s *
+create_stack(size_t node_memsize)
 {
     if (node_memsize == 0)
-        return -1;
+        return NULL;
+    stack_s *stack = malloc(sizeof(stack_s));
+    if(stack == NULL)
+        return NULL;
     stack->node_memsize = node_memsize;
     stack->tail = NULL;
-    return 0;
+    return stack;
 }
 
 int
-push_stack(stack_t *stack, const void *data)
+push_stack(stack_s *stack, const void *data)
 {
-    stack_node_t *new_node = (stack_node_t *)malloc(sizeof(stack_node_t));
+    stack_node_s *new_node = (stack_node_s *)malloc(sizeof(stack_node_s));
 
     if (new_node == NULL)
         return -1;
@@ -45,12 +46,12 @@ push_stack(stack_t *stack, const void *data)
 }
 
 int
-pop_stack(stack_t *stack, void *data)
+pop_stack(stack_s *stack, void *data)
 {
     if (stack->tail == NULL)
         return -1;
 
-    stack_node_t *temp = stack->tail;
+    stack_node_s *temp = stack->tail;
     memcpy(data, temp->data, stack->node_memsize);
 
     stack->tail = stack->tail->prev;
@@ -61,20 +62,20 @@ pop_stack(stack_t *stack, void *data)
 }
 
 int
-stack_peek(const stack_t *stack, void *data)
+stack_peek(const stack_s *stack, void *data)
 {
     if (stack->tail == NULL)
         return -1;
 
-    stack_node_t *temp = stack->tail;
+    stack_node_s *temp = stack->tail;
     memcpy(data, temp->data, stack->node_memsize);
     return 0;
 }
 
 void
-delete_stack(stack_t *stack)
+delete_stack(stack_s *stack)
 {
-    stack_node_t *temp;
+    stack_node_s *temp;
 
     while (stack->tail != NULL)
     {
@@ -86,7 +87,7 @@ delete_stack(stack_t *stack)
 }
 
 int
-stack_is_empty(const stack_t *stack)
+stack_is_empty(const stack_s *stack)
 {
     return stack->tail == NULL;
 }

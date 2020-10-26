@@ -133,8 +133,6 @@ launch_timeout(long int time)
                     "Loading effect thread join failed");
             dprintf(saved_stderr, "%sTimeout (%ld ms)%s\n",
                     "\x1b[1;31m", time, "\x1b[0m");
-			check_t(errno = pthread_kill(func_thread, SIGSEGV),
-					"Function launcher thread kill failed");
             exit(EXIT_FAILURE);
         }
     }
@@ -230,7 +228,7 @@ __test_classic_unittest_its(char *test_name, void (*function)(void))
 
 	check(dup2(out, STDERR_FILENO), "stderr redirection failed", 1);
 
-	struct timeval start, end;
+	struct timeval start = {0, 0}, end = {0, 0};
 	check(gettimeofday(&start, NULL), "gettimeofday failed", 1);
 	(*function)();
 	__remaining_alloc_its = -1;
@@ -249,7 +247,7 @@ __test_timeout_unittest_its(char *test_name, void (*function)(void),
 	check(out, "Open of \"/dev/null\" failed", 1);
 	check(dup2(out, STDOUT_FILENO), "stdout redirection failed", 1);
 	check(dup2(out, STDERR_FILENO), "stderr redirection failed", 1);
-	struct timeval start, end;
+	struct timeval start = {0, 0}, end = {0, 0};
 	check(gettimeofday(&start, NULL), "gettimeofday failed", 0);
 	check_t(errno = pthread_create(&func_thread, NULL,thread_function, (void *)function), "Function launcher creation failed");
     launch_timeout(timeout);
@@ -266,7 +264,7 @@ __test_output_unittest_its(char *test_name, void (*function)(void), char *expect
     check(dup2(out, STDOUT_FILENO), "stdout redirection failed", 1);
     check(dup2(out, STDERR_FILENO), "stderr redirection failed", 1);
 
-    struct timeval start, end;
+    struct timeval start = {0, 0}, end = {0, 0};
     check(gettimeofday(&start, NULL), "gettimeofday failed", 1);
     (*function)();
 	__remaining_alloc_its = -1;
@@ -289,7 +287,7 @@ __test_output_timeout_unittest_its(char *test_name, void (*function)(void),
     check(out, "Open of \"_its_out_test.log\" failed", 1);
     check(dup2(out, STDOUT_FILENO), "stdout redirection failed", 1);
     check(dup2(out, STDERR_FILENO), "stderr redirection failed", 1);
-    struct timeval start, end;
+    struct timeval start = {0, 0}, end = {0, 0};
     check(gettimeofday(&start, NULL), "gettimeofday failed", 1);
     //launch thread function
     check_t(errno = pthread_create(&func_thread, NULL, thread_function, (void *)function), "Function launcher creation failed");
@@ -314,7 +312,7 @@ __exit_test_unittest(char *test_name, void (*function)(void), int exit_code)
 	check(dup2(out, STDOUT_FILENO), "stdout redirection failed", 1);
 	check(dup2(out, STDERR_FILENO), "stderr redirection failed", 1);
 
-	struct timeval start, end;
+	struct timeval start = {0, 0}, end = {0, 0};
 	check(gettimeofday(&start, NULL), "gettimeofday failed", 1);
 
 	switch (cpid = fork()) {

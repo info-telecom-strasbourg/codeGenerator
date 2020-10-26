@@ -1,8 +1,8 @@
 #ifndef QUEUE_QUEUE_H
 #define QUEUE_QUEUE_H
 
-#include <glob.h>
-
+#include <stdlib.h>
+#include <string.h>
 /***************************** How to use a queue ******************************
 * A queue is a data structure. It is a FIFO (First In First Out) list. You     *
 * have to use specific methods to access the data stored in the stack. Each    *
@@ -33,13 +33,13 @@
 /**
  * @brief A structure representing a node in the queue.
  *
- * A node store a data (any type) and point to the next node in the queue.
+ * A node store a data (any type) and points to the next node in the queue.
  */
 typedef struct queue_node {
     void              *data; /**< The data stored in the node.
                                   It can be anything. */
     struct queue_node *next; /**< Pointer to identify the next node. */
-} queue_node_t;
+} queue_node_s;
 
 
 /**
@@ -56,25 +56,23 @@ typedef struct queue_node {
 typedef struct queue {
     size_t       node_memsize; /**< The size of the data that will be stored
                                     in a node. */
-    queue_node_t *tail; /**< The tail (last node) of the queue. */
-    queue_node_t *head; /**< The head (first node) of the queue. */
-} queue_t;
+    queue_node_s *tail; /**< The tail (last node) of the queue. */
+    queue_node_s *head; /**< The head (first node) of the queue. */
+} queue_s;
 
 /**
- * @brief Initialize the attributes of a queue.
+ * @brief Initialize a queue.
  *
  * This function check if the node_memsize is not 0 (the size of the data
  * stored can not be  0). Be careful, if you pass a negative parameter, the
  * size_t will convert it to a positive variable and can lead to unexpected
  * behaviour. You may use sizeof(data_type) to have the correct size.
  *
- * @param queue: the queue you want to initialize.
  * @param node_memsize: the size of the data that will be stored in the queue.
- * @return an int that indicate if the creation were done without error:
- * 0 -> the function succeeded.
- * -1 -> the function failed.
+ * @return a pointer to the created queue (NULL if an error occured and not
+ * NULL if it succeded).
  */
-int create_queue(queue_t *queue, size_t node_memsize);
+queue_s *create_queue(size_t node_memsize);
 
 /**
  * @brief Push a new node at the end of the queue.
@@ -89,7 +87,7 @@ int create_queue(queue_t *queue, size_t node_memsize);
  * 0 -> the function succeeded.
  * -1 -> the function failed.
  */
-int enqueue(queue_t *queue, const void *data);
+int enqueue(queue_s *queue, const void *data);
 
 /**
  * @brief Remove the head of the queue and store the data at the given address.
@@ -109,7 +107,7 @@ int enqueue(queue_t *queue, const void *data);
  * 0 -> the function succeeded.
  * -1 -> the function failed.
  */
-int dequeue(queue_t *queue, void *data);
+int dequeue(queue_s *queue, void *data);
 
 /**
  * @brief Check the head of a queue but does not remove it. After calling this
@@ -130,14 +128,14 @@ int dequeue(queue_t *queue, void *data);
  * 0 -> the function succeeded.
  * -1 -> the function failed.
  */
-int queue_peek(const queue_t *queue, void *data);
+int queue_peek(const queue_s *queue, void *data);
 
 /**
- * @brief Delete a queue and free all the memory allocated by it.
+ * @brief Delete a queue and frees all the memory allocated by it.
  *
  * @param queue: the queue will be deleted.
  */
-void delete_queue(queue_t *queue);
+void delete_queue(queue_s *queue);
 
 /**
  * @brief Check if the queue is empty.
@@ -147,6 +145,6 @@ void delete_queue(queue_t *queue);
  * 1 -> the queue is empty.
  * 0 -> the queue is not empty.
  */
-int queue_is_empty(const queue_t *queue);
+int queue_is_empty(const queue_s *queue);
 
 #endif //QUEUE_QUEUE_H

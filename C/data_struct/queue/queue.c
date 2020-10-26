@@ -1,21 +1,22 @@
 #include "queue.h"
-#include <stdlib.h>
-#include <string.h>
 
-int
-create_queue(queue_t *queue, size_t node_memsize)
+queue_s *
+create_queue(size_t node_memsize)
 {
     if (node_memsize == 0)
-        return -1;
+        return NULL;
+    queue_s *queue = malloc(sizeof(queue_s));
+    if(queue == NULL)
+        return NULL;
     queue->head = queue->tail = NULL;
     queue->node_memsize = node_memsize;
-    return 0;
+    return queue;
 }
 
 int
-enqueue(queue_t *queue, const void *data)
+enqueue(queue_s *queue, const void *data)
 {
-    queue_node_t *new_node = (queue_node_t *)malloc(sizeof(queue_node_t));
+    queue_node_s *new_node = (queue_node_s *)malloc(sizeof(queue_node_s));
 
     if (queue == NULL || new_node == NULL)
         return -1;
@@ -44,12 +45,12 @@ enqueue(queue_t *queue, const void *data)
 }
 
 int
-dequeue(queue_t *queue, void *data)
+dequeue(queue_s *queue, void *data)
 {
     if (queue->head == NULL)
         return -1;
 
-    queue_node_t *temp = queue->head;
+    queue_node_s *temp = queue->head;
     memcpy(data, temp->data, queue->node_memsize);
 
     if(queue->tail != queue->head)
@@ -63,20 +64,20 @@ dequeue(queue_t *queue, void *data)
 }
 
 int
-queue_peek(const queue_t *queue, void *data)
+queue_peek(const queue_s *queue, void *data)
 {
     if (queue->head == NULL)
         return -1;
 
-    queue_node_t *temp = queue->head;
+    queue_node_s *temp = queue->head;
     memcpy(data, temp->data, queue->node_memsize);
     return 0;
 }
 
 void
-delete_queue(queue_t *queue)
+delete_queue(queue_s *queue)
 {
-    queue_node_t *temp;
+    queue_node_s *temp;
 
     while (queue->head != NULL)
     {
@@ -86,11 +87,11 @@ delete_queue(queue_t *queue)
         free(temp);
     }
 
-    queue->head = queue->tail = NULL;
+    free(queue);
 }
 
 int
-queue_is_empty(const queue_t *queue)
+queue_is_empty(const queue_s *queue)
 {
     return queue->head == NULL;
 }
