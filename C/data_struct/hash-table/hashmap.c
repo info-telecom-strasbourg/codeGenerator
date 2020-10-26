@@ -28,12 +28,6 @@ create_table(unsigned long long size,
     return h_map;
 }
 
-unsigned long long
-__hash_code(hash_table_s *h_map, void *key)
-{
-    return (*(unsigned long long *)key) % h_map->size;
-}
-
 int
 insert(hash_table_s *h_map, void *key, void *val)
 {
@@ -138,6 +132,12 @@ delete_hash_map(hash_table_s *h_map)
         }
     free(h_map->list);
     free(h_map);
+}
+
+unsigned long long
+__hash_code(hash_table_s *h_map, void *key)
+{
+    return (*(unsigned long long *)key) % h_map->size;
 }
 
 int

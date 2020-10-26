@@ -64,7 +64,10 @@ typedef struct node
 
 /**
  * @brief A structure representing a hash table.
- * You can have a personnal hash and comparaison function .
+ * 
+ * A hash table is a data structure that link a key and a value.
+ * To use it correctly, please use insert and lookup to store and
+ * find a value. You can have a personnal hash and comparaison function .
  */
 typedef struct table
 {
@@ -81,7 +84,6 @@ typedef struct table
 											 subsequent lists. */
 } hash_table_s;
 
-
 /**
  * @brief Creates a HashMap with the given size.
  * 
@@ -89,29 +91,20 @@ typedef struct table
  * initialize the hash and compare functions. If it's NULL, default
  * functions will be used (the functions __comp and __hash_code).
  *
- * @param size size of the HashMap (number of node).
- * @param hash_function the hash function that will be used (if NULL is given,
+ * @param size: size of the HashMap (number of node).
+ * @param key_memsize: the size of the keys you will use in your table.
+ * @param val_memsize: the size of the values you will store in your table.
+ * @param hash_function: the hash function that will be used (if NULL is given,
  * __hash_code will be used by default).
- * @param comp_function thecompar function that will be used to compare keys
+ * @param comp_function: thecompar function that will be used to compare keys
  * (if NULL is given, __comp will be used).
- *
  * @return the pointer to the created HashMap.
  */
- hash_table_s *create_table(unsigned long long size,
-	                        size_t key_memsize,
-	                        size_t val_memsize,
- 	                        unsigned long long (*hash_function)
- 						    (hash_table_s *, void *),
- 					        int (*comp_function)(void *, void *));
-/**
- * @brief Get the slot number in which to search for the key.
- *
- * @param h_map the pointer to the HashMap.
- * @param key the key of the pair.
- *
- * @return the slot or list number in which to search for the key
- */
-unsigned long long __hash_code(hash_table_s *h_map, void *key);
+hash_table_s *create_table(unsigned long long size,
+	size_t key_memsize,
+	size_t val_memsize,
+	unsigned long long (*hash_function)(hash_table_s *, void *),
+	int (*comp_function)(void *, void *));
 
 /**
  * @brief Insert a <K, V> pair in the HashMap.
@@ -119,21 +112,28 @@ unsigned long long __hash_code(hash_table_s *h_map, void *key);
  * It allocates memory for the node, the key and the value. If an allocation
  * fail, it clean the memory allocated by the function call.
  * 
- * @param h_map the pointer to the HashMap.
- * @param key the key of the pair.
- * @param val the value of the pair.
- *
+ * @param h_map: the pointer to the HashMap.
+ * @param key: the key of the pair.
+ * @param val: the value of the pair.
  * @return a number that indicate if the <K, V> was correctly inserted (0 for
- * success -1 for error)
+ * success -1 for error).
  */
 int insert(hash_table_s *h_map, void *key, void *val);
 
 /**
  * @brief Search the key in the HashMap and returns the corresponding value.
  *
- * @param h_map the pointer to the HashMap
- * @param key the key of the pair
- * @param val the pointer to store the data
+ * Please allocate memory for the value.
+ * ___Do not___
+ * int* data;
+ * lookup(my_h_map, my_key, data);
+ * ___Do____
+ * int data;
+ * lookup(my_h_map, my_key, &data);
+ * 
+ * @param h_map: the pointer to the HashMap
+ * @param key: the key of the pair
+ * @param val: the pointer to store the data.
  * @return an integer that indicate if the function succeeded (0 for success
  * -1 for error)
  */
@@ -150,10 +150,33 @@ void delete_node(hash_table_s *h_map, void* key);
 /**
  * @brief Delete a HashMap and frees all the memory allocated by it.
  *
- * @param h_map the pointer to the HashMap
+ * @param h_map: the pointer to the HashMap
  */
 void delete_hash_map(hash_table_s *h_map);
 
+/**
+ * @brief Get the slot number in which to search for the key.
+ * 
+ * This is the default hash function. It will be replaced if you give a
+ * function at create_table.
+ *
+ * @param h_map: the pointer to the HashMap.
+ * @param key: the key of the pair.
+ * @return the slot or list number in which to search for the key.
+ */
+unsigned long long __hash_code(hash_table_s *h_map, void *key);
+
+/**
+ * @brief Compare two values.
+ * 
+ * It is the default function. If you give a function at create_table, it will
+ * be replaced.
+ * 
+ * @param a: the adress of the first value to compare.
+ * @param b: the adress of the second value to compare.
+ * @return an int that indicate if the two values are equals (0 if they are
+ * different and 1 if they are equals).
+ */
 int __comp (void *a, void *b);
 
 #endif //HASH_TABLE_HASHMAP_H
