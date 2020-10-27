@@ -15,7 +15,25 @@ list_t *list_create(void)
 
 void list_delete(list_t *list)
 {
+    list_node_t *last_node = list -> beginning_list;
+    list_node_t *last_last_node = NULL;
 
+    if (last_node == NULL)
+    {
+        free(list);
+    }
+    else
+    {
+        while (last_node -> next_node != NULL)
+        {   
+            free(last_last_node);
+            last_last_node = last_node;
+            last_node = last_node->next_node;
+        }
+        free(list);
+        free(last_last_node);
+        free(last_node);
+    }
 }
 
 int list_is_empty(list_t *list)
