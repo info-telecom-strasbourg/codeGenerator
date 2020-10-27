@@ -8,6 +8,7 @@ This library gives you variable way to check your test functions:
 - `TEST(function, timeout_millis)` to run a test with a timeout (in milliseconds).
 - `OTEST(function, expected_output_file)` to compare standard output with the given file.
 - `OTEST(function, expected_output_file, timeout_millis)` to compare standard output with the given file with a timeout (in milliseconds).
+- `ETEST(function, expected_exit_code)` to compare the exit code with the given exit code.
 
 In a test function, you can use these two functions :
 - `assert(expression)` to check that an expression is true
@@ -49,6 +50,9 @@ void main(void)
 
     // Test myTestFunction with a timeout (here, the function must finish in 1 second maximum), and check if the output is identical of the output_expected file
     OTEST(myTestFunction, output_exected, 1000);
+
+    // Test myTestFunction, and check if the exit code is identical of the given expected_code
+    ETEST(myTestFunction, EXIT_SUCCESS);
     ...
 }
 ```
