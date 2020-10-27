@@ -82,7 +82,7 @@ void list_delete(list_t *list);
  * @param list: the linked list that will be tested.
  * @return an int indicating if the linked list is empty:
  * 1 -> the linked list is empty.
- * 0 -> the function failed.
+ * 0 -> the function failed or the linked list is not empty.
  */
 int list_is_empty(list_t *list);
 
@@ -114,11 +114,11 @@ int list_prepend(list_t *list, void *ele);
 /**
  * @brief Remove the last node of the linked list.
  *
- * @param list: the stack that will provide its last node.
+ * @param list: the linked list that will provide its last node.
  * @param ele: a pointer pointing to the address that will receive the data.
  * @return an int that indicate if the function succeeded:
- * 0 -> the function succeeded.
- * -1 -> the function failed.
+ * 1 -> the function succeeded.
+ * 0 -> the function failed.
  */
 int list_pop(list_t *list, void *ele);
 
