@@ -60,14 +60,12 @@ typedef struct {
  *
  * This function check if the node_memsize is not 0 (the size of the data
  * stored can not be  0) and create an empty list in this case.
- *
- * @param list: the linked list you want to initialize.
- * @param node_memsize: the size of the data that will be stored in the stack.
- * @return an int that indicate if the creation were done without error:
- * 0 -> the function succeeded.
- * -1 -> the function failed.
+
+ * @return NULL or a pointer to the linked list
+ * a pointer to the linked list -> the function succeeded.
+ * NULL -> the function failed, the linked list wasn't created.
  */
-int list_create(list_t list, size_t node_memesize);
+list_t *list_create(void);
 
 
 /**
@@ -93,36 +91,36 @@ int list_is_empty(list_t *list);
  * @brief Add a data to the end of the linked list.
  * 
  * @param list : linked list where the data will be added.
- * @param data : data (any type) which will be added.
+ * @param ele : data (any type) which will be added.
  * @return an int indicating if the data is added :
  * 1 -> the data is added.
  * 0 -> the function failed.
  */
-int list_append(list_t *list, void *data);
+int list_append(list_t *list, void *ele);
 
 
 /**
  * @brief Add a data to the head of the linked list.
  * 
  * @param list : linked list where the data will be added.
- * @param data : data (any type) which will be added.
+ * @param ele : data (any type) which will be added.
  * @return an int indicating if the data is added :
  * 1 -> the data is added.
  * 0 -> the function failed.
  */
-int list_prepend(list_t *list, void *data);
+int list_prepend(list_t *list, void *ele);
 
 
 /**
  * @brief Remove the last node of the linked list.
  *
  * @param list: the stack that will provide its last node.
- * @param data: a pointer pointing to the address that will receive the data.
+ * @param ele: a pointer pointing to the address that will receive the data.
  * @return an int that indicate if the function succeeded:
  * 0 -> the function succeeded.
  * -1 -> the function failed.
  */
-int list_pop(list_t *list, void *data);
+int list_pop(list_t *list, void *ele);
 
 
 /** 
