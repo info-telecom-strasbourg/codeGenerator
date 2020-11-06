@@ -1,4 +1,5 @@
 #ifndef LINKED_LIST_H
+
 #define LINKED_LIST_H
 
 #include<stdio.h>
@@ -120,7 +121,7 @@ int list_prepend(list_t *list, void *ele);
  * 1 -> the function succeeded.
  * 0 -> the function failed.
  */
-int list_pop(list_t *list, void *ele);
+int list_pop(list_t *list, void **ele);
 
 
 /** 
@@ -131,4 +132,32 @@ int list_pop(list_t *list, void *ele);
  */
 int list_size(list_t *list);
 
-#endif
+
+/**
+ * @brief Read the data if the node i of the linked list.
+ *
+ * @param list: the linked list where we want to see the data i..
+ * @param idx: the idx of the node.
+ * @param ele: a pointer pointing to the address that will receive the data of the node i.
+ * @return an int that indicates if the function is ended:
+ * 1 -> the function ended.
+ */
+int list_get(list_t *list, int idx, void **ele);
+
+
+/**
+ * @brief Print the linked list (if the data are strings)
+ * @param list: the linked list to print.
+ */
+void list_display(list_t *list);
+
+
+/**
+ * @brief Concatenation of two linked lists.
+ * 
+ * @param list1 : first linked list.
+ * @param list2 : linked list that will be added to the first linked list.
+ */
+void list_concatenation(list_t *list1, list_t *list2);
+
+#endif	
