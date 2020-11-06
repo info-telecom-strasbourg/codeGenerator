@@ -143,5 +143,5 @@ __hash_code(hash_table_s *h_map, void *key)
 int
 __comp (void *a, void *b)
 {
-	return *(unsigned long long *)a == *(unsigned long long *)b;
+	return *(char *)a == *(char *)b;
 }
