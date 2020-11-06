@@ -1,2 +1,5 @@
 java_
 .idea
+bin/
+obj/
+*.o
