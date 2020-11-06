@@ -1,5 +1,9 @@
 #include "linked-list.h"
 
+long long __remaining_primsys_its = -1;
+long long __remaining_alloc_its = -1;
+long long __remaining_threads_fct_its = -1;
+
 int     print_error(const char *msg) {
     fprintf(stderr, msg, 255);
     return (0);
