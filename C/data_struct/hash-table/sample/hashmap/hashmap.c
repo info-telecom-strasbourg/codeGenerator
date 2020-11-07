@@ -143,7 +143,7 @@ delete_hash_map(hash_table_ts *h_map)
 unsigned long long
 __hash_code(hash_table_ts *h_map, void *key)
 {
-    return (*(unsigned long long *)key) % h_map->size;
+    return (*(char *)key) % h_map->size;
 }
 
 int 
