@@ -101,11 +101,13 @@ typedef struct table
  * @param hash_func: the hash function.
  * @param comp_func: the comparaison function.
  */
-#define create_table(...)                                                           \
+#define create_table(...)                                                         \
 	__ITS_GET_MACRO_CREATE_TABLE(__VA_ARGS__, __CREAT_T5, __CREAT_T4, __CREAT_T3) \
 	(__VA_ARGS__)
 
 #define __CREAT_T5(size, key_memsize, val_memsize, hash_func, comp_func) create_table(size, key_memsize, val_memsize, hash_func, comp_func)
+
+#define __CREAT_T4(size, key_memsize, val_memsize, hash_func) create_table(size, key_memsize, val_memsize, hash_func, NULL)
 
 #define __CREAT_T3(size, key_memsize, val_memsize) create_table(size, key_memsize, val_memsize, NULL, NULL)
 
