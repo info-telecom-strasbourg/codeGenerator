@@ -2,7 +2,7 @@
 
 ## Content
 
-This library allows you to use hash tables in C. It defines several types such as `hash_table_s` and `hash_node_s`. You can use both of them but the second one is already used by the library so you won't have to use it. Don't bother about the content of those 2 structures, you won't have to use them. Everything is managed by the library. You just have to use `hash_table_s`.
+This library allows you to use hash tables in C. It defines several types such as `hash_table_ts` and `hash_node_ts`. You can use both of them but the second one is already used by the library so you won't have to use it. Don't bother about the content of those 2 structures, you won't have to use them. Everything is managed by the library. You just have to use `hash_table_ts`.
 
 ## Example of utilisation
 
@@ -10,7 +10,7 @@ This library allows you to use hash tables in C. It defines several types such a
 int main(void)
 {
 	//Créer la hash table
-    hash_table_s *my_hash_map = create_table(5, sizeof(unsigned long long), sizeof(int), NULL, NULL);
+    hash_table_ts *my_hash_map = create_table(5, sizeof(unsigned long long), sizeof(int), NULL, NULL);
 	unsigned long long key1 = 1;
 	int val1 = 3;
 
@@ -51,7 +51,7 @@ my_comp (void *a, void *b)
 }
 
 unsigned long long 
-my_hash_code(hash_table_s *h_map, void *key)
+my_hash_code(hash_table_ts *h_map, void *key)
 {
 	int key_int = *(int *)key;
 	return (key_int*5)%h_map->size; 
@@ -60,7 +60,7 @@ my_hash_code(hash_table_s *h_map, void *key)
 int main(void)
 {
 	//Créer la hash table
-    hash_table_s *my_hash_map = create_table(5, sizeof(unsigned long long), sizeof(struct test), my_hash_code, my_comp);
+    hash_table_ts *my_hash_map = create_table(5, sizeof(unsigned long long), sizeof(struct test), my_hash_code, my_comp);
 	unsigned long long key1 = 1;
 	struct test val1 = {3, "truc"};
 
