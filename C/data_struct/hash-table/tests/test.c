@@ -17,7 +17,7 @@ struct test_keys {
 	char key_str[3];
 };
 
-unsigned long long test_hash_func(hash_table_s *h_map, void *key)
+unsigned long long test_hash_func(hash_table_ts *h_map, void *key)
 {
 	struct test_keys *key2 = (struct test_keys *)key;
 	return (key2->key_int + key2->key_str[0] + key2->key_str[1])%h_map->size;
@@ -36,7 +36,7 @@ int test_comp_func(void *a, void *b)
 void
 test_create_table(void)
 {
-    hash_table_s *hash_map = create_table(5, sizeof(int), sizeof(int), NULL, NULL);
+    hash_table_ts *hash_map = create_table(5, sizeof(int), sizeof(int));
     assert(hash_map != NULL);
     assert(hash_map->size == 5);
     assert(hash_map->val_memsize == sizeof(int));
@@ -46,7 +46,7 @@ test_create_table(void)
     assert(hash_map->list != NULL);
     delete_hash_map(hash_map);
 
-    hash_table_s *hash_map2 = create_table(5, sizeof(struct test_keys), sizeof(int), test_hash_func, test_comp_func);
+    hash_table_ts *hash_map2 = create_table(5, sizeof(struct test_keys), sizeof(int), test_hash_func, test_comp_func);
     assert(hash_map2 != NULL);
     assert(hash_map2->size == 5);
     assert(hash_map2->val_memsize == sizeof(int));
@@ -60,7 +60,7 @@ test_create_table(void)
 void
 test_hash_code(void)
 {
-	hash_table_s *hash_map = create_table(5, sizeof(unsigned long long), sizeof(int), NULL, NULL);
+	hash_table_ts *hash_map = create_table(5, sizeof(unsigned long long), sizeof(int));
 	unsigned long long key_1 = 4;
 	unsigned long long key_2 = 8;
 	unsigned long long key_3 = 9;
@@ -83,7 +83,7 @@ test_comp(void)
 void
 test_insert(void)
 {
-	hash_table_s *hash_map = create_table(5, sizeof(unsigned long long), sizeof(int), NULL, NULL);
+	hash_table_ts *hash_map = create_table(5, sizeof(unsigned long long), sizeof(int));
 	unsigned long long keys[5] = {0, 1, 2, 3, 4};
 	int vals[5] = {10, 20, 30, 40, 50};
 	int i;
@@ -110,7 +110,7 @@ test_insert(void)
 	}
 	delete_hash_map(hash_map);
 
-	hash_table_s *hash_map2 = create_table(7, sizeof(struct test_keys), sizeof(struct test_struct), test_hash_func, test_comp_func);
+	hash_table_ts *hash_map2 = create_table(7, sizeof(struct test_keys), sizeof(struct test_struct), test_hash_func, test_comp_func);
 	struct test_keys keys2[3] = {{1, "un"}, {2, "de"}, {3, "ce"}};
 	struct test_struct vals2[3] = {{10, "di"}, {20, "vi"}, {30, "tr"}};
 	for(i = 0; i < 3; i++)
@@ -138,7 +138,7 @@ test_insert(void)
 void
 test_lookup(void)
 {
-	hash_table_s *hash_map = create_table(5, sizeof(unsigned long long), sizeof(int), NULL, NULL);
+	hash_table_ts *hash_map = create_table(5, sizeof(unsigned long long), sizeof(int));
 	unsigned long long keys[5] = {0, 1, 2, 3, 4};
 	int vals[5] = {10, 20, 30, 40, 50};
 	int i;
@@ -154,7 +154,7 @@ test_lookup(void)
 
 	delete_hash_map(hash_map);
 
-	hash_table_s *hash_map2 = create_table(7, sizeof(struct test_keys), sizeof(struct test_struct), test_hash_func, test_comp_func);
+	hash_table_ts *hash_map2 = create_table(7, sizeof(struct test_keys), sizeof(struct test_struct), test_hash_func, test_comp_func);
 	struct test_keys keys2[3] = {{1, "un"}, {2, "de"}, {3, "tr"}};
 	struct test_struct vals2[3] = {{10, "di"}, {20, "vi"}, {30, "tr"}};
 	for (i = 0; i < 3; i++)
@@ -176,7 +176,7 @@ test_lookup(void)
 void
 test_delete_hash_map(void)
 {
-	hash_table_s *hash_map = create_table(5, sizeof(unsigned long long), sizeof(int), NULL, NULL);
+	hash_table_ts *hash_map = create_table(5, sizeof(unsigned long long), sizeof(int));
 	unsigned long long keys[5] = {0, 1, 2, 3, 4};
 	int vals[5] = {10, 20, 30, 40, 50};
 	int i;
@@ -185,7 +185,7 @@ test_delete_hash_map(void)
 
 	delete_hash_map(hash_map);
 
-	hash_table_s *hash_map2 = create_table(7, sizeof(struct test_keys), sizeof(struct test_struct), test_hash_func, test_comp_func);
+	hash_table_ts *hash_map2 = create_table(7, sizeof(struct test_keys), sizeof(struct test_struct), test_hash_func, test_comp_func);
 	struct test_keys keys2[3] = {{1, "un"}, {2, "de"}, {3, "tr"}};
 	struct test_struct vals2[3] = {{10, "di"}, {20, "vi"}, {30, "tr"}};
 	for (i = 0; i < 3; i++)
@@ -197,7 +197,7 @@ test_delete_hash_map(void)
 void
 test_delete_node(void)
 {
-	hash_table_s *hash_map = create_table(5, sizeof(unsigned long long), sizeof(int), NULL, NULL);
+	hash_table_ts *hash_map = create_table(5, sizeof(unsigned long long), sizeof(int));
 	unsigned long long keys[5] = {0, 1, 2, 5, 6};
 	int vals[5] = {10, 20, 30, 40, 50};
 	int i;
@@ -214,7 +214,7 @@ test_delete_node(void)
 
 	delete_hash_map(hash_map);
 
-	hash_table_s *hash_map2 = create_table(7, sizeof(struct test_keys), sizeof(struct test_struct), test_hash_func, test_comp_func);
+	hash_table_ts *hash_map2 = create_table(7, sizeof(struct test_keys), sizeof(struct test_struct), test_hash_func, test_comp_func);
 	struct test_keys keys2[3] = {{1, "un"}, {2, "de"}, {3, "ce"}};
 	struct test_struct vals2[3] = {{10, "di"}, {20, "vi"}, {30, "tr"}};
 	for (i = 0; i < 3; i++)

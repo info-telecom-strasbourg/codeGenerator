@@ -2,14 +2,14 @@
 
 ## Content
 
-This library allows you to use Queues for C. It defines several types such as `queue_s` and `queue_node_s`. You can use both of them but the second one is already used by the library so you won't have to use it. Don't bother about the content of those 2 structures, you won't have to use them. Everything is managed by the library. You just have to use `queue_s`.
+This library allows you to use Queues for C. It defines several types such as `queue_ts` and `queue_node_ts`. You can use both of them but the second one is already used by the library so you won't have to use it. Don't bother about the content of those 2 structures, you won't have to use them. Everything is managed by the library. You just have to use `queue_ts`.
 
 ## Example of utilisation
 
 ```c
 int main(void)
 {
-    queue_s *my_queue = create_queue(sizeof(int)); //The queue will contain int datas but you can give anything you want
+    queue_ts *my_queue = create_queue(sizeof(int)); //The queue will contain int datas but you can give anything you want
 
 	int data1 = 1;
 	enqueue(my_queue, data1); //add data1 in the queue

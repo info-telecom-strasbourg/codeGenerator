@@ -435,12 +435,20 @@ extern long long __remaining_primsys_its;
 			? stime(a)                                                         \
 			: -1)
 
-#define gettimeofday(a,b)                                                      \
+#define gettimeofday_macro(_1, _2, _3, NAME, ...) NAME
+
+#define gettimeofday(...)                                                      \
+    gettimeofday_macro(__VA_ARGS__, gettimeofday_2, gettimeofday_1)            \
+    (__VA_ARGS__)
+
+#define gettimeofday_1(a,b)                                                    \
 	((__remaining_primsys_its > 0)                                             \
 		? __remaining_primsys_its--, gettimeofday(a,b)                         \
 		: (__remaining_primsys_its < 0)                                        \
 			? gettimeofday(a,b)                                                \
 			: -1)
+
+#define gettimeofday_2(a,b,c) gettimeofday(a,b)
 
 #define times(a)                                                               \
 	((__remaining_primsys_its > 0)                                             \
