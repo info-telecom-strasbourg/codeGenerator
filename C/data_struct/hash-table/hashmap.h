@@ -85,6 +85,31 @@ typedef struct table
 } hash_table_s;
 
 /**
+ * @brief Macro to allows to redefine macros with a different parameters number
+ */
+#define __ITS_GET_MACRO_CREATE_TABLE(_1, _2, _3, _4, _5, NAME, ...) NAME
+
+/**
+ * @brief Macro to create a hash map
+ *
+ * To make this library easy to use, this macro can be used with 5 or 3
+ * parameters.
+ *
+ * @param size: the size of the hash map.
+ * @param key_memsize: the memsize of a key.
+ * @param val_memsize: the memsize of a value.
+ * @param hash_func: the hash function.
+ * @param comp_func: the comparaison function.
+ */
+#define create_table(...)                                                           \
+	__ITS_GET_MACRO_CREATE_TABLE(__VA_ARGS__, __CREAT_T5, __CREAT_T4, __CREAT_T3) \
+	(__VA_ARGS__)
+
+#define __CREAT_T5(size, key_memsize, val_memsize, hash_func, comp_func) create_table(size, key_memsize, val_memsize, hash_func, comp_func)
+
+#define __CREAT_T3(size, key_memsize, val_memsize) create_table(size, key_memsize, val_memsize, NULL, NULL)
+
+/**
  * @brief Creates a HashMap with the given size.
  * 
  * It allocate memory for the table and for the list of nodes. It also

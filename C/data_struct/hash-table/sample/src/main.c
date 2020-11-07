@@ -2,7 +2,7 @@
 #include "hashmap.h"
 
 int main(void) {
-	hash_table_s *table = create_table(2, sizeof(int), sizeof(int), NULL, NULL);
+	hash_table_s *table = create_table(2, sizeof(int), sizeof(int));
 	int key = 1;
 	int j = 1;
 	int value;
