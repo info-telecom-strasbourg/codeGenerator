@@ -54,14 +54,14 @@ insert(hash_table_ts *h_map, void *key, void *val)
 	if(new_node == NULL)
 		return -1;
 
-    new_node->val = malloc(sizeof(h_map->val_memsize));
+    new_node->val = malloc(h_map->val_memsize);
 	if(new_node->val == NULL)
 	{
 		free(new_node);
 		return -1;
 	}
 
-    new_node->key = malloc(sizeof(h_map->key_memsize));
+    new_node->key = malloc(h_map->key_memsize);
 	if(new_node->key == NULL)
 	{
 		free(new_node->val);
@@ -120,15 +120,20 @@ delete_node(hash_table_ts *h_map, void *key)
     }
 }
 
-void
-delete_hash_map(hash_table_ts *h_map)
+void delete_hash_map(hash_table_ts *h_map)
 {
     for (unsigned long long i = 0; i < h_map->size; i++)
-        if(h_map->list[i] != NULL)
+        if (h_map->list[i] != NULL)
         {
-            free(h_map->list[i]->val);
-            free(h_map->list[i]->key);
-            free(h_map->list[i]);
+            hash_node_ts *temp = h_map->list[i];
+            while (temp)
+            {
+                hash_node_ts *next = temp->next;
+                free(temp->val);
+                free(temp->key);
+                free(temp);
+                temp = next;
+            }
         }
     free(h_map->list);
     free(h_map);

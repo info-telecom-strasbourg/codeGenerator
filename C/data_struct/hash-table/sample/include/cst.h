@@ -10,4 +10,9 @@ struct student_t
 	char name[20];
 };
 
+struct prof_t {
+	char mat[25];
+	int age;
+};
+
 #endif //CST_H

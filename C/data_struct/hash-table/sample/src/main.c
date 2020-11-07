@@ -1,6 +1,16 @@
 #include <stdio.h>
-#include "hashmap.h"
 #include "cst.h"
+#include "hashmap.h"
+
+int comp_name(void *a, void *b)
+{
+	return strcmp((char *)a, (char *)b) == 0;
+}
+
+unsigned long long hash_func_name(hash_table_ts *table, void *key)
+{
+	return strlen((char *)key) % table->size;
+}
 
 void fill_map(hash_table_ts *table)
 {
@@ -54,15 +64,48 @@ void test2(void)
 	struct student_t student;
 	lookup(table, key1, &student);
 	printf("\nStudent\n");
-	printf ("%13s %-20d\n", "Student id:", student.student_id);
-	printf ("%13s %-20s\n", "Student name:", student.name);
+	printf ("%s %d\n", "Student id:", student.student_id);
+	printf ("%s %s\n", "Student name:", student.name);
+	delete_hash_map(table);
+}
+
+void test3(void)
+{
+	hash_table_ts *table = create_table(1, sizeof(char[20]), sizeof(struct prof_t), hash_func_name, comp_name);
+	struct prof_t profs[3] = {
+		{"Math", 26},
+		{"Français", 28},
+		{"Histoire Géo", 30}
+	};
+
+	printf("%ld\n", sizeof(char[20]));
+	printf("%ld\n", sizeof(struct prof_t));
+
+	char name_math[20] = "Théo";
+	char name_fr[20] = "Lucas";
+	char name_matlab[20] = "Hugo";
+	insert(table, name_math, &profs[0]);
+	insert(table, name_fr, &profs[1]);
+	insert(table, name_matlab, &profs[2]);
+
+	struct prof_t prof;
+	lookup(table, name_math, &prof);
+	printf("%s\n", prof.mat);
+
+	lookup(table, name_fr, &prof);
+	printf("%s\n", prof.mat);
+	
+	lookup(table, name_matlab, &prof);
+	printf("%s\n", prof.mat);
+
 	delete_hash_map(table);
 }
 
 int main(void)
 {
-	test1();
-	test2();
+	// test1();
+	// test2();
+	test3();
 
 	return 0;
 }

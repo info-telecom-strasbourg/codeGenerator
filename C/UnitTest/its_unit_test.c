@@ -271,8 +271,9 @@ __test_output_unittest_its(char *test_name, void (*function)(void), char *expect
 	__remaining_primsys_its = -1;
 	__remaining_threads_fct_its = -1;
     check(gettimeofday(&end, NULL), "gettimeofday failed", 1);
-    assert_file(expected_output_file, "_its_out_test.log");
     end_test(start, end, out);
+    test_running = 0;
+    assert_file(expected_output_file, "_its_out_test.log");
     check(unlink("_its_out_test.log"), "Remove of \"_its_out_test.log\" failed", 0);
 }
 
@@ -292,6 +293,7 @@ __test_output_timeout_unittest_its(char *test_name, void (*function)(void),
     check_t(errno = pthread_create(&func_thread, NULL, thread_function, (void *)function), "Function launcher creation failed");
     launch_timeout(timeout_millis);
     check(gettimeofday(&end, NULL), "gettimeofday failed", 1);
+    test_running = 0;
     assert_file(expected_output_file, "_its_out_test.log");
     end_test(start, end, out);
     check(unlink("_its_out_test.log"), "Remove of \"_its_out_test.log\" failed", 0);

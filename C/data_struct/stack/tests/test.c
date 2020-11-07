@@ -25,6 +25,7 @@ test_create_stack(void)
     assert(my_stack2->tail == NULL);
     assert(my_stack2->node_memsize == sizeof(long long));
 	delete_stack(my_stack2);
+	assert( 1 == 2);
 }
 
 void
