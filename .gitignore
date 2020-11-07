@@ -3,3 +3,4 @@ java_
 bin/
 obj/
 *.o
+.vscode

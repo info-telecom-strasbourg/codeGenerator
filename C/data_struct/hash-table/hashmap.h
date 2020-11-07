@@ -53,14 +53,14 @@
  *
  * A node store a data (any type) and points to the next node in the list.
  */
-typedef struct node
+typedef struct node_t
 {
     void               *key;    /**< The key of the node.
                                   It can be anything. */
     void               *val;    /**< The data stored in the node.
                                   It can be anything. */
-    struct node        *next;   /**< Pointer to identify the next node. */
-} hash_node_s;
+    struct node_t      *next;   /**< Pointer to identify the next node. */
+} hash_node_ts;
 
 /**
  * @brief A structure representing a hash table.
@@ -69,20 +69,21 @@ typedef struct node
  * To use it correctly, please use insert and lookup to store and
  * find a value. You can have a personnal hash and comparaison function .
  */
-typedef struct table
+typedef struct table_t
 {
     unsigned long long size;           /**< The size of the subsequent list. */
 	size_t             val_memsize;    /**< Memory size of a value */
 	size_t             key_memsize;    /**< Memory size of a value */
-	unsigned long long (*hash_function)(struct table *, void *); /**< The hash
+	unsigned long long (*hash_function)(struct table_t *, void *); /**< The 
+																	hash
 																    function. */
 	int (*comp_function)(void *, void *); /**< The comparaison function, it must
 											   return 1 if the two arguments
 											   are equals and 0 if they are
 											   not. */
-    hash_node_s        **list;          /**< Pointer to identify the table of
+    hash_node_ts        **list;          /**< Pointer to identify the table of
 											 subsequent lists. */
-} hash_table_s;
+} hash_table_ts;
 
 /**
  * @brief Macro to allows to redefine macros with a different parameters number
@@ -127,10 +128,10 @@ typedef struct table
  * (if NULL is given, __comp will be used).
  * @return the pointer to the created HashMap.
  */
-hash_table_s *create_table(unsigned long long size,
+hash_table_ts *create_table(unsigned long long size,
 	size_t key_memsize,
 	size_t val_memsize,
-	unsigned long long (*hash_function)(hash_table_s *, void *),
+	unsigned long long (*hash_function)(hash_table_ts *, void *),
 	int (*comp_function)(void *, void *));
 
 /**
@@ -145,7 +146,7 @@ hash_table_s *create_table(unsigned long long size,
  * @return a number that indicate if the <K, V> was correctly inserted (0 for
  * success -1 for error).
  */
-int insert(hash_table_s *h_map, void *key, void *val);
+int insert(hash_table_ts *h_map, void *key, void *val);
 
 /**
  * @brief Search the key in the HashMap and returns the corresponding value.
@@ -164,7 +165,7 @@ int insert(hash_table_s *h_map, void *key, void *val);
  * @return an integer that indicate if the function succeeded (0 for success
  * -1 for error)
  */
-int lookup(hash_table_s *h_map, void *key, void *value);
+int lookup(hash_table_ts *h_map, void *key, void *value);
 
 /**
  * @brief Free the memory allocated by a specific node.
@@ -172,14 +173,14 @@ int lookup(hash_table_s *h_map, void *key, void *value);
  * @param h_map: a pointer to the Hashmap.
  * @param key: the key associated to the node you want to free.
  */
-void delete_node(hash_table_s *h_map, void* key);
+void delete_node(hash_table_ts *h_map, void* key);
 
 /**
  * @brief Delete a HashMap and frees all the memory allocated by it.
  *
  * @param h_map: the pointer to the HashMap
  */
-void delete_hash_map(hash_table_s *h_map);
+void delete_hash_map(hash_table_ts *h_map);
 
 /**
  * @brief Get the slot number in which to search for the key.
@@ -191,7 +192,7 @@ void delete_hash_map(hash_table_s *h_map);
  * @param key: the key of the pair.
  * @return the slot or list number in which to search for the key.
  */
-unsigned long long __hash_code(hash_table_s *h_map, void *key);
+unsigned long long __hash_code(hash_table_ts *h_map, void *key);
 
 /**
  * @brief Compare two values.
