@@ -123,12 +123,8 @@ delete_node(hash_table_ts *h_map, void *key)
     }
 }
 
-<<<<<<< HEAD
-void delete_hash_map(hash_table_ts *h_map)
-=======
 void 
 delete_hash_map(hash_table_ts *h_map)
->>>>>>> 1e3f096bc99ae563a0cbbdde29a3fd22d53611e7
 {
     for (unsigned long long i = 0; i < h_map->size; i++)
         if (h_map->list[i] != NULL)

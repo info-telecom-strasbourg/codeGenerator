@@ -32,6 +32,7 @@ run:
 	make clean
 	make
 
+
 .PHONY: clean test
 clean:
 	rm -rf obj/*.o
