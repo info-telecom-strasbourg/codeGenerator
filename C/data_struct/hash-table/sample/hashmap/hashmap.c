@@ -7,6 +7,9 @@ create_table(unsigned long long size,
              unsigned long long (*hash_function)(hash_table_ts *, void *),
              int (*comp_function)(void *, void *))
 {
+    if(size == 0 || key_memsize == 0 || val_memsize == 0)
+        return NULL;
+    
     hash_table_ts *h_map = malloc(sizeof(hash_table_ts));
 
     if (!h_map)

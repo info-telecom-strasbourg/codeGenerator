@@ -55,6 +55,12 @@ test_create_table(void)
     assert(hash_map2->comp_function == test_comp_func);
     assert(hash_map2->list != NULL);
     delete_hash_map(hash_map2);
+	hash_table_ts *hash_map3 = create_table(0, sizeof(int), sizeof(int));
+	hash_table_ts *hash_map4 = create_table(5, 0, sizeof(int));
+	hash_table_ts *hash_map5 = create_table(5, sizeof(int), 0);
+	assert(hash_map3 == NULL);
+	assert(hash_map4 == NULL);
+	assert(hash_map5 == NULL);
 }
 
 void
