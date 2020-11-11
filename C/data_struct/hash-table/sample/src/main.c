@@ -43,7 +43,7 @@ void fill_map_2(hash_table_ts *table)
 
 void test1(void)
 {
-	hash_table_ts *table = create_table(2, sizeof(int), sizeof(char) * 17);
+	hash_table_ts *table = create_table(2, sizeof(int), sizeof(char[20]));
 	fill_map(table);
 	int key1 = 1;
 	char msg[13];
@@ -71,7 +71,6 @@ void test2(void)
 
 void test3(void)
 {
-	hash_table_ts *table = create_table(1, sizeof(char[20]), sizeof(struct prof_t), hash_func_name, comp_name);
 	struct prof_t profs[3] = {
 		{"Math", 26},
 		{"Français", 28},
@@ -84,13 +83,6 @@ void test3(void)
 	char name_math[20] = "Théo";
 	char name_fr[20] = "Lucas";
 	char name_matlab[20] = "Hugo";
-	insert(table, name_math, &profs[0]);
-	insert(table, name_fr, &profs[1]);
-	insert(table, name_matlab, &profs[2]);
-
-	struct prof_t prof;
-	lookup(table, name_math, &prof);
-	printf("%s\n", prof.mat);
 
 	lookup(table, name_fr, &prof);
 	printf("%s\n", prof.mat);

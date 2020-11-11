@@ -7,6 +7,9 @@ create_table(unsigned long long size,
              unsigned long long (*hash_function)(hash_table_ts *, void *),
              int (*comp_function)(void *, void *))
 {
+    if(size == 0 || key_memsize == 0 || val_memsize == 0)
+        return NULL;
+    
     hash_table_ts *h_map = malloc(sizeof(hash_table_ts));
 
     if (!h_map)
@@ -28,7 +31,8 @@ create_table(unsigned long long size,
     return h_map;
 }
 
-int insert(hash_table_ts *h_map, void *key, void *val)
+int 
+insert(hash_table_ts *h_map, void *key, void *val)
 {
     hash_node_ts *list, *temp, *new_node;
 
@@ -75,7 +79,8 @@ int insert(hash_table_ts *h_map, void *key, void *val)
     return 0;
 }
 
-int lookup(hash_table_ts *h_map, void *key, void *value)
+int 
+lookup(hash_table_ts *h_map, void *key, void *value)
 {
     unsigned long long pos = h_map->hash_function(h_map, key);
     hash_node_ts *list = h_map->list[pos];
@@ -92,7 +97,8 @@ int lookup(hash_table_ts *h_map, void *key, void *value)
     return -1;
 }
 
-void delete_node(hash_table_ts *h_map, void *key)
+void
+delete_node(hash_table_ts *h_map, void *key)
 {
     unsigned long long pos = h_map->hash_function(h_map, key);
     hash_node_ts *temp = h_map->list[pos];
@@ -117,7 +123,8 @@ void delete_node(hash_table_ts *h_map, void *key)
     }
 }
 
-void delete_hash_map(hash_table_ts *h_map)
+void 
+delete_hash_map(hash_table_ts *h_map)
 {
     for (unsigned long long i = 0; i < h_map->size; i++)
         if (h_map->list[i] != NULL)
@@ -139,10 +146,11 @@ void delete_hash_map(hash_table_ts *h_map)
 unsigned long long
 __hash_code(hash_table_ts *h_map, void *key)
 {
-    return (*(unsigned long long *)key) % h_map->size;
+    return (*(char *)key) % h_map->size;
 }
 
-int __comp(void *a, void *b)
+int 
+__comp(void *a, void *b)
 {
     return *(char *)a == *(char *)b;
 }
