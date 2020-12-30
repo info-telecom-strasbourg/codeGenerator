@@ -30,7 +30,7 @@ int main(void)
 {
 	stack_ts *my_stack = create_stack(sizeof(struct student));
 	fill_stack(my_stack);
-	struct student etpop; // sizeof(void *)
+	struct student etpop;
 	pop_stack(my_stack, &etpop);
 	printf("%s\n", etpop.name);
 	printf("%d\n", etpop.moy);

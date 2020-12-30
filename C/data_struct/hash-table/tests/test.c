@@ -137,8 +137,30 @@ test_insert(void)
 	assert(strcmp(((struct test_keys *)hash_map2->list[(keys2[0].key_int + keys2[0].key_str[0] + keys2[0].key_str[1]) % hash_map2->size]->key)->key_str, keys2[0].key_str) == 0);
 	assert(strcmp(((struct test_keys *)hash_map2->list[(keys2[1].key_int + keys2[1].key_str[0] + keys2[1].key_str[1]) % hash_map2->size]->next->key)->key_str, keys2[1].key_str) == 0);
 	assert(strcmp(((struct test_keys *)hash_map2->list[(keys2[2].key_int + keys2[2].key_str[0] + keys2[2].key_str[1]) % hash_map2->size]->key)->key_str, keys2[2].key_str) == 0);
-	// faire avec les arrays
+
 	delete_hash_map(hash_map2);
+
+	hash_table_ts *hash_map3 = create_table(1, sizeof(int), sizeof(int));
+	int key3 = 1;
+	int val3 = 1;
+	insert(hash_map3, &key3, &val3);
+	key3 = 1;
+	val3 = 1;
+	insert(hash_map3, &key3, &val3);
+	key3 = 2;
+	val3 = 2;
+	insert(hash_map3, &key3, &val3);
+	key3 = 3;
+	val3 = 3;
+	insert(hash_map3, &key3, &val3);
+	key3 = 4;
+	val3 = 4;
+	insert(hash_map3, &key3, &val3);
+	key3 = 5;
+	val3 = 5;
+	insert(hash_map3, &key3, &val3);
+
+	delete_hash_map(hash_map3);
 }
 
 void

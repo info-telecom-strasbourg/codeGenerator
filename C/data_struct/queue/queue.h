@@ -68,7 +68,7 @@ typedef struct queue_t {
  * size_t will convert it to a positive variable and can lead to unexpected
  * behaviour. You may use sizeof(data_type) to have the correct size.
  *
- * @param node_memsize: the size of the data that will be stored in the queue.
+ * @param node_memsize the size of the data that will be stored in the queue.
  * @return a pointer to the created queue (NULL if an error occured and not
  * NULL if it succeded).
  */
@@ -81,8 +81,8 @@ queue_ts *create_queue(size_t node_memsize);
  * allocated by the function will be freed. The queue will not be freed, just
  * the memory allocated by this call of the function.
  *
- * @param queue: the queue that will receive the new node.
- * @param data: the data that will be stored in the queue.
+ * @param queue the queue that will receive the new node.
+ * @param data  the data that will be stored in the queue.
  * @return an int that indicate if the function succeeded:
  * 0 -> the function succeeded.
  * -1 -> the function failed.
@@ -100,9 +100,12 @@ int enqueue(queue_ts *queue, const void *data);
  * ____Do not____
  * int *data;
  * dequeue(my_queue, data);
+ * 
+ * If you don't want to store the result, just give 'NULL' to data.
  *
- * @param queue: the queue that will provide its first data
- * @param data: a pointer pointing to the address that will receive the data.
+ * @param queue the queue that will provide its first data
+ * @param data  a pointer pointing to the address that will receive the data.
+ *              If it is NULL, the result will be deleted without save.
  * @return an int that indicate if the function succeeded:
  * 0 -> the function succeeded.
  * -1 -> the function failed.

@@ -52,7 +52,9 @@ pop_stack(stack_ts *stack, void *data)
         return -1;
 
     stack_node_ts *temp = stack->tail;
-    memcpy(data, temp->data, stack->node_memsize);
+
+    if(data != NULL)
+        memcpy(data, temp->data, stack->node_memsize);
 
     stack->tail = stack->tail->prev;
 
@@ -84,6 +86,7 @@ delete_stack(stack_ts *stack)
         free(temp->data);
         free(temp);
     }
+    free(stack);
 }
 
 int

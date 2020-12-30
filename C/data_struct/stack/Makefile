@@ -12,7 +12,7 @@ test:
 	@echo "classic test"
 	@./test || true
 	@echo "memory test"
-	@valgrind -q ./test || true
+	@valgrind ./test || true
 	@rm -f test.o
 	@rm -f its_unit_test.o
 	@rm -f stack.o

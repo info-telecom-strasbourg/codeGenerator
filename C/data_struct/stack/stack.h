@@ -67,7 +67,7 @@ typedef struct stack_t {
  * unexpected behaviour. You may use sizeof(data_type) to have the correct
  * size.
  *
- * @param node_memsize: the size of the data that will be stored in the stack.
+ * @param node_memsize the size of the data that will be stored in the stack.
  * @return an int that indicate if the creation were done without error:
  * not NULL -> the function succeeded.
  * NULL -> the function failed.
@@ -81,8 +81,8 @@ stack_ts *create_stack(size_t node_memsize);
  * allocated by the function will be freed. The stack will not be freed,
  * just the memory allocated by this call of the function.
  *
- * @param stack: the stack that will receive the new node.
- * @param data: the data that will be stored in the stack;
+ * @param stack the stack that will receive the new node.
+ * @param data  the data that will be stored in the stack;
  * @return an int that indicate if the function succeeded:
  * 0 -> the function succeeded.
  * -1 -> the function failed.
@@ -101,8 +101,8 @@ int push_stack(stack_ts *stack, const void *data);
  * int *data;
  * pop_stack(my_stack, data);
  *
- * @param stack: the stack that will provide its last node.
- * @param data: a pointer pointing to the address that will receive the data.
+ * @param stack the stack that will provide its last node.
+ * @param data  a pointer pointing to the address that will receive the data.
  * @return an int that indicate if the function succeeded:
  * 0 -> the function succeeded.
  * -1 -> the function failed.
@@ -120,9 +120,12 @@ int pop_stack(stack_ts *stack, void *data);
  * ____Do not____
  * int *data;
  * stack_peek(my_stack, data);
+ * 
+ * If you don't want to store the result, you can give 'NULL' for data.
  *
- * @param stack: the stack you want to check the last node.
- * @param data: a pointer pointing to the address that will receive the data.
+ * @param stack the stack you want to check the last node.
+ * @param data  a pointer pointing to the address that will receive the data.
+ *              If it is NULL, the data will be deleted without save.
  * @return an int that indicate if the function succeeded:
  * 0 -> the function succeeded.
  * -1 -> the function failed.
@@ -132,14 +135,14 @@ int stack_peek(const stack_ts *stack, void *data);
 /**
  * @brief Delete a stack and free all the memory allocated by it.
  *
- * @param stack: the stack that will be deleted.
+ * @param stack the stack that will be deleted.
  */
 void delete_stack(stack_ts *stack);
 
 /**
  * @brief Check if the stack is empty.
  *
- * @param stack: the stack that will be checked.
+ * @param stack the stack that will be checked.
  * @return an int indicating if the stack is empty:
  * 1 -> the stack is empty.
  * 0 -> the stack is not empty.

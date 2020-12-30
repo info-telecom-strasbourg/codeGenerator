@@ -5,9 +5,12 @@ create_queue(size_t node_memsize)
 {
     if (node_memsize == 0)
         return NULL;
+
     queue_ts *queue = malloc(sizeof(queue_ts));
+
     if(queue == NULL)
         return NULL;
+
     queue->head = queue->tail = NULL;
     queue->node_memsize = node_memsize;
     return queue;
@@ -51,7 +54,9 @@ dequeue(queue_ts *queue, void *data)
         return -1;
 
     queue_node_ts *temp = queue->head;
-    memcpy(data, temp->data, queue->node_memsize);
+
+    if(data != NULL)
+        memcpy(data, temp->data, queue->node_memsize);
 
     if(queue->tail != queue->head)
         queue->head = queue->head->next;

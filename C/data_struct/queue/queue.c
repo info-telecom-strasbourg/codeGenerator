@@ -51,7 +51,9 @@ dequeue(queue_ts *queue, void *data)
         return -1;
 
     queue_node_ts *temp = queue->head;
-    memcpy(data, temp->data, queue->node_memsize);
+
+    if(data != NULL)
+        memcpy(data, temp->data, queue->node_memsize);
 
     if(queue->tail != queue->head)
         queue->head = queue->head->next;
