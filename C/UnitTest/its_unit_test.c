@@ -395,6 +395,17 @@ __assert_file_unittest_its(char *first_file, char *second_file)
                         " are different\n", "\x1b[1;31m", "\x1b[0m");
                 exit(EXIT_FAILURE);
             }
+			
+		if(read_origi != 0 || read_saved != 0)
+		{
+			test_running = 0;
+			check_t(errno = pthread_join(loading_thread, NULL),
+					"Loading effect thread join failed");
+			dprintf(saved_stdout, "%sFailed%s\nThe two files"
+								  " are different\n",
+					"\x1b[1;31m", "\x1b[0m");
+			exit(EXIT_FAILURE);
+		}
         check(read_origi, "An error occurred while reading files", 1);
         check(read_saved, "An error occurred while reading files", 1);
         check(close(file_saved), "Close of a file failed", 0);
